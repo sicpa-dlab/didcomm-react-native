@@ -1,5 +1,4 @@
-import { NativeModules } from 'react-native'
-import {
+import type {
   DIDResolver,
   IMessage,
   Message as DIDCommMessage,
@@ -10,18 +9,20 @@ import {
   SecretsResolver,
   UnpackMetadata,
   UnpackOptions,
-} from 'didcomm'
+} from './types'
+
+import { NativeModules } from 'react-native'
 
 const { DIDCommMessageHelpers } = NativeModules
 
 export class Message implements Omit<DIDCommMessage, "free"> {
-  constructor(private _payload: IMessage) {}
+  public constructor(private _payload: IMessage) {}
 
-  as_value(): IMessage {
+  public as_value(): IMessage {
     return this._payload
   }
 
-  pack_encrypted(
+  public pack_encrypted(
     to: string,
     from: string | null,
     sign_by: string | null,
@@ -40,11 +41,11 @@ export class Message implements Omit<DIDCommMessage, "free"> {
     )
   }
 
-  pack_plaintext(did_resolver: DIDResolver): Promise<string> {
+  public pack_plaintext(did_resolver: DIDResolver): Promise<string> {
     throw new Error("Not implemented")
   }
 
-  pack_signed(
+  public pack_signed(
     sign_by: string,
     did_resolver: DIDResolver,
     secrets_resolver: SecretsResolver
@@ -52,7 +53,7 @@ export class Message implements Omit<DIDCommMessage, "free"> {
     throw new Error("Not implemented")
   }
 
-  static unpack(
+  public static unpack(
     msg: string,
     did_resolver: DIDResolver,
     secrets_resolver: SecretsResolver,
@@ -61,7 +62,7 @@ export class Message implements Omit<DIDCommMessage, "free"> {
     return DIDCommMessageHelpers.unpack(msg, did_resolver, secrets_resolver)
   }
 
-  try_parse_forward(): ParsedForward {
+  public try_parse_forward(): ParsedForward {
     throw new Error("Not implemented")
   }
 }

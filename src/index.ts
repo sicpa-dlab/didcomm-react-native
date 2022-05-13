@@ -1,1 +1,3 @@
-export * from './Message'
+export * from './message'
+// @ts-ignore
+export * from "./types"
