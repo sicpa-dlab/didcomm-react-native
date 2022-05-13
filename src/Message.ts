@@ -41,7 +41,7 @@ export class Message implements Omit<DIDCommMessage, "free"> {
   }
 
   pack_plaintext(did_resolver: DIDResolver): Promise<string> {
-    throw new Error('Not implemented')
+    throw new Error("Not implemented")
   }
 
   pack_signed(
@@ -49,7 +49,7 @@ export class Message implements Omit<DIDCommMessage, "free"> {
     did_resolver: DIDResolver,
     secrets_resolver: SecretsResolver
   ): Promise<[string, PackSignedMetadata]> {
-    throw new Error('Not implemented')
+    throw new Error("Not implemented")
   }
 
   static unpack(
@@ -62,6 +62,6 @@ export class Message implements Omit<DIDCommMessage, "free"> {
   }
 
   try_parse_forward(): ParsedForward {
-    throw new Error('Not implemented')
+    throw new Error("Not implemented")
   }
 }

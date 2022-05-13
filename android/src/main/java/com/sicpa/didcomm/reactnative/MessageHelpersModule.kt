@@ -7,9 +7,10 @@ import org.didcommx.didcomm.message.Message
 import org.didcommx.didcomm.model.PackEncryptedParams
 import org.didcommx.didcomm.model.UnpackParams
 import org.didcommx.didcomm.secret.SecretResolver
-import org.json.JSONObject
 
 class MessageHelpersModule(context: ReactApplicationContext) : ReactContextBaseJavaModule(context) {
+
+    val TAG = "DIDCommMessageHelpersModule"
     override fun getName() = "DIDCommMessageHelpers"
 
     @ReactMethod
@@ -20,28 +21,51 @@ class MessageHelpersModule(context: ReactApplicationContext) : ReactContextBaseJ
         signFrom: String? = null,
         protectSender: Boolean = true,
         didDocResolver: DIDDocResolver,
-        secretsResolver: SecretResolver
-    ): WritableMap {
-        val didComm = DIDComm(didDocResolver, secretsResolver)
-        val message = Message.parse(messageData.toHashMap())
+        secretsResolver: SecretResolver,
+        promise: Promise
+    ) {
+        try {
+            val didComm = DIDComm(didDocResolver, secretsResolver)
+            val message = Message.parse(messageData.toHashMap())
 
-        var builder = PackEncryptedParams
-            .builder(message, to)
-            .forward(false)
-            .protectSenderId(protectSender)
-        builder = from?.let { builder.from(it) } ?: builder
-        builder = signFrom?.let { builder.signFrom(it) } ?: builder
+            var builder = PackEncryptedParams
+                .builder(message, to)
+                .forward(false)
+                .protectSenderId(protectSender)
+            builder = from?.let { builder.from(it) } ?: builder
+            builder = signFrom?.let { builder.signFrom(it) } ?: builder
 
-        val packResult = didComm.packEncrypted(builder.build())
-        return ReactNativeJsonUtils.convertJsonToMap(JSONObject(packResult))
+            val packResult = didComm.packEncrypted(builder.build())
+
+            val resultArray = WritableNativeArray()
+            resultArray.pushString(packResult.packedMessage)
+            resultArray.pushMap(Utils.convertObjectToMap(packResult.copy(packedMessage = "null")))
+
+            promise.resolve(resultArray)
+        } catch (e: Exception) {
+            promise.reject(TAG, "Error on packing DIDComm message", e)
+        }
     }
 
     @ReactMethod
-    fun unpack(packedMessage: String, didDocResolver: DIDDocResolver, secretsResolver: SecretResolver): WritableMap {
-        val didComm = DIDComm(didDocResolver, secretsResolver)
+    fun unpack(
+        packedMessage: String,
+        didDocResolver: DIDDocResolver,
+        secretsResolver: SecretResolver,
+        promise: Promise
+    ) {
+        try {
+            val didComm = DIDComm(didDocResolver, secretsResolver)
 
-        val unpackResult = didComm.unpack(UnpackParams.Builder(packedMessage).build())
+            val unpackResult = didComm.unpack(UnpackParams.Builder(packedMessage).build())
 
-        return ReactNativeJsonUtils.convertJsonToMap(JSONObject(unpackResult))
+            val resultArray = WritableNativeArray()
+            resultArray.pushMap(Utils.convertObjectToMap(unpackResult.message))
+            resultArray.pushMap(Utils.convertObjectToMap(unpackResult.metadata))
+
+            promise.resolve(resultArray)
+        } catch (e: Exception) {
+            promise.reject(TAG, "Error on unpacking DIDComm message", e)
+        }
     }
 }
