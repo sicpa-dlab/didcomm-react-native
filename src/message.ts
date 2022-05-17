@@ -13,9 +13,11 @@ import type {
 
 import { NativeModules } from 'react-native'
 
+import { ResolversProxy } from './resolvers-proxy'
+
 const { DIDCommMessageHelpers } = NativeModules
 
-export class Message implements Omit<DIDCommMessage, "free"> {
+export class Message implements Omit<DIDCommMessage, 'free'> {
   public constructor(private _payload: IMessage) {}
 
   public as_value(): IMessage {
@@ -30,19 +32,17 @@ export class Message implements Omit<DIDCommMessage, "free"> {
     secrets_resolver: SecretsResolver,
     options: PackEncryptedOptions
   ): Promise<[string, PackEncryptedMetadata]> {
-    return DIDCommMessageHelpers.pack_encrypted(
-      this._payload,
-      to,
-      from,
-      sign_by,
-      options.protect_sender,
-      did_resolver,
-      secrets_resolver
-    )
+    const resolversProxy = new ResolversProxy(did_resolver, secrets_resolver)
+    try {
+      resolversProxy.start()
+      return DIDCommMessageHelpers.pack_encrypted(this._payload, to, from, sign_by, options.protect_sender)
+    } finally {
+      resolversProxy.stop()
+    }
   }
 
   public pack_plaintext(did_resolver: DIDResolver): Promise<string> {
-    throw new Error("Not implemented")
+    throw new Error('Not implemented')
   }
 
   public pack_signed(
@@ -50,7 +50,7 @@ export class Message implements Omit<DIDCommMessage, "free"> {
     did_resolver: DIDResolver,
     secrets_resolver: SecretsResolver
   ): Promise<[string, PackSignedMetadata]> {
-    throw new Error("Not implemented")
+    throw new Error('Not implemented')
   }
 
   public static unpack(
@@ -59,10 +59,16 @@ export class Message implements Omit<DIDCommMessage, "free"> {
     secrets_resolver: SecretsResolver,
     _options: UnpackOptions
   ): Promise<[Message, UnpackMetadata]> {
-    return DIDCommMessageHelpers.unpack(msg, did_resolver, secrets_resolver)
+    const resolversProxy = new ResolversProxy(did_resolver, secrets_resolver)
+    try {
+      resolversProxy.start()
+      return DIDCommMessageHelpers.unpack(msg)
+    } finally {
+      resolversProxy.stop()
+    }
   }
 
   public try_parse_forward(): ParsedForward {
-    throw new Error("Not implemented")
+    throw new Error('Not implemented')
   }
 }

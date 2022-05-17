@@ -1,1 +1,1 @@
-export * from "didcomm"
+export * from 'didcomm'

@@ -7,7 +7,10 @@ import com.facebook.react.uimanager.ViewManager
 
 class DIDCommPackage : ReactPackage {
     override fun createNativeModules(reactContext: ReactApplicationContext): List<NativeModule> {
-        return mutableListOf(MessageHelpersModule(reactContext))
+        return mutableListOf(
+            MessageHelpersModule(reactContext),
+            ResolverProxyModule(reactContext)
+        )
     }
 
     override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {

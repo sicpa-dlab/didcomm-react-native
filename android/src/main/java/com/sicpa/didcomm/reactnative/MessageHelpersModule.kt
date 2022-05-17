@@ -2,15 +2,17 @@ package com.sicpa.didcomm.reactnative
 
 import com.facebook.react.bridge.*
 import org.didcommx.didcomm.DIDComm
-import org.didcommx.didcomm.diddoc.DIDDocResolver
 import org.didcommx.didcomm.message.Message
 import org.didcommx.didcomm.model.PackEncryptedParams
 import org.didcommx.didcomm.model.UnpackParams
-import org.didcommx.didcomm.secret.SecretResolver
 
-class MessageHelpersModule(context: ReactApplicationContext) : ReactContextBaseJavaModule(context) {
+class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
+    ReactContextBaseJavaModule(reactContext) {
 
-    val TAG = "DIDCommMessageHelpersModule"
+    companion object {
+        const val TAG = "DIDCommMessageHelpersModule"
+    }
+
     override fun getName() = "DIDCommMessageHelpers"
 
     @ReactMethod
@@ -20,12 +22,10 @@ class MessageHelpersModule(context: ReactApplicationContext) : ReactContextBaseJ
         from: String? = null,
         signFrom: String? = null,
         protectSender: Boolean = true,
-        didDocResolver: DIDDocResolver,
-        secretsResolver: SecretResolver,
         promise: Promise
     ) {
         try {
-            val didComm = DIDComm(didDocResolver, secretsResolver)
+            val didComm = createDidCommInstance()
             val message = Message.parse(messageData.toHashMap())
 
             var builder = PackEncryptedParams
@@ -37,9 +37,10 @@ class MessageHelpersModule(context: ReactApplicationContext) : ReactContextBaseJ
 
             val packResult = didComm.packEncrypted(builder.build())
 
-            val resultArray = WritableNativeArray()
-            resultArray.pushString(packResult.packedMessage)
-            resultArray.pushMap(Utils.convertObjectToMap(packResult.copy(packedMessage = "null")))
+            val resultArray = Arguments.createArray().apply {
+                pushString(packResult.packedMessage)
+                pushMap(Utils.convertObjectToMap(packResult.copy(packedMessage = "null")))
+            }
 
             promise.resolve(resultArray)
         } catch (e: Exception) {
@@ -50,22 +51,32 @@ class MessageHelpersModule(context: ReactApplicationContext) : ReactContextBaseJ
     @ReactMethod
     fun unpack(
         packedMessage: String,
-        didDocResolver: DIDDocResolver,
-        secretsResolver: SecretResolver,
         promise: Promise
     ) {
         try {
-            val didComm = DIDComm(didDocResolver, secretsResolver)
+            val didComm = createDidCommInstance()
 
             val unpackResult = didComm.unpack(UnpackParams.Builder(packedMessage).build())
 
-            val resultArray = WritableNativeArray()
-            resultArray.pushMap(Utils.convertObjectToMap(unpackResult.message))
-            resultArray.pushMap(Utils.convertObjectToMap(unpackResult.metadata))
+            val resultArray = Arguments.createArray().apply {
+                pushMap(Utils.convertObjectToMap(unpackResult.message))
+                pushMap(Utils.convertObjectToMap(unpackResult.metadata))
+            }
 
             promise.resolve(resultArray)
         } catch (e: Exception) {
             promise.reject(TAG, "Error on unpacking DIDComm message", e)
         }
+    }
+
+    private fun createDidCommInstance(): DIDComm {
+        val resolversProxyModule =
+            reactContext.getNativeModule(ResolverProxyModule::class.java)
+                ?: throw Exception("Error on creating DIDComm instance, resolvers proxy module is not defined")
+
+        return DIDComm(
+            DIDDocResolverProxy(resolversProxyModule),
+            SecretsResolverProxy(resolversProxyModule)
+        )
     }
 }
