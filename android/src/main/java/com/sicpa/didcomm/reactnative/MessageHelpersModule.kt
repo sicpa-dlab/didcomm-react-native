@@ -1,19 +1,21 @@
 package com.sicpa.didcomm.reactnative
 
 import com.facebook.react.bridge.*
+import com.facebook.react.module.annotations.ReactModule
 import org.didcommx.didcomm.DIDComm
 import org.didcommx.didcomm.message.Message
 import org.didcommx.didcomm.model.PackEncryptedParams
 import org.didcommx.didcomm.model.UnpackParams
 
+@ReactModule(name = "DIDCommMessageHelpersModule")
 class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
     ReactContextBaseJavaModule(reactContext) {
+
+    override fun getName() = "DIDCommMessageHelpers"
 
     companion object {
         const val TAG = "DIDCommMessageHelpersModule"
     }
-
-    override fun getName() = "DIDCommMessageHelpers"
 
     @ReactMethod
     fun pack_encrypted(
@@ -21,17 +23,15 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
         to: String,
         from: String? = null,
         signFrom: String? = null,
-        protectSender: Boolean = true,
         promise: Promise
     ) {
         try {
             val didComm = createDidCommInstance()
-            val message = Message.parse(messageData.toHashMap())
+            val message = parseMessage(messageData)
 
             var builder = PackEncryptedParams
                 .builder(message, to)
                 .forward(false)
-                .protectSenderId(protectSender)
             builder = from?.let { builder.from(it) } ?: builder
             builder = signFrom?.let { builder.signFrom(it) } ?: builder
 
@@ -43,8 +43,8 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
             }
 
             promise.resolve(resultArray)
-        } catch (e: Exception) {
-            promise.reject(TAG, "Error on packing DIDComm message", e)
+        } catch (e: Throwable) {
+            promise.reject(TAG, "Error on packing DIDComm message: ${e.message}", e)
         }
     }
 
@@ -64,7 +64,7 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
             }
 
             promise.resolve(resultArray)
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             promise.reject(TAG, "Error on unpacking DIDComm message", e)
         }
     }
@@ -73,10 +73,19 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
         val resolversProxyModule =
             reactContext.getNativeModule(ResolverProxyModule::class.java)
                 ?: throw Exception("Error on creating DIDComm instance, resolvers proxy module is not defined")
-
         return DIDComm(
             DIDDocResolverProxy(resolversProxyModule),
             SecretsResolverProxy(resolversProxyModule)
         )
+    }
+
+    private fun parseMessage(messageData: ReadableMap): Message {
+        val messageDataMap = messageData.toHashMap().mapValues {
+            when (val value = it.value) {
+                is Double -> value.toLong()
+                else -> value
+            }
+        }
+        return Message.parse(messageDataMap)
     }
 }

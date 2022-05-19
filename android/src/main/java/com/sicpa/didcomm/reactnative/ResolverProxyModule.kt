@@ -1,7 +1,10 @@
 package com.sicpa.didcomm.reactnative
 
+import android.util.Log
 import com.facebook.react.bridge.*
+import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.modules.core.DeviceEventManagerModule
+import com.google.gson.GsonBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -9,8 +12,13 @@ import kotlinx.coroutines.launch
 import org.didcommx.didcomm.diddoc.DIDDoc
 import org.didcommx.didcomm.secret.Secret
 
+private const val MODULE_NAME = "ResolverProxyModule"
+
+@ReactModule(name = MODULE_NAME)
 class ResolverProxyModule(private val reactContext: ReactApplicationContext) :
     ReactContextBaseJavaModule(reactContext) {
+
+    override fun getName() = MODULE_NAME
 
     companion object {
         private const val DID_STRING_KEY = "did"
@@ -47,6 +55,16 @@ class ResolverProxyModule(private val reactContext: ReactApplicationContext) :
         }
     }
 
+    @ReactMethod
+    fun addListener(eventName: String) {
+        // Set up any upstream listeners or background tasks as necessary
+    }
+
+    @ReactMethod
+    fun removeListeners(count: Int) {
+        // Remove upstream listeners, stop unnecessary background tasks
+    }
+
     fun sendEvent(event: ResolverProxyEvent) {
         val params = Arguments.createMap().apply {
             when (event) {
@@ -58,10 +76,7 @@ class ResolverProxyModule(private val reactContext: ReactApplicationContext) :
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(
             event.type, params
         )
-    }
-
-    override fun getName(): String {
-        return "SecretsResolverProxy"
+        Log.d(MODULE_NAME, "Event sent to React Native: ${event.type}")
     }
 
     override fun getConstants(): MutableMap<String, Any>? {

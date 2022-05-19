@@ -1,7 +1,7 @@
-import type {
+import {
   DIDResolver,
   IMessage,
-  Message as DIDCommMessage,
+  DIDCommMessage,
   PackEncryptedMetadata,
   PackEncryptedOptions,
   PackSignedMetadata,
@@ -18,13 +18,13 @@ import { ResolversProxy } from './resolvers-proxy'
 const { DIDCommMessageHelpers } = NativeModules
 
 export class Message implements Omit<DIDCommMessage, 'free'> {
-  public constructor(private _payload: IMessage) {}
+  public constructor(private payload: IMessage) {}
 
   public as_value(): IMessage {
-    return this._payload
+    return this.payload
   }
 
-  public pack_encrypted(
+  public async pack_encrypted(
     to: string,
     from: string | null,
     sign_by: string | null,
@@ -35,7 +35,7 @@ export class Message implements Omit<DIDCommMessage, 'free'> {
     const resolversProxy = new ResolversProxy(did_resolver, secrets_resolver)
     try {
       resolversProxy.start()
-      return DIDCommMessageHelpers.pack_encrypted(this._payload, to, from, sign_by, options.protect_sender)
+      return await DIDCommMessageHelpers.pack_encrypted(this.payload, to, from, sign_by)
     } finally {
       resolversProxy.stop()
     }
@@ -53,7 +53,7 @@ export class Message implements Omit<DIDCommMessage, 'free'> {
     throw new Error('Not implemented')
   }
 
-  public static unpack(
+  public static async unpack(
     msg: string,
     did_resolver: DIDResolver,
     secrets_resolver: SecretsResolver,
@@ -62,7 +62,7 @@ export class Message implements Omit<DIDCommMessage, 'free'> {
     const resolversProxy = new ResolversProxy(did_resolver, secrets_resolver)
     try {
       resolversProxy.start()
-      return DIDCommMessageHelpers.unpack(msg)
+      return await DIDCommMessageHelpers.unpack(msg)
     } finally {
       resolversProxy.stop()
     }

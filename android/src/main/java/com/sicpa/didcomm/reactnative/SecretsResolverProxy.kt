@@ -1,13 +1,17 @@
 package com.sicpa.didcomm.reactnative
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import android.util.Log
+import kotlinx.coroutines.*
 import org.didcommx.didcomm.secret.Secret
 import org.didcommx.didcomm.secret.SecretResolver
 import java.util.*
 
 class SecretsResolverProxy(private val resolversProxyModule: ResolverProxyModule): SecretResolver {
+
+    companion object {
+        private const val TAG = "SecretsResolverProxy"
+    }
+
     private val scope = CoroutineScope(Dispatchers.IO)
     private val foundSecretChannel = resolversProxyModule.foundSecretChannel
     private val foundSecretIdsChannel = resolversProxyModule.foundSecretIdsChannel
@@ -15,20 +19,38 @@ class SecretsResolverProxy(private val resolversProxyModule: ResolverProxyModule
     override fun findKey(kid: String): Optional<Secret> {
         var foundSecret: Secret? = null
 
-        scope.launch {
-            resolversProxyModule.sendEvent(FindKey(kid))
-            foundSecret = foundSecretChannel.receive()
+        runBlocking {
+            try {
+                withTimeout(1500) {
+                    scope.launch {
+                        resolversProxyModule.sendEvent(FindKey(kid))
+                        foundSecret = foundSecretChannel.receive()
+                    }.join()
+                }
+            }
+            catch (e: TimeoutCancellationException){
+                Log.e(TAG,"Find key operation timed out")
+            }
         }
 
         return Optional.ofNullable(foundSecret)
     }
-    
+
     override fun findKeys(kids: List<String>): Set<String> {
         var foundSecrets: Set<String> = emptySet()
 
-        scope.launch {
-            resolversProxyModule.sendEvent(FindKeys(kids))
-            foundSecrets = foundSecretIdsChannel.receive()
+        runBlocking {
+            try {
+                withTimeout(1500) {
+                    scope.launch {
+                        resolversProxyModule.sendEvent(FindKeys(kids))
+                        foundSecrets = foundSecretIdsChannel.receive()
+                    }.join()
+                }
+            }
+            catch (e: TimeoutCancellationException){
+                Log.e(TAG,"Find key operation timed out")
+            }
         }
 
         return foundSecrets

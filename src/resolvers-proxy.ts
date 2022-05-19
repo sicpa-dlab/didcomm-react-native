@@ -1,7 +1,7 @@
 import { DIDResolver, SecretsResolver } from 'didcomm'
 import { NativeEventEmitter, NativeModules } from 'react-native'
 
-const { ResolversProxyModule } = NativeModules
+const { ResolverProxyModule } = NativeModules
 
 export enum ResolverProxyEvent {
   ResolveDid = 'resolve-did',
@@ -13,11 +13,14 @@ export class ResolversProxy {
   private nativeEventEmitter: NativeEventEmitter
 
   constructor(private didDocResolver: DIDResolver, private secretsResolver: SecretsResolver) {
-    this.nativeEventEmitter = new NativeEventEmitter(ResolversProxyModule)
+    this.nativeEventEmitter = new NativeEventEmitter(ResolverProxyModule)
   }
 
   start() {
-    this.nativeEventEmitter.addListener(ResolverProxyEvent.ResolveDid, (event) => this.resolveDid(event.did))
+    this.nativeEventEmitter.addListener(ResolverProxyEvent.ResolveDid, (event) => {
+      console.log("Got ResolveDid event")
+      this.resolveDid(event.did)
+    })
     this.nativeEventEmitter.addListener(ResolverProxyEvent.FindKey, (event) => this.findKey(event.kid))
     this.nativeEventEmitter.addListener(ResolverProxyEvent.FindKeys, (event) => this.findKeys(event.kids))
   }
@@ -30,16 +33,17 @@ export class ResolversProxy {
 
   private async findKeys(kids: string[]) {
     const secretIds = await this.secretsResolver.find_secrets(kids)
-    ResolversProxyModule.setFoundSecretIds(secretIds)
+    ResolverProxyModule.setFoundSecretIds(secretIds)
   }
 
   private async findKey(kid: string) {
     const secret = await this.secretsResolver.get_secret(kid)
-    ResolversProxyModule.setFoundSecret(secret)
+    ResolverProxyModule.setFoundSecret(secret)
   }
 
   private async resolveDid(did: string) {
+    console.log(`Resolve DID called on proxy ${did}`)
     const resolvedDid = await this.didDocResolver.resolve(did)
-    ResolversProxyModule.setResolvedDid(resolvedDid)
+    ResolverProxyModule.setResolvedDid(resolvedDid)
   }
 }
