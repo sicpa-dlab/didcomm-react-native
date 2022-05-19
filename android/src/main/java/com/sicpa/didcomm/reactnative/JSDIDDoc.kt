@@ -52,7 +52,7 @@ data class JSDIDDoc(
 
             val verificationMaterial = VerificationMaterial(
                 verificationMaterialFormat,
-                GsonBuilder().create().toJson(it.verification_material.value)
+                JsonUtils.toJsonString(it.verification_material.value)
             )
 
             VerificationMethod(it.id, verificationMethodType, verificationMaterial, it.controller)

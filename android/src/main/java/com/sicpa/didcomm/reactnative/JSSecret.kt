@@ -30,7 +30,7 @@ data class JSSecret(val id: String, val type: String, val secret_material: JSSec
             verificationMethodType,
             VerificationMaterial(
                 verificationMaterialFormat,
-                GsonBuilder().create().toJson(secret_material.value)
+                JsonUtils.toJsonString(secret_material.value)
             )
         )
     }

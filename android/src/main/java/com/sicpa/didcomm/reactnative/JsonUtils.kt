@@ -1,11 +1,33 @@
 package com.sicpa.didcomm.reactnative
 
 import com.facebook.react.bridge.*
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import org.json.JSONArray
 import org.json.JSONObject
 
 //Based on https://gist.github.com/viperwarp/2beb6bbefcc268dee7ad
-object ReactNativeJsonUtils {
+object JsonUtils {
+    fun createDefaultGson(): Gson {
+        return GsonBuilder().create()
+    }
+
+    fun toJsonString(source: Any): String {
+        return createDefaultGson().toJson(source)
+    }
+
+    fun <T>parseJson(json: String, resultClass: Class<T>): T {
+        return createDefaultGson().fromJson(json, resultClass)
+    }
+
+    fun convertObjectToMap(obj: Any): WritableMap {
+        return convertJsonToMap(
+            JSONObject(
+                GsonBuilder().create().toJson(obj)
+            )
+        )
+    }
+
     fun convertJsonToMap(jsonObject: JSONObject): WritableMap {
         val map: WritableMap = WritableNativeMap()
 

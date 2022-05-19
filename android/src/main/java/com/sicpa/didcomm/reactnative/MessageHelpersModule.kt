@@ -32,7 +32,6 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
     ) {
         scope.launch {
             try {
-                val didComm = createDidCommInstance()
                 val message = parseMessage(messageData)
 
                 var builder = PackEncryptedParams
@@ -41,11 +40,12 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
                 builder = from?.let { builder.from(it) } ?: builder
                 builder = signFrom?.let { builder.signFrom(it) } ?: builder
 
+                val didComm = createDidCommInstance()
                 val packResult = didComm.packEncrypted(builder.build())
 
                 val resultArray = Arguments.createArray().apply {
                     pushString(packResult.packedMessage)
-                    pushMap(Utils.convertObjectToMap(packResult.copy(packedMessage = "null")))
+                    pushMap(JsonUtils.convertObjectToMap(packResult.copy(packedMessage = "null")))
                 }
 
                 promise.resolve(resultArray)
@@ -63,12 +63,11 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
         scope.launch {
             try {
                 val didComm = createDidCommInstance()
-
                 val unpackResult = didComm.unpack(UnpackParams.Builder(packedMessage).build())
 
                 val resultArray = Arguments.createArray().apply {
-                    pushMap(Utils.convertObjectToMap(unpackResult.message))
-                    pushMap(Utils.convertObjectToMap(unpackResult.metadata))
+                    pushMap(JsonUtils.convertObjectToMap(unpackResult.message))
+                    pushMap(JsonUtils.convertObjectToMap(unpackResult.metadata))
                 }
 
                 promise.resolve(resultArray)

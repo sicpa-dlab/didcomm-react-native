@@ -34,7 +34,7 @@ class ResolverProxyModule(private val reactContext: ReactApplicationContext) :
     @ReactMethod
     fun setResolvedDid(jsonValue: String?) {
         scope.launch {
-            val jsDidDoc = jsonValue?.let { Utils.parseJson(jsonValue, JSDIDDoc::class.java) }
+            val jsDidDoc = jsonValue?.let { JsonUtils.parseJson(jsonValue, JSDIDDoc::class.java) }
             resolvedDidChannel.send(jsDidDoc?.toDIDDoc())
         }
     }
@@ -42,7 +42,7 @@ class ResolverProxyModule(private val reactContext: ReactApplicationContext) :
     @ReactMethod
     fun setFoundSecret(jsonValue: String?) {
         scope.launch {
-            val jsSecret = jsonValue?.let { Utils.parseJson(jsonValue, JSSecret::class.java) }
+            val jsSecret = jsonValue?.let { JsonUtils.parseJson(jsonValue, JSSecret::class.java) }
             foundSecretChannel.send(jsSecret?.toJVMSecret())
         }
     }
@@ -50,7 +50,7 @@ class ResolverProxyModule(private val reactContext: ReactApplicationContext) :
     @ReactMethod
     fun setFoundSecretIds(jsonValue: String) {
         scope.launch {
-            val secretIds = Utils.parseJson(jsonValue, Set::class.java)
+            val secretIds = JsonUtils.parseJson(jsonValue, Set::class.java)
             foundSecretIdsChannel.send(secretIds as Set<String>)
         }
     }

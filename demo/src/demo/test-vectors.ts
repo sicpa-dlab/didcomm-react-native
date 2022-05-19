@@ -1,3 +1,4 @@
+//Source https://github.com/sicpa-dlab/didcomm-rust/blob/main/wasm/demo/src/test-vectors.ts
 export const ALICE_DID = "did:example:alice";
 
 export const ALICE_DID_DOC = {
