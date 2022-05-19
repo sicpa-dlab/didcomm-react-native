@@ -13,9 +13,8 @@ object Utils {
         )
     }
 
-    inline fun <reified TSource, reified TResult>mapObject(obj: TSource): TResult {
-        val gson = GsonBuilder().create()
-        val sourceJson = gson.toJsonTree(obj, TSource::class.java)
-        return gson.fromJson(sourceJson, TResult::class.java)
+    fun <T>parseJson(json: String, resultClass: Class<T>): T {
+        return GsonBuilder().create().fromJson(json, resultClass)
     }
+
 }

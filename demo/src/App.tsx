@@ -2,9 +2,19 @@ import * as React from 'react'
 
 import { StyleSheet, View, Text, Button, NativeEventEmitter, NativeModules } from 'react-native'
 import { runDemo } from './demo'
+import { useEffect } from "react"
+import { ResolversProxy } from "didcomm-react-native"
+
+const { ResolverProxyModule } = NativeModules
 
 export default function App() {
     const [isDemoRunning, setIsDemoRunning] = React.useState<boolean | undefined>()
+
+    useEffect(() => {
+        const nativeEventEmitter = new NativeEventEmitter(ResolverProxyModule)
+        ResolversProxy.start(nativeEventEmitter)
+        return () => ResolversProxy.stop()
+    },[])
 
     const handleRun = () => {
         setIsDemoRunning(true)

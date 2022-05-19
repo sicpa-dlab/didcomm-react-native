@@ -32,13 +32,8 @@ export class Message implements Omit<DIDCommMessage, 'free'> {
     secrets_resolver: SecretsResolver,
     options: PackEncryptedOptions
   ): Promise<[string, PackEncryptedMetadata]> {
-    const resolversProxy = new ResolversProxy(did_resolver, secrets_resolver)
-    try {
-      resolversProxy.start()
-      return await DIDCommMessageHelpers.pack_encrypted(this.payload, to, from, sign_by)
-    } finally {
-      resolversProxy.stop()
-    }
+    ResolversProxy.setResolvers(did_resolver, secrets_resolver)
+    return await DIDCommMessageHelpers.pack_encrypted(this.payload, to, from, sign_by)
   }
 
   public pack_plaintext(did_resolver: DIDResolver): Promise<string> {
@@ -59,13 +54,9 @@ export class Message implements Omit<DIDCommMessage, 'free'> {
     secrets_resolver: SecretsResolver,
     _options: UnpackOptions
   ): Promise<[Message, UnpackMetadata]> {
-    const resolversProxy = new ResolversProxy(did_resolver, secrets_resolver)
-    try {
-      resolversProxy.start()
-      return await DIDCommMessageHelpers.unpack(msg)
-    } finally {
-      resolversProxy.stop()
-    }
+    ResolversProxy.setResolvers(did_resolver, secrets_resolver)
+    const [unpackedMsgData, unpackMetadata] = await DIDCommMessageHelpers.unpack(msg)
+    return [new Message(unpackedMsgData), unpackMetadata]
   }
 
   public try_parse_forward(): ParsedForward {

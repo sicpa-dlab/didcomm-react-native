@@ -2,6 +2,9 @@ package com.sicpa.didcomm.reactnative
 
 import com.facebook.react.bridge.*
 import com.facebook.react.module.annotations.ReactModule
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.didcommx.didcomm.DIDComm
 import org.didcommx.didcomm.message.Message
 import org.didcommx.didcomm.model.PackEncryptedParams
@@ -17,6 +20,8 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
         const val TAG = "DIDCommMessageHelpersModule"
     }
 
+    private val scope = CoroutineScope(Dispatchers.IO)
+
     @ReactMethod
     fun pack_encrypted(
         messageData: ReadableMap,
@@ -25,26 +30,28 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
         signFrom: String? = null,
         promise: Promise
     ) {
-        try {
-            val didComm = createDidCommInstance()
-            val message = parseMessage(messageData)
+        scope.launch {
+            try {
+                val didComm = createDidCommInstance()
+                val message = parseMessage(messageData)
 
-            var builder = PackEncryptedParams
-                .builder(message, to)
-                .forward(false)
-            builder = from?.let { builder.from(it) } ?: builder
-            builder = signFrom?.let { builder.signFrom(it) } ?: builder
+                var builder = PackEncryptedParams
+                    .builder(message, to)
+                    .forward(false)
+                builder = from?.let { builder.from(it) } ?: builder
+                builder = signFrom?.let { builder.signFrom(it) } ?: builder
 
-            val packResult = didComm.packEncrypted(builder.build())
+                val packResult = didComm.packEncrypted(builder.build())
 
-            val resultArray = Arguments.createArray().apply {
-                pushString(packResult.packedMessage)
-                pushMap(Utils.convertObjectToMap(packResult.copy(packedMessage = "null")))
+                val resultArray = Arguments.createArray().apply {
+                    pushString(packResult.packedMessage)
+                    pushMap(Utils.convertObjectToMap(packResult.copy(packedMessage = "null")))
+                }
+
+                promise.resolve(resultArray)
+            } catch (e: Throwable) {
+                promise.reject(TAG, "Error on packing DIDComm message: ${e.message}", e)
             }
-
-            promise.resolve(resultArray)
-        } catch (e: Throwable) {
-            promise.reject(TAG, "Error on packing DIDComm message: ${e.message}", e)
         }
     }
 
@@ -53,19 +60,21 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
         packedMessage: String,
         promise: Promise
     ) {
-        try {
-            val didComm = createDidCommInstance()
+        scope.launch {
+            try {
+                val didComm = createDidCommInstance()
 
-            val unpackResult = didComm.unpack(UnpackParams.Builder(packedMessage).build())
+                val unpackResult = didComm.unpack(UnpackParams.Builder(packedMessage).build())
 
-            val resultArray = Arguments.createArray().apply {
-                pushMap(Utils.convertObjectToMap(unpackResult.message))
-                pushMap(Utils.convertObjectToMap(unpackResult.metadata))
+                val resultArray = Arguments.createArray().apply {
+                    pushMap(Utils.convertObjectToMap(unpackResult.message))
+                    pushMap(Utils.convertObjectToMap(unpackResult.metadata))
+                }
+
+                promise.resolve(resultArray)
+            } catch (e: Throwable) {
+                promise.reject(TAG, "Error on unpacking DIDComm message", e)
             }
-
-            promise.resolve(resultArray)
-        } catch (e: Throwable) {
-            promise.reject(TAG, "Error on unpacking DIDComm message", e)
         }
     }
 

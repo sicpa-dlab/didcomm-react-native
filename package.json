@@ -18,7 +18,7 @@
     "lint:fix": "eslint --fix . --ignore-path ./.eslintignore --ext ts --ext tsx --ext js --ext jsx",
     "build": "tsc",
     "start": "tsc --noEmit false --watch",
-    "prettier": "prettier --ignore-path ./.gitignore"
+    "prettier": "prettier . --ignore-path ./.gitignore"
   },
   "devDependencies": {
     "@types/react-native": "^0.64.5",

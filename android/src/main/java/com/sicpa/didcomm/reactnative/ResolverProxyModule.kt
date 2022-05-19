@@ -27,31 +27,31 @@ class ResolverProxyModule(private val reactContext: ReactApplicationContext) :
     }
 
     private val scope = CoroutineScope(Dispatchers.IO)
-    val resolvedDidChannel = Channel<DIDDoc>(0)
-    val foundSecretChannel = Channel<Secret>(0)
+    val resolvedDidChannel = Channel<DIDDoc?>(0)
+    val foundSecretChannel = Channel<Secret?>(0)
     val foundSecretIdsChannel = Channel<Set<String>>(0)
 
     @ReactMethod
-    fun setResolvedDid(value: ReadableMap) {
+    fun setResolvedDid(jsonValue: String?) {
         scope.launch {
-            val didDoc = Utils.mapObject<ReadableMap, DIDDoc>(value)
-            resolvedDidChannel.send(didDoc)
+            val jsDidDoc = jsonValue?.let { Utils.parseJson(jsonValue, JSDIDDoc::class.java) }
+            resolvedDidChannel.send(jsDidDoc?.toDIDDoc())
         }
     }
 
     @ReactMethod
-    fun setFoundSecret(value: ReadableMap) {
+    fun setFoundSecret(jsonValue: String?) {
         scope.launch {
-            val secret = Utils.mapObject<ReadableMap, Secret>(value)
-            foundSecretChannel.send(secret)
+            val jsSecret = jsonValue?.let { Utils.parseJson(jsonValue, JSSecret::class.java) }
+            foundSecretChannel.send(jsSecret?.toJVMSecret())
         }
     }
 
     @ReactMethod
-    fun setFoundSecretIds(values: ReadableArray) {
+    fun setFoundSecretIds(jsonValue: String) {
         scope.launch {
-            val secretIds = Utils.mapObject<ReadableArray, Set<String>>(values)
-            foundSecretIdsChannel.send(secretIds)
+            val secretIds = Utils.parseJson(jsonValue, Set::class.java)
+            foundSecretIdsChannel.send(secretIds as Set<String>)
         }
     }
 

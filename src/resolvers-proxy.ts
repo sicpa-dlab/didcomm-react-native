@@ -4,46 +4,59 @@ import { NativeEventEmitter, NativeModules } from 'react-native'
 const { ResolverProxyModule } = NativeModules
 
 export enum ResolverProxyEvent {
-  ResolveDid = 'resolve-did',
-  FindKey = 'find-key',
-  FindKeys = 'find-keys',
+    ResolveDid = 'resolve-did',
+    FindKey = 'find-key',
+    FindKeys = 'find-keys',
 }
 
 export class ResolversProxy {
-  private nativeEventEmitter: NativeEventEmitter
+    private static nativeEventEmitter: NativeEventEmitter
+    private static didDocResolver: DIDResolver | null = null
+    private static secretsResolver: SecretsResolver | null = null
 
-  constructor(private didDocResolver: DIDResolver, private secretsResolver: SecretsResolver) {
-    this.nativeEventEmitter = new NativeEventEmitter(ResolverProxyModule)
-  }
+    public static setResolvers(didDocResolver: DIDResolver, secretsResolver: SecretsResolver) {
+        this.didDocResolver = didDocResolver
+        this.secretsResolver = secretsResolver
+    }
 
-  start() {
-    this.nativeEventEmitter.addListener(ResolverProxyEvent.ResolveDid, (event) => {
-      console.log("Got ResolveDid event")
-      this.resolveDid(event.did)
-    })
-    this.nativeEventEmitter.addListener(ResolverProxyEvent.FindKey, (event) => this.findKey(event.kid))
-    this.nativeEventEmitter.addListener(ResolverProxyEvent.FindKeys, (event) => this.findKeys(event.kids))
-  }
+    public static start(nativeEventEmitter: NativeEventEmitter) {
+        this.nativeEventEmitter = nativeEventEmitter
+        this.nativeEventEmitter.addListener(ResolverProxyEvent.ResolveDid, (event) => this.resolveDid(event.did))
+        this.nativeEventEmitter.addListener(ResolverProxyEvent.FindKey, (event) => this.findKey(event.kid))
+        this.nativeEventEmitter.addListener(ResolverProxyEvent.FindKeys, (event) => this.findKeys(event.kids))
+    }
 
-  stop() {
-    Object.values(ResolverProxyEvent).forEach((eventType) => {
-      this.nativeEventEmitter.removeAllListeners(eventType)
-    })
-  }
+    public static stop() {
+        if (!this.nativeEventEmitter) return
+        Object.values(ResolverProxyEvent).forEach((eventType) => {
+            this.nativeEventEmitter.removeAllListeners(eventType)
+        })
+    }
 
-  private async findKeys(kids: string[]) {
-    const secretIds = await this.secretsResolver.find_secrets(kids)
-    ResolverProxyModule.setFoundSecretIds(secretIds)
-  }
+    private static async findKeys(kids: string[]) {
+        if (!this.secretsResolver) {
+            console.log("Attempted to proxy 'findKeys' call, but secret resolver is not defined. Skipping...")
+            return
+        }
+        const secretIds = await this.secretsResolver.find_secrets(kids)
+        ResolverProxyModule.setFoundSecretIds(JSON.stringify(secretIds))
+    }
 
-  private async findKey(kid: string) {
-    const secret = await this.secretsResolver.get_secret(kid)
-    ResolverProxyModule.setFoundSecret(secret)
-  }
+    private static async findKey(kid: string) {
+        if (!this.secretsResolver) {
+            console.log("Attempted to proxy 'findKey' call, but secret resolver is not defined. Skipping...")
+            return
+        }
+        const secret = await this.secretsResolver.get_secret(kid)
+        ResolverProxyModule.setFoundSecret(JSON.stringify(secret))
+    }
 
-  private async resolveDid(did: string) {
-    console.log(`Resolve DID called on proxy ${did}`)
-    const resolvedDid = await this.didDocResolver.resolve(did)
-    ResolverProxyModule.setResolvedDid(resolvedDid)
-  }
+    private static async resolveDid(did: string) {
+        if (!this.didDocResolver) {
+            console.log("Attempted to proxy 'resolveDid' call, but DID doc resolver is not defined. Skipping...")
+            return
+        }
+        const resolvedDid = await this.didDocResolver.resolve(did)
+        ResolverProxyModule.setResolvedDid(JSON.stringify(resolvedDid))
+    }
 }

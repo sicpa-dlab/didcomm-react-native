@@ -20,7 +20,7 @@ class DIDDocResolverProxy(private val resolversProxyModule: ResolverProxyModule)
 
         runBlocking {
             try {
-                withTimeout(1500) {
+                withTimeout(5000) {
                     scope.launch {
                         resolversProxyModule.sendEvent(ResolveDid(did))
                         resolvedDid = resolvedDidChannel.receive()

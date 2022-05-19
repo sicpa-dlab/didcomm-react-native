@@ -42,8 +42,8 @@ object ReactNativeJsonUtils {
     fun convertJsonToArray(jsonArray: JSONArray): WritableArray {
         val array: WritableArray = WritableNativeArray()
 
-        for (element in jsonArray) {
-            when (element) {
+        for(i in 0 until(jsonArray.length())) {
+            when (val element = jsonArray.get(i)) {
                 is JSONObject -> {
                     array.pushMap(convertJsonToMap(element))
                 }

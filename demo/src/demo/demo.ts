@@ -1,7 +1,6 @@
 import { ALICE_DID, ALICE_DID_DOC, ALICE_SECRETS, BOB_DID, BOB_DID_DOC, BOB_SECRETS } from './test-vectors'
 
 import { Message, DIDDoc, DIDResolver, Secret, SecretsResolver } from 'didcomm-react-native'
-//import { CHARLIE_DID, CHARLIE_DID_DOC, CHARLIE_SECRETS } from '../../tests-js/src/test-vectors'
 
 class ExampleDIDResolver implements DIDResolver {
   knownDids: DIDDoc[]
@@ -84,6 +83,8 @@ async function nonRepudiableEncryption() {
   secretsResolver = new ExampleSecretsResolver(BOB_SECRETS)
 
   const [unpackedMsg, unpackMetadata] = await Message.unpack(encryptedMsg, didResolver, secretsResolver, {})
+
+  console.log(unpackedMsg, unpackMetadata)
 
   console.log('Reveived message is\n', unpackedMsg.as_value())
   console.log('Reveived message unpack metadata is\n', unpackMetadata)
