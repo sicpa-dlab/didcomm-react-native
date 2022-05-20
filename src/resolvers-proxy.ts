@@ -1,16 +1,16 @@
 import { DIDResolver, SecretsResolver } from 'didcomm'
 import { NativeEventEmitter, NativeModules } from 'react-native'
 
-const { ResolverProxyModule } = NativeModules
-const { DID_STRING_KEY, KID_STRING_KEY, KIDS_STRING_KEY } = ResolverProxyModule.getConstants()
+const { DIDCommResolversProxyModule } = NativeModules
+const { DID_STRING_KEY, KID_STRING_KEY, KIDS_STRING_KEY } = DIDCommResolversProxyModule.getConstants()
 
-export enum ResolverProxyEvent {
+enum ResolverProxyEvent {
     ResolveDid = 'resolve-did',
     FindKey = 'find-key',
     FindKeys = 'find-keys',
 }
 
-export class ResolversProxy {
+export class DIDCommResolversProxy {
     private static nativeEventEmitter?: NativeEventEmitter
     private static didDocResolver: DIDResolver | null = null
     private static secretsResolver: SecretsResolver | null = null
@@ -21,7 +21,7 @@ export class ResolversProxy {
     }
 
     public static start(nativeEventEmitter: NativeEventEmitter) {
-        this.nativeEventEmitter = nativeEventEmitter //new NativeEventEmitter(ResolverProxyModule)
+        this.nativeEventEmitter = nativeEventEmitter
         this.nativeEventEmitter.addListener(ResolverProxyEvent.ResolveDid, (event) => this.resolveDid(event[DID_STRING_KEY]))
         this.nativeEventEmitter.addListener(ResolverProxyEvent.FindKey, (event) => this.findKey(event[KID_STRING_KEY]))
         this.nativeEventEmitter.addListener(ResolverProxyEvent.FindKeys, (event) => this.findKeys(event[KIDS_STRING_KEY]))
@@ -39,7 +39,7 @@ export class ResolversProxy {
             return
         }
         const secretIds = await this.secretsResolver.find_secrets(kids)
-        ResolverProxyModule.setFoundSecretIds(JSON.stringify(secretIds))
+        DIDCommResolversProxyModule.setFoundSecretIds(JSON.stringify(secretIds))
     }
 
     private static async findKey(kid: string) {
@@ -48,7 +48,7 @@ export class ResolversProxy {
             return
         }
         const secret = await this.secretsResolver.get_secret(kid)
-        ResolverProxyModule.setFoundSecret(JSON.stringify(secret))
+        DIDCommResolversProxyModule.setFoundSecret(JSON.stringify(secret))
     }
 
     private static async resolveDid(did: string) {
@@ -57,6 +57,6 @@ export class ResolversProxy {
             return
         }
         const resolvedDid = await this.didDocResolver.resolve(did)
-        ResolverProxyModule.setResolvedDid(JSON.stringify(resolvedDid))
+        DIDCommResolversProxyModule.setResolvedDid(JSON.stringify(resolvedDid))
     }
 }

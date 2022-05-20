@@ -6,7 +6,7 @@ import org.didcommx.didcomm.secret.Secret
 import org.didcommx.didcomm.secret.SecretResolver
 import java.util.*
 
-class SecretsResolverProxy(private val resolversProxyModule: ResolverProxyModule) : SecretResolver {
+class SecretsResolverProxy(private val resolversProxyModule: ResolversProxyModule) : SecretResolver {
 
     companion object {
         private const val TAG = "SecretsResolverProxy"

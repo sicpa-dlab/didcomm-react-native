@@ -9,14 +9,15 @@ import com.sicpa.didcomm.reactnative.utils.JsonUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.launch
 import org.didcommx.didcomm.diddoc.DIDDoc
 import org.didcommx.didcomm.secret.Secret
 
-private const val MODULE_NAME = "ResolverProxyModule"
+private const val MODULE_NAME = "DIDCommResolversProxyModule"
 
 @ReactModule(name = MODULE_NAME)
-class ResolverProxyModule(private val reactContext: ReactApplicationContext) :
+class ResolversProxyModule(private val reactContext: ReactApplicationContext) :
     ReactContextBaseJavaModule(reactContext) {
 
     override fun getName() = MODULE_NAME
@@ -29,15 +30,22 @@ class ResolverProxyModule(private val reactContext: ReactApplicationContext) :
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
-    val resolvedDidChannel = Channel<DIDDoc?>(0)
-    val foundSecretChannel = Channel<Secret?>(0)
-    val foundSecretIdsChannel = Channel<Set<String>>(0)
+    private val _resolvedDidChannel = Channel<DIDDoc?>(0)
+    private val _foundSecretChannel = Channel<Secret?>(0)
+    private val _foundSecretIdsChannel = Channel<Set<String>>(0)
+
+    val resolvedDidChannel
+        get() = _resolvedDidChannel as ReceiveChannel<DIDDoc?>
+    val foundSecretChannel
+        get() = _foundSecretChannel as ReceiveChannel<Secret?>
+    val foundSecretIdsChannel
+        get() = _foundSecretIdsChannel as ReceiveChannel<Set<String>>
 
     @ReactMethod
     fun setResolvedDid(jsonValue: String?) {
         scope.launch {
             val jsDidDoc = jsonValue?.let { JsonUtils.parseJson(jsonValue, JSDIDDoc::class.java) }
-            resolvedDidChannel.send(jsDidDoc?.toDIDDoc())
+            _resolvedDidChannel.send(jsDidDoc?.toDIDDoc())
         }
     }
 
@@ -45,7 +53,7 @@ class ResolverProxyModule(private val reactContext: ReactApplicationContext) :
     fun setFoundSecret(jsonValue: String?) {
         scope.launch {
             val jsSecret = jsonValue?.let { JsonUtils.parseJson(jsonValue, JSSecret::class.java) }
-            foundSecretChannel.send(jsSecret?.toSecret())
+            _foundSecretChannel.send(jsSecret?.toSecret())
         }
     }
 
@@ -53,7 +61,7 @@ class ResolverProxyModule(private val reactContext: ReactApplicationContext) :
     fun setFoundSecretIds(jsonValue: String?) {
         scope.launch {
             val secretIds = jsonValue?.let { JsonUtils.parseJson(jsonValue, Set::class.java) }
-            foundSecretIdsChannel.send(secretIds as? Set<String> ?: emptySet())
+            _foundSecretIdsChannel.send(secretIds as? Set<String> ?: emptySet())
         }
     }
 

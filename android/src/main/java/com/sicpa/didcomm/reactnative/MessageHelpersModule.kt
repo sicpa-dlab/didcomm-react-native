@@ -80,8 +80,8 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
 
     private fun createDidCommInstance(): DIDComm {
         val resolversProxyModule =
-            reactContext.getNativeModule(ResolverProxyModule::class.java)
-                ?: throw Exception("Error on creating DIDComm instance, ResolverProxyModule is not defined")
+            reactContext.getNativeModule(ResolversProxyModule::class.java)
+                ?: throw Exception("Error on creating DIDComm instance, ResolversProxyModule is not defined")
         return DIDComm(
             DIDDocResolverProxy(resolversProxyModule),
             SecretsResolverProxy(resolversProxyModule)

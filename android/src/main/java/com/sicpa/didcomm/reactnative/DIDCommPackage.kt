@@ -9,7 +9,7 @@ class DIDCommPackage : ReactPackage {
     override fun createNativeModules(reactContext: ReactApplicationContext): List<NativeModule> {
         return mutableListOf(
             MessageHelpersModule(reactContext),
-            ResolverProxyModule(reactContext)
+            ResolversProxyModule(reactContext)
         )
     }
 
