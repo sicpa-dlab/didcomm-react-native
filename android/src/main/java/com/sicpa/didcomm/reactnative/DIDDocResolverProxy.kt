@@ -6,7 +6,7 @@ import org.didcommx.didcomm.diddoc.DIDDoc
 import org.didcommx.didcomm.diddoc.DIDDocResolver
 import java.util.*
 
-class DIDDocResolverProxy(private val resolversProxyModule: ResolverProxyModule): DIDDocResolver {
+class DIDDocResolverProxy(private val resolversProxyModule: ResolverProxyModule) : DIDDocResolver {
 
     companion object {
         private const val TAG = "DIDDocResolverProxy"
@@ -26,9 +26,8 @@ class DIDDocResolverProxy(private val resolversProxyModule: ResolverProxyModule)
                         resolvedDid = resolvedDidChannel.receive()
                     }.join()
                 }
-            }
-            catch (e: TimeoutCancellationException){
-                Log.e(TAG,"Resolve Did operation timed out")
+            } catch (e: TimeoutCancellationException) {
+                Log.e(TAG, "Resolve Did operation timed out")
             }
         }
 

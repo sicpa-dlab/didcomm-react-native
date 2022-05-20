@@ -16,4 +16,5 @@ data class JSSecret(val id: String, val type: String, val secret_material: JSSec
         )
     }
 }
+
 data class JSSecretMaterial(val format: String, val value: Any)

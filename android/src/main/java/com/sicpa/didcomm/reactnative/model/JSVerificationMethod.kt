@@ -6,4 +6,5 @@ data class JSVerificationMethod(
     val controller: String,
     val verification_material: JSVerificationMaterial
 )
+
 data class JSVerificationMaterial(val format: String, val value: Any)

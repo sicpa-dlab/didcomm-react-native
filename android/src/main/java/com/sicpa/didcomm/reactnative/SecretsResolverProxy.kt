@@ -6,7 +6,7 @@ import org.didcommx.didcomm.secret.Secret
 import org.didcommx.didcomm.secret.SecretResolver
 import java.util.*
 
-class SecretsResolverProxy(private val resolversProxyModule: ResolverProxyModule): SecretResolver {
+class SecretsResolverProxy(private val resolversProxyModule: ResolverProxyModule) : SecretResolver {
 
     companion object {
         private const val TAG = "SecretsResolverProxy"
@@ -27,9 +27,8 @@ class SecretsResolverProxy(private val resolversProxyModule: ResolverProxyModule
                         foundSecret = foundSecretChannel.receive()
                     }.join()
                 }
-            }
-            catch (e: TimeoutCancellationException){
-                Log.e(TAG,"Find key operation timed out")
+            } catch (e: TimeoutCancellationException) {
+                Log.e(TAG, "Find key operation timed out")
             }
         }
 
@@ -47,9 +46,8 @@ class SecretsResolverProxy(private val resolversProxyModule: ResolverProxyModule
                         foundSecrets = foundSecretIdsChannel.receive()
                     }.join()
                 }
-            }
-            catch (e: TimeoutCancellationException){
-                Log.e(TAG,"Find key operation timed out")
+            } catch (e: TimeoutCancellationException) {
+                Log.e(TAG, "Find key operation timed out")
             }
         }
 
