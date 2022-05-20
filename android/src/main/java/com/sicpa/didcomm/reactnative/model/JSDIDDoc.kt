@@ -1,6 +1,6 @@
 package com.sicpa.didcomm.reactnative.model
 
-import com.sicpa.didcomm.reactnative.JsonUtils
+import com.sicpa.didcomm.reactnative.utils.JsonUtils
 import org.didcommx.didcomm.common.VerificationMaterial
 import org.didcommx.didcomm.diddoc.DIDCommService
 import org.didcommx.didcomm.diddoc.DIDDoc

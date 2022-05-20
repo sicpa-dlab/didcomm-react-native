@@ -1,4 +1,4 @@
-package com.sicpa.didcomm.reactnative
+package com.sicpa.didcomm.reactnative.utils
 
 import com.facebook.react.bridge.*
 import com.google.gson.Gson

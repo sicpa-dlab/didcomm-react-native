@@ -2,6 +2,7 @@ package com.sicpa.didcomm.reactnative
 
 import com.facebook.react.bridge.*
 import com.facebook.react.module.annotations.ReactModule
+import com.sicpa.didcomm.reactnative.utils.JsonUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

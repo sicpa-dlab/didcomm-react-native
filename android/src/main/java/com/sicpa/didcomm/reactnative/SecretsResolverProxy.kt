@@ -1,6 +1,6 @@
 package com.sicpa.didcomm.reactnative
 
-import android.util.Log
+import com.sicpa.didcomm.reactnative.utils.runBlockingWithTimeout
 import kotlinx.coroutines.*
 import org.didcommx.didcomm.secret.Secret
 import org.didcommx.didcomm.secret.SecretResolver
@@ -19,18 +19,12 @@ class SecretsResolverProxy(private val resolversProxyModule: ResolverProxyModule
     override fun findKey(kid: String): Optional<Secret> {
         var foundSecret: Secret? = null
 
-        runBlocking {
-            try {
-                withTimeout(1500) {
-                    scope.launch {
-                        resolversProxyModule.sendEvent(FindKey(kid))
-                        foundSecret = foundSecretChannel.receive()
-                    }.join()
-                }
-            } catch (e: TimeoutCancellationException) {
-                Log.e(TAG, "Find key operation timed out")
-            }
+        val findKeyJob = scope.launch {
+            resolversProxyModule.sendEvent(FindKey(kid))
+            foundSecret = foundSecretChannel.receive()
         }
+
+        runBlockingWithTimeout(findKeyJob, "${TAG}.findKey")
 
         return Optional.ofNullable(foundSecret)
     }
@@ -38,18 +32,12 @@ class SecretsResolverProxy(private val resolversProxyModule: ResolverProxyModule
     override fun findKeys(kids: List<String>): Set<String> {
         var foundSecrets: Set<String> = emptySet()
 
-        runBlocking {
-            try {
-                withTimeout(1500) {
-                    scope.launch {
-                        resolversProxyModule.sendEvent(FindKeys(kids))
-                        foundSecrets = foundSecretIdsChannel.receive()
-                    }.join()
-                }
-            } catch (e: TimeoutCancellationException) {
-                Log.e(TAG, "Find key operation timed out")
-            }
+        val findKeysJob = scope.launch {
+            resolversProxyModule.sendEvent(FindKeys(kids))
+            foundSecrets = foundSecretIdsChannel.receive()
         }
+
+        runBlockingWithTimeout(findKeysJob, "${TAG}.findKeys")
 
         return foundSecrets
     }
