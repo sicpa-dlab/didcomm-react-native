@@ -18,7 +18,7 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
 
     override fun getName() = MODULE_NAME
 
-    private val scope = CoroutineScope(Dispatchers.IO)
+    private val scope = CoroutineScope(Dispatchers.Default)
 
     @ReactMethod
     fun pack_encrypted(
@@ -26,6 +26,7 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
         to: String,
         from: String? = null,
         signFrom: String? = null,
+        protectSender: Boolean = true,
         promise: Promise
     ) {
         scope.launch {
@@ -35,6 +36,7 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
                 var builder = PackEncryptedParams
                     .builder(message, to)
                     .forward(false)
+                    .protectSenderId(protectSender)
                 builder = from?.let { builder.from(it) } ?: builder
                 builder = signFrom?.let { builder.signFrom(it) } ?: builder
 

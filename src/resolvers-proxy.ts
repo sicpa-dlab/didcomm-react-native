@@ -2,6 +2,7 @@ import { DIDResolver, SecretsResolver } from 'didcomm'
 import { NativeEventEmitter, NativeModules } from 'react-native'
 
 const { ResolverProxyModule } = NativeModules
+const { DID_STRING_KEY, KID_STRING_KEY, KIDS_STRING_KEY } = ResolverProxyModule.getConstants()
 
 export enum ResolverProxyEvent {
     ResolveDid = 'resolve-did',
@@ -10,7 +11,7 @@ export enum ResolverProxyEvent {
 }
 
 export class ResolversProxy {
-    private static nativeEventEmitter: NativeEventEmitter
+    private static nativeEventEmitter?: NativeEventEmitter
     private static didDocResolver: DIDResolver | null = null
     private static secretsResolver: SecretsResolver | null = null
 
@@ -20,16 +21,15 @@ export class ResolversProxy {
     }
 
     public static start(nativeEventEmitter: NativeEventEmitter) {
-        this.nativeEventEmitter = nativeEventEmitter
-        this.nativeEventEmitter.addListener(ResolverProxyEvent.ResolveDid, (event) => this.resolveDid(event.did))
-        this.nativeEventEmitter.addListener(ResolverProxyEvent.FindKey, (event) => this.findKey(event.kid))
-        this.nativeEventEmitter.addListener(ResolverProxyEvent.FindKeys, (event) => this.findKeys(event.kids))
+        this.nativeEventEmitter = nativeEventEmitter //new NativeEventEmitter(ResolverProxyModule)
+        this.nativeEventEmitter.addListener(ResolverProxyEvent.ResolveDid, (event) => this.resolveDid(event[DID_STRING_KEY]))
+        this.nativeEventEmitter.addListener(ResolverProxyEvent.FindKey, (event) => this.findKey(event[KID_STRING_KEY]))
+        this.nativeEventEmitter.addListener(ResolverProxyEvent.FindKeys, (event) => this.findKeys(event[KIDS_STRING_KEY]))
     }
 
     public static stop() {
-        if (!this.nativeEventEmitter) return
         Object.values(ResolverProxyEvent).forEach((eventType) => {
-            this.nativeEventEmitter.removeAllListeners(eventType)
+            this.nativeEventEmitter?.removeAllListeners(eventType)
         })
     }
 

@@ -1,3 +1,7 @@
+
+import { NativeModules } from 'react-native'
+
+import { ResolversProxy } from './resolvers-proxy'
 import {
   DIDResolver,
   IMessage,
@@ -10,10 +14,6 @@ import {
   UnpackMetadata,
   UnpackOptions,
 } from './types'
-
-import { NativeModules } from 'react-native'
-
-import { ResolversProxy } from './resolvers-proxy'
 
 const { DIDCommMessageHelpersModule } = NativeModules
 
@@ -33,11 +33,11 @@ export class Message implements Omit<DIDCommMessage, 'free'> {
     options: PackEncryptedOptions
   ): Promise<[string, PackEncryptedMetadata]> {
     ResolversProxy.setResolvers(did_resolver, secrets_resolver)
-    return await DIDCommMessageHelpersModule.pack_encrypted(this.payload, to, from, sign_by)
+    return await DIDCommMessageHelpersModule.pack_encrypted(this.payload, to, from, sign_by, options?.protect_sender ?? true)
   }
 
   public pack_plaintext(did_resolver: DIDResolver): Promise<string> {
-    throw new Error('Not implemented')
+    throw new Error("'Message.pack_plaintext' is not implemented yet")
   }
 
   public pack_signed(
@@ -45,7 +45,7 @@ export class Message implements Omit<DIDCommMessage, 'free'> {
     did_resolver: DIDResolver,
     secrets_resolver: SecretsResolver
   ): Promise<[string, PackSignedMetadata]> {
-    throw new Error('Not implemented')
+    throw new Error("'Message.pack_signed' is not implemented yet")
   }
 
   public static async unpack(
@@ -60,6 +60,6 @@ export class Message implements Omit<DIDCommMessage, 'free'> {
   }
 
   public try_parse_forward(): ParsedForward {
-    throw new Error('Not implemented')
+    throw new Error("'Message.try_parse_forward' is not implemented yet")
   }
 }

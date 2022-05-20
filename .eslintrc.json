@@ -28,7 +28,7 @@
     "@typescript-eslint/no-use-before-define": ["error", { "functions": false, "classes": false, "variables": true }],
     "@typescript-eslint/explicit-member-accessibility": "error",
     "@typescript-eslint/ban-ts-comment": "warn",
-    "no-console": "error",
+    "no-console": "warn",
     "import/no-cycle": "error",
     "import/order": [
       "error",

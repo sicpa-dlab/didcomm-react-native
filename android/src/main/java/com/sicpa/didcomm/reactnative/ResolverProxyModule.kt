@@ -49,10 +49,10 @@ class ResolverProxyModule(private val reactContext: ReactApplicationContext) :
     }
 
     @ReactMethod
-    fun setFoundSecretIds(jsonValue: String) {
+    fun setFoundSecretIds(jsonValue: String?) {
         scope.launch {
-            val secretIds = JsonUtils.parseJson(jsonValue, Set::class.java)
-            foundSecretIdsChannel.send(secretIds as Set<String>)
+            val secretIds = jsonValue?.let { JsonUtils.parseJson(jsonValue, Set::class.java) }
+            foundSecretIdsChannel.send(secretIds as? Set<String> ?: emptySet())
         }
     }
 
