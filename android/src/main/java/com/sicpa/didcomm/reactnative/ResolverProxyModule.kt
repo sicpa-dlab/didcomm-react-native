@@ -1,10 +1,10 @@
 package com.sicpa.didcomm.reactnative
 
 import android.util.Log
+import com.sicpa.didcomm.reactnative.model.*
 import com.facebook.react.bridge.*
 import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.modules.core.DeviceEventManagerModule
-import com.google.gson.GsonBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -27,6 +27,7 @@ class ResolverProxyModule(private val reactContext: ReactApplicationContext) :
     }
 
     private val scope = CoroutineScope(Dispatchers.IO)
+
     val resolvedDidChannel = Channel<DIDDoc?>(0)
     val foundSecretChannel = Channel<Secret?>(0)
     val foundSecretIdsChannel = Channel<Set<String>>(0)
@@ -43,7 +44,7 @@ class ResolverProxyModule(private val reactContext: ReactApplicationContext) :
     fun setFoundSecret(jsonValue: String?) {
         scope.launch {
             val jsSecret = jsonValue?.let { JsonUtils.parseJson(jsonValue, JSSecret::class.java) }
-            foundSecretChannel.send(jsSecret?.toJVMSecret())
+            foundSecretChannel.send(jsSecret?.toSecret())
         }
     }
 

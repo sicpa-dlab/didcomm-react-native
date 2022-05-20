@@ -15,7 +15,7 @@ import { NativeModules } from 'react-native'
 
 import { ResolversProxy } from './resolvers-proxy'
 
-const { DIDCommMessageHelpers } = NativeModules
+const { DIDCommMessageHelpersModule } = NativeModules
 
 export class Message implements Omit<DIDCommMessage, 'free'> {
   public constructor(private payload: IMessage) {}
@@ -33,7 +33,7 @@ export class Message implements Omit<DIDCommMessage, 'free'> {
     options: PackEncryptedOptions
   ): Promise<[string, PackEncryptedMetadata]> {
     ResolversProxy.setResolvers(did_resolver, secrets_resolver)
-    return await DIDCommMessageHelpers.pack_encrypted(this.payload, to, from, sign_by)
+    return await DIDCommMessageHelpersModule.pack_encrypted(this.payload, to, from, sign_by)
   }
 
   public pack_plaintext(did_resolver: DIDResolver): Promise<string> {
@@ -55,7 +55,7 @@ export class Message implements Omit<DIDCommMessage, 'free'> {
     _options: UnpackOptions
   ): Promise<[Message, UnpackMetadata]> {
     ResolversProxy.setResolvers(did_resolver, secrets_resolver)
-    const [unpackedMsgData, unpackMetadata] = await DIDCommMessageHelpers.unpack(msg)
+    const [unpackedMsgData, unpackMetadata] = await DIDCommMessageHelpersModule.unpack(msg)
     return [new Message(unpackedMsgData), unpackMetadata]
   }
 

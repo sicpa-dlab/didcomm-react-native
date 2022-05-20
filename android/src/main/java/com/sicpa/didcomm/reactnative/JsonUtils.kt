@@ -12,19 +12,17 @@ object JsonUtils {
         return GsonBuilder().create()
     }
 
-    fun toJsonString(source: Any): String {
+    fun convertToJsonString(source: Any): String {
         return createDefaultGson().toJson(source)
     }
 
-    fun <T>parseJson(json: String, resultClass: Class<T>): T {
+    fun <T> parseJson(json: String, resultClass: Class<T>): T {
         return createDefaultGson().fromJson(json, resultClass)
     }
 
     fun convertObjectToMap(obj: Any): WritableMap {
         return convertJsonToMap(
-            JSONObject(
-                GsonBuilder().create().toJson(obj)
-            )
+            JSONObject(convertToJsonString(obj))
         )
     }
 
@@ -32,7 +30,7 @@ object JsonUtils {
         val map: WritableMap = WritableNativeMap()
 
         val keysIterator = jsonObject.keys()
-        for(key in keysIterator) {
+        for (key in keysIterator) {
             when (val value = jsonObject[key]) {
                 is JSONObject -> {
                     map.putMap(key, convertJsonToMap(value))
@@ -64,7 +62,7 @@ object JsonUtils {
     fun convertJsonToArray(jsonArray: JSONArray): WritableArray {
         val array: WritableArray = WritableNativeArray()
 
-        for(i in 0 until(jsonArray.length())) {
+        for (i in 0 until (jsonArray.length())) {
             when (val element = jsonArray.get(i)) {
                 is JSONObject -> {
                     array.pushMap(convertJsonToMap(element))
@@ -116,7 +114,7 @@ object JsonUtils {
     fun convertArrayToJson(readableArray: ReadableArray?): JSONArray {
         val array = JSONArray()
 
-        if(readableArray == null) {
+        if (readableArray == null) {
             return array
         }
 

@@ -10,15 +10,13 @@ import org.didcommx.didcomm.message.Message
 import org.didcommx.didcomm.model.PackEncryptedParams
 import org.didcommx.didcomm.model.UnpackParams
 
-@ReactModule(name = "DIDCommMessageHelpersModule")
+private const val MODULE_NAME = "DIDCommMessageHelpersModule"
+
+@ReactModule(name = MODULE_NAME)
 class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
     ReactContextBaseJavaModule(reactContext) {
 
-    override fun getName() = "DIDCommMessageHelpers"
-
-    companion object {
-        const val TAG = "DIDCommMessageHelpersModule"
-    }
+    override fun getName() = MODULE_NAME
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
@@ -50,7 +48,7 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
 
                 promise.resolve(resultArray)
             } catch (e: Throwable) {
-                promise.reject(TAG, "Error on packing DIDComm message: ${e.message}", e)
+                promise.reject(MODULE_NAME, "Error on packing DIDComm message: ${e.message}", e)
             }
         }
     }
@@ -72,7 +70,7 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
 
                 promise.resolve(resultArray)
             } catch (e: Throwable) {
-                promise.reject(TAG, "Error on unpacking DIDComm message", e)
+                promise.reject(MODULE_NAME, "Error on unpacking DIDComm message", e)
             }
         }
     }
@@ -80,7 +78,7 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
     private fun createDidCommInstance(): DIDComm {
         val resolversProxyModule =
             reactContext.getNativeModule(ResolverProxyModule::class.java)
-                ?: throw Exception("Error on creating DIDComm instance, resolvers proxy module is not defined")
+                ?: throw Exception("Error on creating DIDComm instance, ResolverProxyModule is not defined")
         return DIDComm(
             DIDDocResolverProxy(resolversProxyModule),
             SecretsResolverProxy(resolversProxyModule)
