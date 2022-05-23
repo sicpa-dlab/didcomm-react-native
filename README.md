@@ -11,8 +11,6 @@ It contains native modules that are using [DIDComm JVM](https://github.com/sicpa
 
 ## Usage
 
-TBC (will be published in GH packages)
-
 Add following DIDComm resolvers initialization code to your App (it's a workaround that will be removed later):
 
 ```typescript
@@ -54,3 +52,11 @@ A general usage of the API is the following:
 - Receiver side:
     - Call `Message.unpack` on receiver side that will decrypt the message, verify signature if needed
       and return a `Message` for further processing on the application level.
+
+
+## Publishing new version
+
+If you have write access to the repo, you can publish new version using following steps:
+- Create GitHub Personal access token with full `repo` and `write:packages` scopes if you don't have one
+- Run `npm login --registry=https://npm.pkg.github.com` command and log-in using your access token as a password
+- Run `npm publish` command from the repo root
