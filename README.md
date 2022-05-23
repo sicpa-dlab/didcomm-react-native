@@ -4,4 +4,53 @@
 
 Basic [DIDComm v2](https://identity.foundation/didcomm-messaging/spec) support for React Native framework (Android only).
 
-Based on [DIDComm JVM](https://github.com/sicpa-dlab/didcomm-jvm).
+## Under the hood
+
+This package is React Native wrapper for [DIDComm JVM](https://github.com/sicpa-dlab/didcomm-jvm) library. 
+It contains native modules that are using [DIDComm JVM](https://github.com/sicpa-dlab/didcomm-jvm) API and exposes Javascript/Typescript API using React Native bridge.
+
+## Usage
+
+TBC (will be published in GH packages)
+
+Add following DIDComm resolvers initialization code to your App (it's a workaround that will be removed later):
+
+```typescript
+import { NativeModules } from 'react-native'
+
+const { DIDCommResolversProxyModule } = NativeModules
+
+export default function App() {
+
+    useEffect(() => {
+        const nativeEventEmitter = new NativeEventEmitter(DIDCommResolversProxyModule)
+        DIDCommResolversProxy.start(nativeEventEmitter)
+        return () => DIDCommResolversProxy.stop()
+    },[])
+    
+
+    return ...
+}
+```
+
+## Run demo
+
+```sh
+cd ./demo
+yarn install
+yarn android
+```
+
+## Examples
+
+A general usage of the API is the following:
+
+- Sender Side:
+    - Build a `Message` (plaintext, payload).
+    - Convert a message to a DIDComm Message for further transporting by calling one of the following:
+        - `Message.pack_encrypted` to build an Encrypted DIDComm message
+        - **[To be implemented]** `Message.pack_signed` to build a Signed DIDComm message
+        - **[To be implemented]** `Message.pack_plaintext` to build a Plaintext DIDComm message
+- Receiver side:
+    - Call `Message.unpack` on receiver side that will decrypt the message, verify signature if needed
+      and return a `Message` for further processing on the application level.
