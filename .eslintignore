@@ -3,3 +3,5 @@ __tests__
 ios
 android
 build
+lib
+*.js

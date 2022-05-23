@@ -42,6 +42,14 @@
     ],
     "import/no-extraneous-dependencies": ["error"]
   },
+  "overrides": [
+    {
+      "files": ["demo/**"],
+      "rules": {
+        "import/no-extraneous-dependencies": "off"
+      }
+    }
+  ],
   "globals": {
     "require": true
   }

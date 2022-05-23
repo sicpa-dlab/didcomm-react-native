@@ -1,32 +1,33 @@
 //Source https://github.com/sicpa-dlab/didcomm-rust/blob/main/wasm/demo/src/main.ts
-import { ALICE_DID, ALICE_DID_DOC, ALICE_SECRETS, BOB_DID, BOB_DID_DOC, BOB_SECRETS } from './test-vectors'
-
 import { Message, DIDDoc, DIDResolver, Secret, SecretsResolver } from 'didcomm-react-native'
 
-class ExampleDIDResolver implements DIDResolver {
-    knownDids: DIDDoc[]
+import { ALICE_DID, ALICE_DID_DOC, ALICE_SECRETS, BOB_DID, BOB_DID_DOC, BOB_SECRETS } from './test-vectors'
 
-    constructor(knownDids: DIDDoc[]) {
+
+class ExampleDIDResolver implements DIDResolver {
+    private knownDids: DIDDoc[]
+
+    public constructor(knownDids: DIDDoc[]) {
         this.knownDids = knownDids
     }
 
-    async resolve(did: string): Promise<DIDDoc | null> {
+    public async resolve(did: string): Promise<DIDDoc | null> {
         return this.knownDids.find((ddoc) => ddoc.did === did) || null
     }
 }
 
 class ExampleSecretsResolver implements SecretsResolver {
-    knownSecrets: Secret[]
+    private knownSecrets: Secret[]
 
-    constructor(knownSecrets: Secret[]) {
+    public constructor(knownSecrets: Secret[]) {
         this.knownSecrets = knownSecrets
     }
 
-    async get_secret(secretId: string): Promise<Secret | null> {
+    public async get_secret(secretId: string): Promise<Secret | null> {
         return this.knownSecrets.find((secret) => secret.id === secretId) || null
     }
 
-    async find_secrets(secretIds: string[]): Promise<string[]> {
+    public async find_secrets(secretIds: string[]): Promise<string[]> {
         return secretIds.filter((id) => this.knownSecrets.find((secret) => secret.id === id))
     }
 }

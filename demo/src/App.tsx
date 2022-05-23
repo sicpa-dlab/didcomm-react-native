@@ -1,11 +1,24 @@
-import * as React from 'react'
-
-import { StyleSheet, View, Text, Button, NativeEventEmitter, NativeModules } from 'react-native'
-import { runDemo } from './demo'
-import { useEffect } from "react"
 import { DIDCommResolversProxy } from "didcomm-react-native"
+import * as React from 'react'
+import { useEffect } from "react"
+import { StyleSheet, View, Text, Button, NativeEventEmitter, NativeModules } from 'react-native'
+
+import { runDemo } from './demo'
 
 const { DIDCommResolversProxyModule } = NativeModules
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    box: {
+        width: 60,
+        height: 60,
+        marginVertical: 20,
+    },
+})
 
 export default function App() {
     const [isDemoRunning, setIsDemoRunning] = React.useState<boolean | undefined>()
@@ -32,16 +45,3 @@ export default function App() {
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    box: {
-        width: 60,
-        height: 60,
-        marginVertical: 20,
-    },
-})
