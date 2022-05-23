@@ -11,10 +11,18 @@ It contains native modules that are using [DIDComm JVM](https://github.com/sicpa
 
 ## Usage
 
+Create `.npmrc` file with following content to be able to install package from GitHub registry:
+
+```
+@sicpa-dlab:registry=https://npm.pkg.github.com
+```
+
 Add following DIDComm resolvers initialization code to your App (it's a workaround that will be removed later):
 
 ```typescript
-import { NativeModules } from 'react-native'
+import { NativeModules, NativeEventEmitter } from 'react-native'
+import { useEffect } from 'react'
+import { DIDCommResolversProxy } from "@sicpa-dlab/didcomm-react-native"
 
 const { DIDCommResolversProxyModule } = NativeModules
 
@@ -31,16 +39,6 @@ export default function App() {
 }
 ```
 
-## Run demo
-
-```sh
-cd ./demo
-yarn install
-yarn android
-```
-
-## Examples
-
 A general usage of the API is the following:
 
 - Sender Side:
@@ -53,6 +51,13 @@ A general usage of the API is the following:
     - Call `Message.unpack` on receiver side that will decrypt the message, verify signature if needed
       and return a `Message` for further processing on the application level.
 
+## Run demo
+
+```sh
+cd ./demo
+yarn install
+yarn android
+```
 
 ## Publishing new version
 
