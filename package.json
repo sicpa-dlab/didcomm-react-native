@@ -1,40 +1,24 @@
 {
-  "name": "didcomm-react-native",
-  "version": "0.0.1",
-  "description": "React Native wrapper for DIDComm v2",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
-  "files": [
-    "android",
-    "ios",
-    "src",
-    "package.json",
-    "README.md"
+  "name": "root",
+  "private": true,
+  "workspaces": [
+    "packages/*"
   ],
+
   "scripts": {
-    "style:check": "npm run prettier -- --check .",
-    "style:format": "npm run prettier -- --write .",
-    "lint": "eslint . --ignore-path ./.eslintignore --ext ts --ext tsx --ext js --ext jsx",
-    "lint:fix": "eslint --fix . --ignore-path ./.eslintignore --ext ts --ext tsx --ext js --ext jsx",
-    "build": "tsc",
-    "start": "tsc --noEmit false --watch",
-    "prettier": "prettier . --ignore-path ./.gitignore"
+    "bootstrap": "lerna bootstrap",
+    "build": "lerna run build --stream",
+    "clean": "lerna clean --yes && lerna run clean && npx rimraf ./node_modules",
+    "start": "lerna run start --stream --parallel",
+    "lint": "lerna run lint --parallel",
+    "lint:fix": "lerna run lint:fix --parallel",
+    "style:format": "prettier --write ."
+  },
+  "dependencies": {
+    "react-native": "^0.68.2"
   },
   "devDependencies": {
-    "@types/react-native": "^0.64.5",
-    "@types/uuid": "^8.3.0",
-    "@typescript-eslint/eslint-plugin": "^4.20.0",
-    "@typescript-eslint/parser": "^4.33.0",
-    "eslint": "^7.14.0",
-    "eslint-import-resolver-typescript": "^2.5.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-prettier": "^3.3.1",
-    "eslint-plugin-simple-import-sort": "^5.0.3",
-    "prettier": "^2.2.1",
-    "ts-node": "^9.1.1",
-    "typescript": "^4.2.4",
-    "react": "17.0.2",
-    "react-native": "^0.68.2",
-    "didcomm": "^0.3.1"
+    "lerna": "^3.3.0",
+    "prettier": "2.4.1"
   }
 }

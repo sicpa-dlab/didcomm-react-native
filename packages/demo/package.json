@@ -1,0 +1,28 @@
+{
+  "name": "didcomm-react-native-demo",
+  "description": "Demo app for didcomm-react-native",
+  "version": "0.0.1",
+  "private": true,
+  "workspaces": {
+    "nohoist": ["react-native"]
+  },
+  "scripts": {
+    "android": "react-native run-android",
+    "start": "react-native start",
+    "style:check": "npm run prettier -- --check .",
+    "style:format": "npm run prettier -- --write .",
+    "lint": "eslint . --ignore-path ../../.eslintignore --ext ts --ext tsx --ext js --ext jsx",
+    "lint:fix": "eslint --fix . --ignore-path ../../.eslintignore --ext ts --ext tsx --ext js --ext jsx"
+  },
+  "dependencies": {
+    "react": "17.0.2",
+    "react-native": "0.68.2",
+    "didcomm-react-native": "*"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/runtime": "^7.12.5",
+    "babel-plugin-module-resolver": "^4.0.0",
+    "metro-react-native-babel-preset": "^0.70.3"
+  }
+}
