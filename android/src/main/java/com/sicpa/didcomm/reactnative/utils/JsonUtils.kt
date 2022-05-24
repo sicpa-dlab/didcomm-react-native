@@ -8,16 +8,21 @@ import org.json.JSONObject
 
 //Based on https://gist.github.com/viperwarp/2beb6bbefcc268dee7ad
 object JsonUtils {
-    fun createDefaultGson(): Gson {
-        return GsonBuilder().create()
+    private var defaultGsonInstance: Gson? = null
+
+    fun getDefaultGson(): Gson {
+        return defaultGsonInstance ?: run {
+            defaultGsonInstance = GsonBuilder().create()
+            return defaultGsonInstance as Gson
+        }
     }
 
     fun convertToJsonString(source: Any): String {
-        return createDefaultGson().toJson(source)
+        return getDefaultGson().toJson(source)
     }
 
     fun <T> parseJson(json: String, resultClass: Class<T>): T {
-        return createDefaultGson().fromJson(json, resultClass)
+        return getDefaultGson().fromJson(json, resultClass)
     }
 
     fun convertObjectToMap(obj: Any): WritableMap {

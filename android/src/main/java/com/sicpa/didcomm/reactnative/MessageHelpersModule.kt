@@ -21,8 +21,10 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
 
     private val scope = CoroutineScope(Dispatchers.Default)
 
+    private var didCommInstance: DIDComm? = null
+
     @ReactMethod
-    fun pack_encrypted(
+    fun packEncrypted(
         messageData: ReadableMap,
         to: String,
         from: String? = null,
@@ -41,7 +43,7 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
                 builder = from?.let { builder.from(it) } ?: builder
                 builder = signFrom?.let { builder.signFrom(it) } ?: builder
 
-                val didComm = createDidCommInstance()
+                val didComm = getDidCommInstance()
                 val packResult = didComm.packEncrypted(builder.build())
 
                 val resultArray = Arguments.createArray().apply {
@@ -63,7 +65,7 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
     ) {
         scope.launch {
             try {
-                val didComm = createDidCommInstance()
+                val didComm = getDidCommInstance()
                 val unpackResult = didComm.unpack(UnpackParams.Builder(packedMessage).build())
 
                 val resultArray = Arguments.createArray().apply {
@@ -78,14 +80,19 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
         }
     }
 
-    private fun createDidCommInstance(): DIDComm {
-        val resolversProxyModule =
-            reactContext.getNativeModule(ResolversProxyModule::class.java)
-                ?: throw Exception("Error on creating DIDComm instance, ResolversProxyModule is not defined")
-        return DIDComm(
-            DIDDocResolverProxy(resolversProxyModule),
-            SecretsResolverProxy(resolversProxyModule)
-        )
+    private fun getDidCommInstance(): DIDComm {
+        return didCommInstance ?: run {
+            val resolversProxyModule =
+                reactContext.getNativeModule(ResolversProxyModule::class.java)
+                    ?: throw Exception("Error on creating DIDComm instance, ResolversProxyModule is not defined")
+
+            didCommInstance = DIDComm(
+                DIDDocResolverProxy(resolversProxyModule),
+                SecretsResolverProxy(resolversProxyModule)
+            )
+
+            return didCommInstance as DIDComm
+        }
     }
 
     private fun parseMessage(messageData: ReadableMap): Message {

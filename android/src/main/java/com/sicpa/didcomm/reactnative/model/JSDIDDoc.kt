@@ -1,6 +1,8 @@
 package com.sicpa.didcomm.reactnative.model
 
 import com.sicpa.didcomm.reactnative.utils.JsonUtils
+import com.sicpa.didcomm.reactnative.utils.parseVerificationMaterialFormat
+import com.sicpa.didcomm.reactnative.utils.parseVerificationMethodType
 import org.didcommx.didcomm.common.VerificationMaterial
 import org.didcommx.didcomm.diddoc.DIDCommService
 import org.didcommx.didcomm.diddoc.DIDDoc

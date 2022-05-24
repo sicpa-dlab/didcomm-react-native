@@ -33,7 +33,7 @@ export class Message implements Omit<DIDCommMessage, 'free'> {
     options: PackEncryptedOptions
   ): Promise<[string, PackEncryptedMetadata]> {
     DIDCommResolversProxy.setResolvers(did_resolver, secrets_resolver)
-    return await DIDCommMessageHelpersModule.pack_encrypted(this.payload, to, from, sign_by, options?.protect_sender ?? true)
+    return await DIDCommMessageHelpersModule.packEncrypted(this.payload, to, from, sign_by, options?.protect_sender ?? true)
   }
 
   public pack_plaintext(did_resolver: DIDResolver): Promise<string> {

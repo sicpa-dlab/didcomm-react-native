@@ -1,5 +1,5 @@
 //Source https://github.com/sicpa-dlab/didcomm-rust/blob/main/wasm/demo/src/main.ts
-import { Message, DIDDoc, DIDResolver, Secret, SecretsResolver } from 'didcomm-react-native'
+import { Message, DIDDoc, DIDResolver, Secret, SecretsResolver } from '@sicpa-dlab/didcomm-react-native'
 
 import { ALICE_DID, ALICE_DID_DOC, ALICE_SECRETS, BOB_DID, BOB_DID_DOC, BOB_SECRETS } from './test-vectors'
 

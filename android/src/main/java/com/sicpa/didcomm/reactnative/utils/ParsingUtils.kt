@@ -1,4 +1,4 @@
-package com.sicpa.didcomm.reactnative.model
+package com.sicpa.didcomm.reactnative.utils
 
 import org.didcommx.didcomm.common.VerificationMaterialFormat
 import org.didcommx.didcomm.common.VerificationMethodType
