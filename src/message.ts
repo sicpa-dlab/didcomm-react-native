@@ -9,15 +9,15 @@ import {
   PackEncryptedMetadata,
   PackEncryptedOptions,
   PackSignedMetadata,
-  ParsedForward,
   SecretsResolver,
   UnpackMetadata,
   UnpackOptions,
 } from './types'
+import { ParsedForward } from "./parsed-forward"
 
 const { DIDCommMessageHelpersModule } = NativeModules
 
-export class Message implements Omit<DIDCommMessage, 'free'> {
+export class Message implements DIDCommMessage {
   public constructor(private payload: IMessage) {}
 
   public as_value(): IMessage {
@@ -59,7 +59,20 @@ export class Message implements Omit<DIDCommMessage, 'free'> {
     return [new Message(unpackedMsgData), unpackMetadata]
   }
 
+  public static wrap_in_forward(
+      msg: string,
+      headers: Record<string, string>,
+      to: string,
+      routing_keys: Array<string>,
+      enc_alg_anon: string,
+      did_resolver: DIDResolver,
+  ): Promise<string> {
+    throw new Error("'Message.wrap_in_forward' is not implemented yet")
+  }
+
   public try_parse_forward(): ParsedForward {
     throw new Error("'Message.try_parse_forward' is not implemented yet")
   }
+
+  public free(): void {}
 }
