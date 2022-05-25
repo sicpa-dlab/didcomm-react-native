@@ -25,6 +25,8 @@ Login into GitHub packages registry:
     npm login --registry=https://npm.pkg.github.com
     ```
 
+For detailed GitHub packages installation guide please see: https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry#installing-a-package
+
 Add following DIDComm resolvers initialization code to your App (it's a workaround that will be removed later):
 
 ```typescript
