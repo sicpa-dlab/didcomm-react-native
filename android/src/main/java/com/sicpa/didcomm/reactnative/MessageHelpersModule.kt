@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import org.didcommx.didcomm.DIDComm
 import org.didcommx.didcomm.message.Message
 import org.didcommx.didcomm.model.PackEncryptedParams
+import org.didcommx.didcomm.model.PackSignedParams
 import org.didcommx.didcomm.model.UnpackParams
 
 private const val MODULE_NAME = "DIDCommMessageHelpersModule"
@@ -53,7 +54,30 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
 
                 promise.resolve(resultArray)
             } catch (e: Throwable) {
-                promise.reject(MODULE_NAME, "Error on packing DIDComm message: ${e.message}", e)
+                promise.reject(MODULE_NAME, "Error on packing encrypted DIDComm message: ${e.message}", e)
+            }
+        }
+    }
+
+    @ReactMethod
+    fun packSigned(messageData: ReadableMap, sign_by: String, promise: Promise) {
+        scope.launch {
+            try {
+                val message = parseMessage(messageData)
+
+                val params = PackSignedParams.builder(message, sign_by).build()
+
+                val didComm = getDidCommInstance()
+                val packResult = didComm.packSigned(params)
+
+                val resultArray = Arguments.createArray().apply {
+                    pushString(packResult.packedMessage)
+                    pushMap(JsonUtils.convertObjectToMap(packResult.copy(packedMessage = "null")))
+                }
+
+                promise.resolve(resultArray)
+            } catch (e: Throwable) {
+                promise.reject(MODULE_NAME, "Error on packing signed DIDComm message: ${e.message}", e)
             }
         }
     }

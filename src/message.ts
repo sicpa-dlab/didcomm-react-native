@@ -40,12 +40,13 @@ export class Message implements DIDCommMessage {
     throw new Error("'Message.pack_plaintext' is not implemented yet")
   }
 
-  public pack_signed(
+  public async pack_signed(
     sign_by: string,
     did_resolver: DIDResolver,
     secrets_resolver: SecretsResolver
   ): Promise<[string, PackSignedMetadata]> {
-    throw new Error("'Message.pack_signed' is not implemented yet")
+    DIDCommResolversProxy.setResolvers(did_resolver, secrets_resolver)
+    return await DIDCommMessageHelpersModule.packSigned(this.payload, sign_by)
   }
 
   public static async unpack(
