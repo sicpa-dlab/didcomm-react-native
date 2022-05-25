@@ -11,11 +11,19 @@ It contains native modules that are using [DIDComm JVM](https://github.com/sicpa
 
 ## Usage
 
-Create `.npmrc` file with following content to be able to install package from GitHub registry:
+In your project root, create `.npmrc` file with following content to be able to install package from GitHub registry:
 
 ```
 @sicpa-dlab:registry=https://npm.pkg.github.com
 ```
+
+Login into GitHub packages registry:
+
+1. Create GitHub Personal Access Token with `read:packages` scope if you don't have one
+2. Run following command and login using your Personal Access Token instead of password:
+    ```sh
+    npm login --registry=https://npm.pkg.github.com
+    ```
 
 Add following DIDComm resolvers initialization code to your App (it's a workaround that will be removed later):
 
