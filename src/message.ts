@@ -36,8 +36,9 @@ export class Message implements DIDCommMessage {
     return await DIDCommMessageHelpersModule.packEncrypted(this.payload, to, from, sign_by, options?.protect_sender ?? true)
   }
 
-  public pack_plaintext(did_resolver: DIDResolver): Promise<string> {
-    throw new Error("'Message.pack_plaintext' is not implemented yet")
+  public async pack_plaintext(did_resolver: DIDResolver): Promise<string> {
+    DIDCommResolversProxy.setResolvers(did_resolver, null)
+    return await DIDCommMessageHelpersModule.packPlaintext(this.payload)
   }
 
   public async pack_signed(

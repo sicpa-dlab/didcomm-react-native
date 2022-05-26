@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import org.didcommx.didcomm.DIDComm
 import org.didcommx.didcomm.message.Message
 import org.didcommx.didcomm.model.PackEncryptedParams
+import org.didcommx.didcomm.model.PackPlaintextParams
 import org.didcommx.didcomm.model.PackSignedParams
 import org.didcommx.didcomm.model.UnpackParams
 
@@ -64,7 +65,6 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
         scope.launch {
             try {
                 val message = parseMessage(messageData)
-
                 val params = PackSignedParams.builder(message, sign_by).build()
 
                 val didComm = getDidCommInstance()
@@ -78,6 +78,23 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
                 promise.resolve(resultArray)
             } catch (e: Throwable) {
                 promise.reject(MODULE_NAME, "Error on packing signed DIDComm message: ${e.message}", e)
+            }
+        }
+    }
+
+    @ReactMethod
+    fun packPlaintext(messageData: ReadableMap, promise: Promise) {
+        scope.launch {
+            try {
+                val message = parseMessage(messageData)
+                val params = PackPlaintextParams.builder(message).build()
+
+                val didComm = getDidCommInstance()
+                val packResult = didComm.packPlaintext(params)
+
+                promise.resolve(packResult.packedMessage)
+            } catch (e: Throwable) {
+                promise.reject(MODULE_NAME, "Error on packing plaintext DIDComm message: ${e.message}", e)
             }
         }
     }
