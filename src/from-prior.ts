@@ -3,7 +3,6 @@ import { NativeModules } from "react-native"
 import { DIDCommResolversProxy } from "./resolvers-proxy"
 import { DIDResolver, SecretsResolver, IFromPrior, DIDCommFromPrior } from "./types"
 
-
 const { DIDCommFromPriorHelpersModule } = NativeModules
 
 export class FromPrior implements DIDCommFromPrior {
