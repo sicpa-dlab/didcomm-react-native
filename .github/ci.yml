@@ -1,0 +1,54 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Use Node.js 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'yarn'
+
+      - name: install and link dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: check style
+        run: yarn run style:check
+
+      - name: check lint
+        run: yarn run lint
+
+      - name: run tests
+        run: yarn test
+  publish:
+    needs:
+      - build
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    environment: github
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'yarn'
+
+      - name: install and link dependencies
+        run: yarn install --frozen-lockfile
+
+      - run: yarn build
+
+      - run: npm config set //npm.pkg.github.com/:_authToken ${{ secrets.TOKEN }}
+      - run: npm publish --access private

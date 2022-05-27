@@ -30,7 +30,8 @@
     "lint": "eslint . --ignore-path ./.eslintignore --ext ts --ext tsx --ext js --ext jsx",
     "lint:fix": "eslint --fix . --ignore-path ./.eslintignore --ext ts --ext tsx --ext js --ext jsx",
     "build": "bob build",
-    "prettier": "prettier . --ignore-path ./.gitignore"
+    "prettier": "prettier . --ignore-path ./.gitignore",
+    "test": "echo 'No tests yet'"
   },
   "devDependencies": {
     "@types/react-native": "^0.64.5",
