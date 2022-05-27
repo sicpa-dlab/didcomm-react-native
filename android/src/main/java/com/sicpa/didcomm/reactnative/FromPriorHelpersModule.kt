@@ -2,6 +2,7 @@ package com.sicpa.didcomm.reactnative
 
 import com.facebook.react.bridge.*
 import com.facebook.react.module.annotations.ReactModule
+import com.sicpa.didcomm.reactnative.utils.DIDCommUtils
 import com.sicpa.didcomm.reactnative.utils.JsonUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -9,7 +10,6 @@ import kotlinx.coroutines.launch
 import org.didcommx.didcomm.crypto.key.RecipientKeySelector
 import org.didcommx.didcomm.crypto.key.SenderKeySelector
 import org.didcommx.didcomm.message.FromPrior
-import org.didcommx.didcomm.message.MessageBuilder
 import org.didcommx.didcomm.operations.packFromPrior
 import org.didcommx.didcomm.operations.unpackFromPrior
 
@@ -31,7 +31,7 @@ class FromPriorHelpersModule(private val reactContext: ReactApplicationContext) 
         scope.launch {
             try {
                 val fromPrior = parseFromPrior(fromPriorData)
-                val message = MessageBuilder("", mapOf(), "").fromPrior(fromPrior).build()
+                val message = DIDCommUtils.getEmptyMessageBuilder().fromPrior(fromPrior).build()
 
                 val senderKeySelector = getSenderKeySelectorInstance()
                 val packResult = packFromPrior(message, issuerKid, senderKeySelector)
@@ -56,7 +56,7 @@ class FromPriorHelpersModule(private val reactContext: ReactApplicationContext) 
     fun unpack(fromPriorJwt: String, promise: Promise) {
         scope.launch {
             try {
-                val message = MessageBuilder("", mapOf(), "").fromPriorJwt(fromPriorJwt).build()
+                val message = DIDCommUtils.getEmptyMessageBuilder().fromPriorJwt(fromPriorJwt).build()
 
                 val recipientKeySelector = getRecipientKeySelectorInstance()
                 val unpackResult = unpackFromPrior(message, recipientKeySelector)
