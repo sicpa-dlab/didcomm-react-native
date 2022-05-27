@@ -1,0 +1,17 @@
+version: 2
+registries:
+  npm-github:
+    type: npm-registry
+    url: https://npm.pkg.github.com
+    token: ${{secrets.NPM_GITHUB_REGISTRY_DEPENDABOT_TOKEN}}
+updates:
+  # Enable version updates for npm
+  - package-ecosystem: "npm"
+    # Look for `package.json` and `lock` files in the `root` directory
+    directory: "/"
+    registries:
+      - npm-github
+    schedule:
+      interval: "daily"
+
+
