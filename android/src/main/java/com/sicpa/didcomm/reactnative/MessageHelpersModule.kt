@@ -1,6 +1,5 @@
 package com.sicpa.didcomm.reactnative
 
-import android.util.Log
 import com.facebook.react.bridge.*
 import com.facebook.react.module.annotations.ReactModule
 import com.sicpa.didcomm.reactnative.utils.JsonUtils
@@ -9,8 +8,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.didcommx.didcomm.DIDComm
-import org.didcommx.didcomm.common.DIDCommMessageProtocolTypes
-import org.didcommx.didcomm.crypto.parse
 import org.didcommx.didcomm.message.Message
 import org.didcommx.didcomm.model.PackEncryptedParams
 import org.didcommx.didcomm.model.PackPlaintextParams
@@ -155,7 +152,13 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
                 val anonCryptAlg = parseAnonCryptAlg(jsAnonCryptAlg)
 
                 val routing = getRoutingInstance()
-                val wrapResult = routing.wrapInForward(messageMap, to, anonCryptAlg, routingKeysList, headers.toHashMap())
+                val wrapResult = routing.wrapInForward(
+                    messageMap,
+                    to,
+                    anonCryptAlg,
+                    routingKeysList,
+                    headers.toHashMap()
+                )
 
                 promise.resolve(wrapResult?.msgEncrypted?.packedMessage)
             } catch (e: Throwable) {

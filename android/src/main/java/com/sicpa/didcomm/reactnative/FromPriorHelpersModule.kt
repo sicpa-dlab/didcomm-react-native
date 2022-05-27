@@ -9,7 +9,6 @@ import kotlinx.coroutines.launch
 import org.didcommx.didcomm.crypto.key.RecipientKeySelector
 import org.didcommx.didcomm.crypto.key.SenderKeySelector
 import org.didcommx.didcomm.message.FromPrior
-import org.didcommx.didcomm.message.Message
 import org.didcommx.didcomm.message.MessageBuilder
 import org.didcommx.didcomm.operations.packFromPrior
 import org.didcommx.didcomm.operations.unpackFromPrior
