@@ -1,5 +1,6 @@
 import { NativeModules } from "react-native"
 
+import { ParsedForward } from "./parsed-forward"
 import { DIDCommResolversProxy } from "./resolvers-proxy"
 import {
   DIDResolver,
@@ -12,7 +13,6 @@ import {
   UnpackMetadata,
   UnpackOptions,
 } from "./types"
-import { ParsedForward } from "./parsed-forward"
 
 const { DIDCommMessageHelpersModule } = NativeModules
 
@@ -79,5 +79,6 @@ export class Message implements DIDCommMessage {
     throw new Error("'Message.try_parse_forward' is not implemented yet")
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   public free(): void {}
 }

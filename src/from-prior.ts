@@ -19,5 +19,6 @@ export class FromPrior implements DIDCommFromPrior {
     throw new Error("'FromPrior.unpack' is not implemented yet")
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   public free(): void {}
 }
