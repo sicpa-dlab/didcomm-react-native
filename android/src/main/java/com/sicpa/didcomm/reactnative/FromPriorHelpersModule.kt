@@ -31,6 +31,9 @@ class FromPriorHelpersModule(private val reactContext: ReactApplicationContext) 
         scope.launch {
             try {
                 val fromPrior = parseFromPrior(fromPriorData)
+
+                //We need to build empty message with `fromPrior` property to pass it to `packFromPrior`
+                //See https://github.com/sicpa-dlab/didcomm-jvm/blob/main/lib/src/main/kotlin/org/didcommx/didcomm/operations/FromPrior.kt#L14
                 val message = DIDCommUtils.getEmptyMessageBuilder().fromPrior(fromPrior).build()
 
                 val senderKeySelector = getSenderKeySelectorInstance()
@@ -56,6 +59,8 @@ class FromPriorHelpersModule(private val reactContext: ReactApplicationContext) 
     fun unpack(fromPriorJwt: String, promise: Promise) {
         scope.launch {
             try {
+                //We need to build empty message with `fromPriorJwt` property to pass it to `unpackFromPrior`
+                //See https://github.com/sicpa-dlab/didcomm-jvm/blob/main/lib/src/main/kotlin/org/didcommx/didcomm/operations/FromPrior.kt#L28
                 val message = DIDCommUtils.getEmptyMessageBuilder().fromPriorJwt(fromPriorJwt).build()
 
                 val recipientKeySelector = getRecipientKeySelectorInstance()
