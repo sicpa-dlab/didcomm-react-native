@@ -1,5 +1,5 @@
 //Source https://github.com/sicpa-dlab/didcomm-rust/blob/main/wasm/demo/src/test-vectors.ts
-export const ALICE_DID = "did:example:alice";
+export const ALICE_DID = "did:example:alice"
 
 export const ALICE_DID_DOC = {
   did: "did:example:alice",
@@ -9,11 +9,7 @@ export const ALICE_DID_DOC = {
     "did:example:alice#key-p256-1",
     "did:example:alice#key-p521-1",
   ],
-  authentications: [
-    "did:example:alice#key-1",
-    "did:example:alice#key-2",
-    "did:example:alice#key-3",
-  ],
+  authentications: ["did:example:alice#key-1", "did:example:alice#key-2", "did:example:alice#key-3"],
   verification_methods: [
     {
       id: "did:example:alice#key-x25519-1",
@@ -112,15 +108,15 @@ export const ALICE_DID_DOC = {
     },
   ],
   services: [],
-};
+}
 
 export const ALICE_SECRETS = [
   {
     id: "did:example:alice#key-1",
     type: "JsonWebKey2020",
     secret_material: {
-        format: "JWK",
-        value: {
+      format: "JWK",
+      value: {
         crv: "Ed25519",
         d: "pFRUKkyzx4kHdJtFSnlPA9WzqkDT1HWV0xZ5OYZd2SY",
         kty: "OKP",
@@ -132,8 +128,8 @@ export const ALICE_SECRETS = [
     id: "did:example:alice#key-2",
     type: "JsonWebKey2020",
     secret_material: {
-        format: "JWK",
-        value: {
+      format: "JWK",
+      value: {
         crv: "P-256",
         d: "7TCIdt1rhThFtWcEiLnk_COEjh1ZfQhM4bW2wz-dp4A",
         kty: "EC",
@@ -146,8 +142,8 @@ export const ALICE_SECRETS = [
     id: "did:example:alice#key-3",
     type: "JsonWebKey2020",
     secret_material: {
-        format: "JWK",
-        value: {
+      format: "JWK",
+      value: {
         crv: "secp256k1",
         d: "N3Hm1LXA210YVGGsXw_GklMwcLu_bMgnzDese6YQIyA",
         kty: "EC",
@@ -197,9 +193,9 @@ export const ALICE_SECRETS = [
       },
     },
   },
-];
+]
 
-export const BOB_DID = "did:example:bob";
+export const BOB_DID = "did:example:bob"
 
 export const BOB_DID_DOC = {
   did: "did:example:bob",
@@ -341,7 +337,7 @@ export const BOB_DID_DOC = {
     },
   ],
   services: [],
-};
+}
 
 export const BOB_SECRETS = [
   {
@@ -467,4 +463,4 @@ export const BOB_SECRETS = [
       },
     },
   },
-];
+]
