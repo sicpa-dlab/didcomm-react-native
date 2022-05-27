@@ -15,10 +15,10 @@ export class DIDCommResolversProxy {
   private static didDocResolver: DIDResolver | null = null
   private static secretsResolver: SecretsResolver | null = null
 
-    public static setResolvers(didDocResolver: DIDResolver | null, secretsResolver: SecretsResolver | null) {
-        this.didDocResolver = didDocResolver
-        this.secretsResolver = secretsResolver
-    }
+  public static setResolvers(didDocResolver: DIDResolver | null, secretsResolver: SecretsResolver | null) {
+    this.didDocResolver = didDocResolver
+    this.secretsResolver = secretsResolver
+  }
 
   public static start(nativeEventEmitter: NativeEventEmitter) {
     this.nativeEventEmitter = nativeEventEmitter
