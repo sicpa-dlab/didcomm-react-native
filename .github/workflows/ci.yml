@@ -5,7 +5,7 @@ on:
     branches:
       - main
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
@@ -18,8 +18,8 @@ jobs:
       - name: Use Node.js 16
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
-          cache: 'yarn'
+          node-version: "16"
+          cache: "yarn"
 
       - name: install and link dependencies
         run: yarn install --frozen-lockfile
@@ -35,15 +35,15 @@ jobs:
   publish:
     needs:
       - build
-#    if: ${{ github.ref == 'refs/heads/main' }}
+    #    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     environment: github
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '16'
-          cache: 'yarn'
+          node-version: "16"
+          cache: "yarn"
 
       - name: install and link dependencies
         run: yarn install --frozen-lockfile

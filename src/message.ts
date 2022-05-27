@@ -1,7 +1,6 @@
+import { NativeModules } from "react-native"
 
-import { NativeModules } from 'react-native'
-
-import { DIDCommResolversProxy } from './resolvers-proxy'
+import { DIDCommResolversProxy } from "./resolvers-proxy"
 import {
   DIDResolver,
   IMessage,
@@ -12,7 +11,7 @@ import {
   SecretsResolver,
   UnpackMetadata,
   UnpackOptions,
-} from './types'
+} from "./types"
 import { ParsedForward } from "./parsed-forward"
 
 const { DIDCommMessageHelpersModule } = NativeModules
@@ -30,10 +29,16 @@ export class Message implements DIDCommMessage {
     sign_by: string | null,
     did_resolver: DIDResolver,
     secrets_resolver: SecretsResolver,
-    options: PackEncryptedOptions
+    options: PackEncryptedOptions,
   ): Promise<[string, PackEncryptedMetadata]> {
     DIDCommResolversProxy.setResolvers(did_resolver, secrets_resolver)
-    return await DIDCommMessageHelpersModule.packEncrypted(this.payload, to, from, sign_by, options?.protect_sender ?? true)
+    return await DIDCommMessageHelpersModule.packEncrypted(
+      this.payload,
+      to,
+      from,
+      sign_by,
+      options?.protect_sender ?? true,
+    )
   }
 
   public pack_plaintext(did_resolver: DIDResolver): Promise<string> {
@@ -43,7 +48,7 @@ export class Message implements DIDCommMessage {
   public pack_signed(
     sign_by: string,
     did_resolver: DIDResolver,
-    secrets_resolver: SecretsResolver
+    secrets_resolver: SecretsResolver,
   ): Promise<[string, PackSignedMetadata]> {
     throw new Error("'Message.pack_signed' is not implemented yet")
   }
@@ -52,7 +57,7 @@ export class Message implements DIDCommMessage {
     msg: string,
     did_resolver: DIDResolver,
     secrets_resolver: SecretsResolver,
-    _options: UnpackOptions
+    _options: UnpackOptions,
   ): Promise<[Message, UnpackMetadata]> {
     DIDCommResolversProxy.setResolvers(did_resolver, secrets_resolver)
     const [unpackedMsgData, unpackMetadata] = await DIDCommMessageHelpersModule.unpack(msg)
@@ -60,12 +65,12 @@ export class Message implements DIDCommMessage {
   }
 
   public static wrap_in_forward(
-      msg: string,
-      headers: Record<string, string>,
-      to: string,
-      routing_keys: Array<string>,
-      enc_alg_anon: string,
-      did_resolver: DIDResolver,
+    msg: string,
+    headers: Record<string, string>,
+    to: string,
+    routing_keys: Array<string>,
+    enc_alg_anon: string,
+    did_resolver: DIDResolver,
   ): Promise<string> {
     throw new Error("'Message.wrap_in_forward' is not implemented yet")
   }
