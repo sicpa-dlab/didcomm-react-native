@@ -15,8 +15,6 @@ import {
   FROM_PRIOR_FULL,
 } from "./test-vectors"
 
-import { ALICE_DID, ALICE_DID_DOC, ALICE_SECRETS, BOB_DID, BOB_DID_DOC, BOB_SECRETS } from "./test-vectors"
-
 class ExampleDIDResolver implements DIDResolver {
   private knownDids: DIDDoc[]
 

@@ -29,6 +29,7 @@
     "@typescript-eslint/explicit-member-accessibility": "error",
     "@typescript-eslint/ban-ts-comment": "warn",
     "no-console": "warn",
+    "@typescript-eslint/no-empty-function": "warn",
     "import/no-cycle": "error",
     "import/order": [
       "error",
