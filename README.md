@@ -27,6 +27,10 @@ Login into GitHub packages registry:
 
 For detailed GitHub packages installation guide please see: https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry#installing-a-package
 
+If you need to use this package in another RN library:
+- Please see: https://github.com/callstack/react-native-builder-bob#how-do-i-add-a-react-native-library-containing-native-code-as-a-dependency-in-my-library
+- Note that you need to add this package as end application dependency in order to make native modules work
+
 Add following DIDComm resolvers initialization code to your App (it's a workaround that will be removed later):
 
 ```typescript
@@ -75,3 +79,22 @@ If you have write access to the repo, you can publish new version using followin
 - Create GitHub Personal access token with full `repo` and `write:packages` scopes if you don't have one
 - Run `npm login --registry=https://npm.pkg.github.com` command and log-in using your access token as a password
 - Run `npm publish` command from the repo root
+
+## Common issues
+
+### Duplicate class errors related to `com.google.crypto.tink`
+
+- Error message: 
+    ```
+    > A failure occurred while executing com.android.build.gradle.internal.tasks.CheckDuplicatesRunnable
+    > Duplicate class com.google.crypto.tink.Aead found in modules jetified-tink-1.6.1 (com.google.crypto.tink:tink:1.6.1) and jetified-tink-android-1.5.0 (com.google.crypto.tink:tink-android:1.5.0)     
+     Duplicate class com.google.crypto.tink.BinaryKeysetReader found in modules jetified-tink-1.6.1 (com.google.crypto.tink:tink:1.6.1) and jetified-tink-android-1.5.0 (com.google.crypto.tink:tink-android:1.5.0)
+     Duplicate class com.google.crypto.tink.BinaryKeysetWriter found in modules jetified-tink-1.6.1 (com.google.crypto.tink:tink:1.6.1) and jetified-tink-android-1.5.0 (com.google.crypto.tink:tink-android:1.5.0)
+    ```
+
+- Solution: Exclude `com.google.crypto.tink:tink` module from library native package using gradle configuration 
+    ```
+    implementation (project(":sicpa-dlab_didcomm-react-native")) {
+        exclude(group: "com.google.crypto.tink", module: "tink")
+    }
+    ```
