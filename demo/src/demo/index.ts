@@ -1,2 +1,2 @@
-export * from './demo'
-export * from './test-vectors'
+export * from "./demo"
+export * from "./test-vectors"
