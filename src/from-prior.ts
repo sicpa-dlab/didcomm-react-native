@@ -5,7 +5,8 @@ import { DIDCommResolversProxy } from "./resolvers-proxy"
 const { DIDCommFromPriorHelpersModule } = NativeModules
 
 export class FromPrior implements DIDCommFromPrior {
-    public constructor(private value: IFromPrior) {}
+    public constructor(private value: IFromPrior) {
+    }
 
     public as_value(): IFromPrior {
         return this.value
@@ -22,5 +23,6 @@ export class FromPrior implements DIDCommFromPrior {
         return [new FromPrior(unpackedFromPriorData), issuerKid]
     }
 
-    public free(): void {}
+    public free(): void {
+    }
 }

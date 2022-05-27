@@ -5,5 +5,6 @@ export class ParsedForward implements DIDCommParsedForward {
         throw new Error("'ParsedForward.as_value' is not implemented yet")
     }
 
-    public free(): void {}
+    public free(): void {
+    }
 }
