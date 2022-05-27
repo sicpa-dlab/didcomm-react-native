@@ -1,5 +1,4 @@
-import { IParsedForward } from "didcomm";
-import { DIDCommParsedForward } from "./types"
+import { DIDCommParsedForward, IParsedForward } from "./types"
 
 export class ParsedForward implements DIDCommParsedForward {
     public as_value(): IParsedForward {

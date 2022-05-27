@@ -61,7 +61,7 @@ export class Message implements DIDCommMessage {
     return [new Message(unpackedMsgData), unpackMetadata]
   }
 
-  public static wrap_in_forward(
+  public static async wrap_in_forward(
       msg: string,
       headers: Record<string, string>,
       to: string,
@@ -69,7 +69,8 @@ export class Message implements DIDCommMessage {
       enc_alg_anon: string,
       did_resolver: DIDResolver,
   ): Promise<string> {
-    throw new Error("'Message.wrap_in_forward' is not implemented yet")
+    DIDCommResolversProxy.setResolvers(did_resolver, null)
+    return await DIDCommMessageHelpersModule.wrapInForward(msg, headers, to, routing_keys, enc_alg_anon)
   }
 
   public try_parse_forward(): ParsedForward {

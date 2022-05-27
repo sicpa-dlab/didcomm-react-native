@@ -1,5 +1,5 @@
 //Source https://github.com/sicpa-dlab/didcomm-rust/blob/main/wasm/demo/src/test-vectors.ts
-import { DIDDoc, Secret } from "@sicpa-dlab/didcomm-react-native"
+import { DIDDoc, Secret, FromPrior, IFromPrior } from "@sicpa-dlab/didcomm-react-native"
 
 export const ALICE_DID = "did:example:alice"
 
@@ -508,31 +508,50 @@ export const CHARLIE_DID_DOC: DIDDoc = {
     services: [],
 }
 
-export const CHARLIE_SECRETS: Secret[] = [
-    {
-        id: "did:example:charlie#key-x25519-1",
-        type: "JsonWebKey2020",
-        secret_material: {
-            format: "JWK",
-            value: {
-                crv: "X25519",
-                d: "Z-BsgFe-eCvhuZlCBX5BV2XiDE2M92gkaORCe68YdZI",
-                kty: "OKP",
-                x: "nTiVFj7DChMsETDdxd5dIzLAJbSQ4j4UG6ZU1ogLNlw",
-            },
+export const CHARLIE_SECRET_KEY_AGREEMENT_KEY_X25519: Secret = {
+    id: "did:example:charlie#key-x25519-1",
+    type: "JsonWebKey2020",
+    secret_material: {
+        format: "JWK",
+        value: {
+            crv: "X25519",
+            d: "Z-BsgFe-eCvhuZlCBX5BV2XiDE2M92gkaORCe68YdZI",
+            kty: "OKP",
+            x: "nTiVFj7DChMsETDdxd5dIzLAJbSQ4j4UG6ZU1ogLNlw",
         },
     },
-    {
-        id: "did:example:charlie#key-1",
-        type: "JsonWebKey2020",
-        secret_material: {
-            format: "JWK",
-            value: {
-                crv: "Ed25519",
-                d: "T2azVap7CYD_kB8ilbnFYqwwYb5N-GcD6yjGEvquZXg",
-                kty: "OKP",
-                x: "VDXDwuGKVq91zxU6q7__jLDUq8_C5cuxECgd-1feFTE",
-            },
-        }
-    }
+};
+
+export const CHARLIE_SECRET_AUTH_KEY_ED25519: Secret = {
+    id: "did:example:charlie#key-1",
+    type: "JsonWebKey2020",
+    secret_material: {
+        format: "JWK",
+        value: {
+            crv: "Ed25519",
+            d: "T2azVap7CYD_kB8ilbnFYqwwYb5N-GcD6yjGEvquZXg",
+            kty: "OKP",
+            x: "VDXDwuGKVq91zxU6q7__jLDUq8_C5cuxECgd-1feFTE",
+        },
+    },
+};
+
+export const CHARLIE_SECRETS: Secret[] = [
+    CHARLIE_SECRET_KEY_AGREEMENT_KEY_X25519,
+    CHARLIE_SECRET_AUTH_KEY_ED25519
 ]
+
+export const IFROM_PRIOR_MINIMAL: IFromPrior = {
+    iss: CHARLIE_DID,
+    sub: ALICE_DID,
+};
+
+export const FROM_PRIOR_MINIMAL = new FromPrior(IFROM_PRIOR_MINIMAL);
+
+export const IFROM_PRIOR_FULL = {
+    iss: CHARLIE_DID,
+    sub: ALICE_DID,
+    iat: 123456,
+};
+
+export const FROM_PRIOR_FULL = new FromPrior(IFROM_PRIOR_FULL);

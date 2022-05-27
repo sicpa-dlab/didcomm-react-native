@@ -1,17 +1,22 @@
 package com.sicpa.didcomm.reactnative
 
+import android.util.Log
 import com.facebook.react.bridge.*
 import com.facebook.react.module.annotations.ReactModule
 import com.sicpa.didcomm.reactnative.utils.JsonUtils
+import com.sicpa.didcomm.reactnative.utils.parseAnonCryptAlg
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.didcommx.didcomm.DIDComm
+import org.didcommx.didcomm.common.DIDCommMessageProtocolTypes
+import org.didcommx.didcomm.crypto.parse
 import org.didcommx.didcomm.message.Message
 import org.didcommx.didcomm.model.PackEncryptedParams
 import org.didcommx.didcomm.model.PackPlaintextParams
 import org.didcommx.didcomm.model.PackSignedParams
 import org.didcommx.didcomm.model.UnpackParams
+import org.didcommx.didcomm.protocols.routing.Routing
 
 private const val MODULE_NAME = "DIDCommMessageHelpersModule"
 
@@ -24,6 +29,7 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
     private val scope = CoroutineScope(Dispatchers.Default)
 
     private var didCommInstance: DIDComm? = null
+    private var routingInstance: Routing? = null
 
     @ReactMethod
     fun packEncrypted(
@@ -55,17 +61,21 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
 
                 promise.resolve(resultArray)
             } catch (e: Throwable) {
-                promise.reject(MODULE_NAME, "Error on packing encrypted DIDComm message: ${e.message}", e)
+                promise.reject(
+                    MODULE_NAME,
+                    "Error on packing encrypted DIDComm message: ${e.message}",
+                    e
+                )
             }
         }
     }
 
     @ReactMethod
-    fun packSigned(messageData: ReadableMap, sign_by: String, promise: Promise) {
+    fun packSigned(messageData: ReadableMap, signBy: String, promise: Promise) {
         scope.launch {
             try {
                 val message = parseMessage(messageData)
-                val params = PackSignedParams.builder(message, sign_by).build()
+                val params = PackSignedParams.builder(message, signBy).build()
 
                 val didComm = getDidCommInstance()
                 val packResult = didComm.packSigned(params)
@@ -77,7 +87,11 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
 
                 promise.resolve(resultArray)
             } catch (e: Throwable) {
-                promise.reject(MODULE_NAME, "Error on packing signed DIDComm message: ${e.message}", e)
+                promise.reject(
+                    MODULE_NAME,
+                    "Error on packing signed DIDComm message: ${e.message}",
+                    e
+                )
             }
         }
     }
@@ -94,7 +108,11 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
 
                 promise.resolve(packResult.packedMessage)
             } catch (e: Throwable) {
-                promise.reject(MODULE_NAME, "Error on packing plaintext DIDComm message: ${e.message}", e)
+                promise.reject(
+                    MODULE_NAME,
+                    "Error on packing plaintext DIDComm message: ${e.message}",
+                    e
+                )
             }
         }
     }
@@ -121,6 +139,31 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
         }
     }
 
+    @ReactMethod
+    fun wrapInForward(
+        message: String,
+        headers: ReadableMap,
+        to: String,
+        routingKeys: ReadableArray,
+        jsAnonCryptAlg: String,
+        promise: Promise
+    ) {
+        scope.launch {
+            try {
+                val messageMap = JsonUtils.parseJson(message, Map::class.java) as Map<String, Any>
+                val routingKeysList = routingKeys.toArrayList() as List<String>
+                val anonCryptAlg = parseAnonCryptAlg(jsAnonCryptAlg)
+
+                val routing = getRoutingInstance()
+                val wrapResult = routing.wrapInForward(messageMap, to, anonCryptAlg, routingKeysList, headers.toHashMap())
+
+                promise.resolve(wrapResult?.msgEncrypted?.packedMessage)
+            } catch (e: Throwable) {
+                promise.reject(MODULE_NAME, "Error on wrapping DIDComm message in forward", e)
+            }
+        }
+    }
+
     private fun getDidCommInstance(): DIDComm {
         return didCommInstance ?: run {
             val resolversProxyModule =
@@ -133,6 +176,21 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
             )
 
             return didCommInstance as DIDComm
+        }
+    }
+
+    private fun getRoutingInstance(): Routing {
+        return routingInstance ?: run {
+            val resolversProxyModule =
+                reactContext.getNativeModule(ResolversProxyModule::class.java)
+                    ?: throw Exception("Error on creating Routing instance, ResolversProxyModule is not defined")
+
+            routingInstance = Routing(
+                DIDDocResolverProxy(resolversProxyModule),
+                SecretsResolverProxy(resolversProxyModule)
+            )
+
+            return routingInstance as Routing
         }
     }
 

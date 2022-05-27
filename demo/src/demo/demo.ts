@@ -1,5 +1,5 @@
 //Source https://github.com/sicpa-dlab/didcomm-rust/blob/main/wasm/demo/src/main.ts
-import { Message, DIDDoc, DIDResolver, Secret, SecretsResolver } from '@sicpa-dlab/didcomm-react-native'
+import { Message, DIDDoc, DIDResolver, Secret, SecretsResolver, FromPrior } from '@sicpa-dlab/didcomm-react-native'
 
 import {
     ALICE_DID,
@@ -7,8 +7,8 @@ import {
     ALICE_SECRETS,
     BOB_DID,
     BOB_DID_DOC,
-    BOB_SECRETS, CHARLIE_DID, CHARLIE_DID_DOC,
-    CHARLIE_SECRETS
+    BOB_SECRETS, CHARLIE_DID, CHARLIE_DID_DOC, CHARLIE_SECRET_AUTH_KEY_ED25519,
+    CHARLIE_SECRETS, FROM_PRIOR_FULL
 } from './test-vectors'
 
 
@@ -50,9 +50,13 @@ export async function runDemo() {
     console.log('\n=================== REPUDIABLE NON AUTHENTICATED ENCRYPTION ===================\n')
     await repudiableNonAuthentcatedEncryption()
     console.log('\n=================== SIGNED UNENCRYPTED ===================\n')
-    await signedUnencrypteed()
-    console.log('\n=================== PLAINTEXT ===================')
+    await signedUnencrypted()
+    console.log('\n=================== PLAINTEXT ===================\n')
     await plaintext()
+    console.log('\n=================== WRAP IN FORWARD ===================\n')
+    await wrapInForward()
+    console.log('\n=================== FROM PRIOR PACK/UNPACK ===================')
+    await fromPrior()
 }
 
 async function nonRepudiableEncryption() {
@@ -166,9 +170,9 @@ async function multiRecipient() {
         {}
     );
 
-    console.log("Reveived message for Bob is\n", unpackedMsgBob.as_value());
+    console.log("Received message for Bob is\n", unpackedMsgBob.as_value());
     console.log(
-        "Reveived message unpack metadata for Bob is\n",
+        "Received message unpack metadata for Bob is\n",
         unpackMetadataBob
     );
 
@@ -184,11 +188,11 @@ async function multiRecipient() {
     );
 
     console.log(
-        "Reveived message for Charlie is\n",
+        "Received message for Charlie is\n",
         unpackedMsgCharlie.as_value()
     );
     console.log(
-        "Reveived message unpack metadata for Charlie is\n",
+        "Received message unpack metadata for Charlie is\n",
         unpackMetadataCharlie
     );
 }
@@ -272,7 +276,7 @@ async function repudiableNonAuthentcatedEncryption() {
     console.log('Received message unpack metadata is\n', unpackMetadata)
 }
 
-async function signedUnencrypteed() {
+async function signedUnencrypted() {
     // --- Building message from ALICE to BOB ---
     const msg = new Message({
         id: "1234567890",
@@ -311,8 +315,8 @@ async function signedUnencrypteed() {
         {}
     );
 
-    console.log("Reveived message is\n", unpackedMsg.as_value());
-    console.log("Reveived message unpack metadata is\n", unpackMetadata);
+    console.log("Received message is\n", unpackedMsg.as_value());
+    console.log("Received message unpack metadata is\n", unpackMetadata);
 }
 
 async function plaintext() {
@@ -347,7 +351,56 @@ async function plaintext() {
         {}
     );
 
-    console.log("Reveived message is\n", unpackedMsg.as_value());
-    console.log("Reveived message unpack metadata is\n", unpackMetadata);
+    console.log("Received message is\n", unpackedMsg.as_value());
+    console.log("Received message unpack metadata is\n", unpackMetadata);
+}
+
+async function wrapInForward() {
+    const msg = new Message({
+        id: "1234567890",
+        typ: "application/didcomm-plain+json",
+        type: "http://example.com/protocols/lets_do_lunch/1.0/proposal",
+        from: "did:example:bob",
+        to: ["did:example:alice"],
+        created_time: 1516269022,
+        expires_time: 1516385931,
+        body: { messagespecificattribute: "and its value" },
+    })
+
+    const wrapResult = await Message.wrap_in_forward(
+        JSON.stringify(msg),
+        { header1: "aaa", header2: "bbb" },
+        ALICE_DID,
+        ["did:example:bob#key-x25519-1"],
+        "A256cbcHs512EcdhEsA256kw",
+        new ExampleDIDResolver([ALICE_DID_DOC, BOB_DID_DOC])
+    )
+
+    console.log("Wrap in forward result\n", wrapResult)
+}
+
+async function fromPrior() {
+    const fromPrior = FROM_PRIOR_FULL
+
+    console.log("Initial FromPrior content\n", fromPrior)
+
+    const didResolver = new ExampleDIDResolver([
+        ALICE_DID_DOC,
+        CHARLIE_DID_DOC,
+    ]);
+    const secretsResolver = new ExampleSecretsResolver(CHARLIE_SECRETS);
+
+    const [packed, kid] = await fromPrior.pack(
+        CHARLIE_SECRET_AUTH_KEY_ED25519.id,
+        didResolver,
+        secretsResolver
+    );
+
+    console.log("Packed FromPrior content\n", packed)
+    console.log("Packed FromPrior kid\n", kid)
+
+    const [unpacked, _] = await FromPrior.unpack(packed, didResolver)
+
+    console.log("Unpacked FromPrior content\n", unpacked)
 }
 
