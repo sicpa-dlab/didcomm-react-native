@@ -17,9 +17,12 @@ data class JSDIDDoc(
 ) {
     fun toDIDDoc(): DIDDoc {
         val verificationMethods = verification_methods.map {
+            val verificationMaterialValueStr = (it.verification_material.value as? String)
+                ?: JsonUtils.convertToJsonString(it.verification_material.value)
+
             val verificationMaterial = VerificationMaterial(
                 parseVerificationMaterialFormat(it.verification_material.format),
-                JsonUtils.convertToJsonString(it.verification_material.value)
+                verificationMaterialValueStr,
             )
 
             VerificationMethod(
