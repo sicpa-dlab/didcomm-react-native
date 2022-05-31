@@ -8,12 +8,15 @@ import org.didcommx.didcomm.secret.Secret
 
 data class JSSecret(val id: String, val type: String, val secret_material: JSSecretMaterial) {
     fun toSecret(): Secret {
+        val secretMaterialValueStr = (secret_material.value as? String)
+            ?: JsonUtils.convertToJsonString(secret_material.value)
+
         return Secret(
             id,
             parseVerificationMethodType(type),
             VerificationMaterial(
                 parseVerificationMaterialFormat(secret_material.format),
-                JsonUtils.convertToJsonString(secret_material.value)
+                secretMaterialValueStr,
             )
         )
     }
