@@ -25,9 +25,6 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
 
     private val scope = CoroutineScope(Dispatchers.Default)
 
-    private var didCommInstance: DIDComm? = null
-    private var routingInstance: Routing? = null
-
     @ReactMethod
     fun packEncrypted(
         messageData: ReadableMap,
@@ -35,6 +32,7 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
         from: String? = null,
         signFrom: String? = null,
         protectSender: Boolean = true,
+        resolversId: String,
         promise: Promise
     ) {
         scope.launch {
@@ -48,7 +46,7 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
                 builder = from?.let { builder.from(it) } ?: builder
                 builder = signFrom?.let { builder.signFrom(it) } ?: builder
 
-                val didComm = getDidCommInstance()
+                val didComm = createDidCommInstance(resolversId)
                 val packResult = didComm.packEncrypted(builder.build())
 
                 val resultArray = Arguments.createArray().apply {
@@ -68,13 +66,13 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
     }
 
     @ReactMethod
-    fun packSigned(messageData: ReadableMap, signBy: String, promise: Promise) {
+    fun packSigned(messageData: ReadableMap, signBy: String, resolversId: String, promise: Promise) {
         scope.launch {
             try {
                 val message = parseMessage(messageData)
                 val params = PackSignedParams.builder(message, signBy).build()
 
-                val didComm = getDidCommInstance()
+                val didComm = createDidCommInstance(resolversId)
                 val packResult = didComm.packSigned(params)
 
                 val resultArray = Arguments.createArray().apply {
@@ -94,13 +92,13 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
     }
 
     @ReactMethod
-    fun packPlaintext(messageData: ReadableMap, promise: Promise) {
+    fun packPlaintext(messageData: ReadableMap, resolversId: String, promise: Promise) {
         scope.launch {
             try {
                 val message = parseMessage(messageData)
                 val params = PackPlaintextParams.builder(message).build()
 
-                val didComm = getDidCommInstance()
+                val didComm = createDidCommInstance(resolversId)
                 val packResult = didComm.packPlaintext(params)
 
                 promise.resolve(packResult.packedMessage)
@@ -117,11 +115,12 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
     @ReactMethod
     fun unpack(
         packedMessage: String,
+        resolversId: String,
         promise: Promise
     ) {
         scope.launch {
             try {
-                val didComm = getDidCommInstance()
+                val didComm = createDidCommInstance(resolversId)
                 val unpackResult = didComm.unpack(UnpackParams.Builder(packedMessage).build())
 
                 val resultArray = Arguments.createArray().apply {
@@ -143,6 +142,7 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
         to: String,
         routingKeys: ReadableArray,
         jsAnonCryptAlg: String,
+        resolversId: String,
         promise: Promise
     ) {
         scope.launch {
@@ -151,7 +151,7 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
                 val routingKeysList = routingKeys.toArrayList() as List<String>
                 val anonCryptAlg = parseAnonCryptAlg(jsAnonCryptAlg)
 
-                val routing = getRoutingInstance()
+                val routing = createRoutingInstance(resolversId)
                 val wrapResult = routing.wrapInForward(
                     messageMap,
                     to,
@@ -167,34 +167,24 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
         }
     }
 
-    private fun getDidCommInstance(): DIDComm {
-        return didCommInstance ?: run {
-            val resolversProxyModule =
-                reactContext.getNativeModule(ResolversProxyModule::class.java)
-                    ?: throw Exception("Error on creating DIDComm instance, ResolversProxyModule is not defined")
-
-            didCommInstance = DIDComm(
-                DIDDocResolverProxy(resolversProxyModule),
-                SecretsResolverProxy(resolversProxyModule)
-            )
-
-            return didCommInstance as DIDComm
-        }
+    private fun createDidCommInstance(resolversId: String): DIDComm {
+        val resolversProxyModule =
+            reactContext.getNativeModule(ResolversProxyModule::class.java)
+                ?: throw Exception("Error on creating DIDComm instance, ResolversProxyModule is not defined")
+        return DIDComm(
+            DIDDocResolverProxy(resolversProxyModule, resolversId),
+            SecretsResolverProxy(resolversProxyModule, resolversId)
+        )
     }
 
-    private fun getRoutingInstance(): Routing {
-        return routingInstance ?: run {
-            val resolversProxyModule =
-                reactContext.getNativeModule(ResolversProxyModule::class.java)
-                    ?: throw Exception("Error on creating Routing instance, ResolversProxyModule is not defined")
-
-            routingInstance = Routing(
-                DIDDocResolverProxy(resolversProxyModule),
-                SecretsResolverProxy(resolversProxyModule)
-            )
-
-            return routingInstance as Routing
-        }
+    private fun createRoutingInstance(resolversId: String): Routing {
+        val resolversProxyModule =
+            reactContext.getNativeModule(ResolversProxyModule::class.java)
+                ?: throw Exception("Error on creating Routing instance, ResolversProxyModule is not defined")
+        return Routing(
+            DIDDocResolverProxy(resolversProxyModule, resolversId),
+            SecretsResolverProxy(resolversProxyModule, resolversId)
+        )
     }
 
     private fun parseMessage(messageData: ReadableMap): Message {

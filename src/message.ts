@@ -31,19 +31,27 @@ export class Message implements DIDCommMessage {
     secrets_resolver: SecretsResolver,
     options: PackEncryptedOptions,
   ): Promise<[string, PackEncryptedMetadata]> {
-    DIDCommResolversProxy.setResolvers(did_resolver, secrets_resolver)
-    return await DIDCommMessageHelpersModule.packEncrypted(
-      this.payload,
-      to,
-      from,
-      sign_by,
-      options?.protect_sender ?? true,
+    return await DIDCommResolversProxy.withResolvers(
+      (resolversId) =>
+        DIDCommMessageHelpersModule.packEncrypted(
+          this.payload,
+          to,
+          from,
+          sign_by,
+          options?.protect_sender ?? true,
+            resolversId,
+        ),
+      did_resolver,
+      secrets_resolver,
     )
   }
 
   public async pack_plaintext(did_resolver: DIDResolver): Promise<string> {
-    DIDCommResolversProxy.setResolvers(did_resolver, null)
-    return await DIDCommMessageHelpersModule.packPlaintext(this.payload)
+    return await DIDCommResolversProxy.withResolvers(
+      (resolversId) => DIDCommMessageHelpersModule.packPlaintext(this.payload, resolversId),
+      did_resolver,
+      null,
+    )
   }
 
   public async pack_signed(
@@ -51,8 +59,11 @@ export class Message implements DIDCommMessage {
     did_resolver: DIDResolver,
     secrets_resolver: SecretsResolver,
   ): Promise<[string, PackSignedMetadata]> {
-    DIDCommResolversProxy.setResolvers(did_resolver, secrets_resolver)
-    return await DIDCommMessageHelpersModule.packSigned(this.payload, sign_by)
+    return await DIDCommResolversProxy.withResolvers(
+      (resolversId) => DIDCommMessageHelpersModule.packSigned(this.payload, sign_by, resolversId),
+      did_resolver,
+      secrets_resolver,
+    )
   }
 
   public static async unpack(
@@ -61,9 +72,14 @@ export class Message implements DIDCommMessage {
     secrets_resolver: SecretsResolver,
     _options: UnpackOptions,
   ): Promise<[Message, UnpackMetadata]> {
-    DIDCommResolversProxy.setResolvers(did_resolver, secrets_resolver)
-    const [unpackedMsgData, unpackMetadata] = await DIDCommMessageHelpersModule.unpack(msg)
-    return [new Message(unpackedMsgData), unpackMetadata]
+    return await DIDCommResolversProxy.withResolvers(
+      async (resolversId) => {
+        const [unpackedMsgData, unpackMetadata] = await DIDCommMessageHelpersModule.unpack(msg, resolversId)
+        return [new Message(unpackedMsgData), unpackMetadata]
+      },
+      did_resolver,
+      secrets_resolver,
+    )
   }
 
   public static async wrap_in_forward(
@@ -74,8 +90,11 @@ export class Message implements DIDCommMessage {
     enc_alg_anon: string,
     did_resolver: DIDResolver,
   ): Promise<string> {
-    DIDCommResolversProxy.setResolvers(did_resolver, null)
-    return await DIDCommMessageHelpersModule.wrapInForward(msg, headers, to, routing_keys, enc_alg_anon)
+    return await DIDCommResolversProxy.withResolvers(
+      (resolversId) => DIDCommMessageHelpersModule.wrapInForward(msg, headers, to, routing_keys, enc_alg_anon, resolversId),
+      did_resolver,
+      null,
+    )
   }
 
   public try_parse_forward(): ParsedForward {

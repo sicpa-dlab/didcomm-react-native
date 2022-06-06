@@ -39,7 +39,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Button title={"Run DIDComm demo"} onPress={handleRun} disabled={isDemoRunning}></Button>
+      <Button title={"Run DIDComm demo"} onPress={handleRun}></Button>
       <Text>Please see logs for demo run results.</Text>
     </View>
   )

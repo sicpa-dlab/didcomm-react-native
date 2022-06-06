@@ -6,7 +6,7 @@ import org.didcommx.didcomm.secret.Secret
 import org.didcommx.didcomm.secret.SecretResolver
 import java.util.*
 
-class SecretsResolverProxy(private val resolversProxyModule: ResolversProxyModule) : SecretResolver {
+class SecretsResolverProxy(private val resolversProxyModule: ResolversProxyModule, private val resolversId: String) : SecretResolver {
 
     companion object {
         private const val TAG = "SecretsResolverProxy"
@@ -20,7 +20,7 @@ class SecretsResolverProxy(private val resolversProxyModule: ResolversProxyModul
         var foundSecret: Secret? = null
 
         val findKeyJob = scope.launch {
-            resolversProxyModule.sendEvent(FindKey(kid))
+            resolversProxyModule.sendEvent(FindKey(kid), resolversId)
             foundSecret = foundSecretChannel.receive()
         }
 
@@ -33,7 +33,7 @@ class SecretsResolverProxy(private val resolversProxyModule: ResolversProxyModul
         var foundSecrets: Set<String> = emptySet()
 
         val findKeysJob = scope.launch {
-            resolversProxyModule.sendEvent(FindKeys(kids))
+            resolversProxyModule.sendEvent(FindKeys(kids), resolversId)
             foundSecrets = foundSecretIdsChannel.receive()
         }
 

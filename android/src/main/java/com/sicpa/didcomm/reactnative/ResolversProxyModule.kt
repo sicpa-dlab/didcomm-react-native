@@ -26,6 +26,7 @@ class ResolversProxyModule(private val reactContext: ReactApplicationContext) :
         private const val DID_STRING_KEY = "did"
         private const val KID_STRING_KEY = "kid"
         private const val KIDS_STRING_KEY = "kids"
+        private const val RESOLVERS_ID_STRING_KEY = "resolversId"
     }
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -75,13 +76,14 @@ class ResolversProxyModule(private val reactContext: ReactApplicationContext) :
         // Remove upstream listeners, stop unnecessary background tasks
     }
 
-    fun sendEvent(event: ResolverProxyEvent) {
+    fun sendEvent(event: ResolverProxyEvent, resolversId: String) {
         val params = Arguments.createMap().apply {
             when (event) {
                 is ResolveDid -> putString(DID_STRING_KEY, event.did)
                 is FindKey -> putString(KID_STRING_KEY, event.kid)
                 is FindKeys -> putArray(KIDS_STRING_KEY, Arguments.fromList(event.kids))
             }
+            putString(RESOLVERS_ID_STRING_KEY, resolversId)
         }
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(
             event.type, params
@@ -93,7 +95,8 @@ class ResolversProxyModule(private val reactContext: ReactApplicationContext) :
         return mutableMapOf(
             "DID_STRING_KEY" to DID_STRING_KEY,
             "KID_STRING_KEY" to KID_STRING_KEY,
-            "KIDS_STRING_KEY" to KIDS_STRING_KEY
+            "KIDS_STRING_KEY" to KIDS_STRING_KEY,
+            "RESOLVERS_ID_STRING_KEY" to RESOLVERS_ID_STRING_KEY
         )
     }
 

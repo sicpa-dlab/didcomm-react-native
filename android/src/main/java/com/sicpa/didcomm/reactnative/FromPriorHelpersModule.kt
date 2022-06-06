@@ -23,11 +23,8 @@ class FromPriorHelpersModule(private val reactContext: ReactApplicationContext) 
 
     private val scope = CoroutineScope(Dispatchers.Default)
 
-    private var senderKeySelectorInstance: SenderKeySelector? = null
-    private var recipientKeySelectorInstance: RecipientKeySelector? = null
-
     @ReactMethod
-    fun pack(fromPriorData: ReadableMap, issuerKid: String, promise: Promise) {
+    fun pack(fromPriorData: ReadableMap, issuerKid: String, resolversId: String, promise: Promise) {
         scope.launch {
             try {
                 val fromPrior = parseFromPrior(fromPriorData)
@@ -36,7 +33,7 @@ class FromPriorHelpersModule(private val reactContext: ReactApplicationContext) 
                 //See https://github.com/sicpa-dlab/didcomm-jvm/blob/main/lib/src/main/kotlin/org/didcommx/didcomm/operations/FromPrior.kt#L14
                 val message = DIDCommUtils.getEmptyMessageBuilder().fromPrior(fromPrior).build()
 
-                val senderKeySelector = getSenderKeySelectorInstance()
+                val senderKeySelector = createSenderKeySelectorInstance(resolversId)
                 val packResult = packFromPrior(message, issuerKid, senderKeySelector)
 
                 val resultArray = Arguments.createArray().apply {
@@ -56,14 +53,15 @@ class FromPriorHelpersModule(private val reactContext: ReactApplicationContext) 
     }
 
     @ReactMethod
-    fun unpack(fromPriorJwt: String, promise: Promise) {
+    fun unpack(fromPriorJwt: String, resolversId: String, promise: Promise) {
         scope.launch {
             try {
                 //We need to build empty message with `fromPriorJwt` property to pass it to `unpackFromPrior`
                 //See https://github.com/sicpa-dlab/didcomm-jvm/blob/main/lib/src/main/kotlin/org/didcommx/didcomm/operations/FromPrior.kt#L28
-                val message = DIDCommUtils.getEmptyMessageBuilder().fromPriorJwt(fromPriorJwt).build()
+                val message =
+                    DIDCommUtils.getEmptyMessageBuilder().fromPriorJwt(fromPriorJwt).build()
 
-                val recipientKeySelector = getRecipientKeySelectorInstance()
+                val recipientKeySelector = getRecipientKeySelectorInstance(resolversId)
                 val unpackResult = unpackFromPrior(message, recipientKeySelector)
 
                 val resultArray = Arguments.createArray().apply {
@@ -86,34 +84,24 @@ class FromPriorHelpersModule(private val reactContext: ReactApplicationContext) 
         }
     }
 
-    private fun getSenderKeySelectorInstance(): SenderKeySelector {
-        return senderKeySelectorInstance ?: run {
-            val resolversProxyModule =
-                reactContext.getNativeModule(ResolversProxyModule::class.java)
-                    ?: throw Exception("Error on creating SenderKeySelector instance, ResolversProxyModule is not defined")
-
-            senderKeySelectorInstance = SenderKeySelector(
-                DIDDocResolverProxy(resolversProxyModule),
-                SecretsResolverProxy(resolversProxyModule)
-            )
-
-            return senderKeySelectorInstance as SenderKeySelector
-        }
+    private fun createSenderKeySelectorInstance(resolversId: String): SenderKeySelector {
+        val resolversProxyModule =
+            reactContext.getNativeModule(ResolversProxyModule::class.java)
+                ?: throw Exception("Error on creating SenderKeySelector instance, ResolversProxyModule is not defined")
+        return SenderKeySelector(
+            DIDDocResolverProxy(resolversProxyModule, resolversId),
+            SecretsResolverProxy(resolversProxyModule, resolversId)
+        )
     }
 
-    private fun getRecipientKeySelectorInstance(): RecipientKeySelector {
-        return recipientKeySelectorInstance ?: run {
-            val resolversProxyModule =
-                reactContext.getNativeModule(ResolversProxyModule::class.java)
-                    ?: throw Exception("Error on creating RecipientKeySelector instance, ResolversProxyModule is not defined")
-
-            recipientKeySelectorInstance = RecipientKeySelector(
-                DIDDocResolverProxy(resolversProxyModule),
-                SecretsResolverProxy(resolversProxyModule)
-            )
-
-            return recipientKeySelectorInstance as RecipientKeySelector
-        }
+    private fun getRecipientKeySelectorInstance(resolversId: String): RecipientKeySelector {
+        val resolversProxyModule =
+            reactContext.getNativeModule(ResolversProxyModule::class.java)
+                ?: throw Exception("Error on creating RecipientKeySelector instance, ResolversProxyModule is not defined")
+        return RecipientKeySelector(
+            DIDDocResolverProxy(resolversProxyModule, resolversId),
+            SecretsResolverProxy(resolversProxyModule, resolversId)
+        )
     }
 
     private fun parseFromPrior(fromPriorData: ReadableMap): FromPrior? {

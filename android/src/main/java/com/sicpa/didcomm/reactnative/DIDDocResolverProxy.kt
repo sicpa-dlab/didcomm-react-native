@@ -6,7 +6,7 @@ import org.didcommx.didcomm.diddoc.DIDDoc
 import org.didcommx.didcomm.diddoc.DIDDocResolver
 import java.util.*
 
-class DIDDocResolverProxy(private val resolversProxyModule: ResolversProxyModule) : DIDDocResolver {
+class DIDDocResolverProxy(private val resolversProxyModule: ResolversProxyModule, private val resolversId: String) : DIDDocResolver {
 
     companion object {
         private const val TAG = "DIDDocResolverProxy"
@@ -19,7 +19,7 @@ class DIDDocResolverProxy(private val resolversProxyModule: ResolversProxyModule
         var resolvedDid: DIDDoc? = null
 
         val resolveDidJob = scope.launch {
-            resolversProxyModule.sendEvent(ResolveDid(did))
+            resolversProxyModule.sendEvent(ResolveDid(did), resolversId)
             resolvedDid = resolvedDidChannel.receive()
         }
 
