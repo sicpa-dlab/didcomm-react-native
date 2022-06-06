@@ -49,16 +49,12 @@ export class DIDCommResolversProxy {
     const resolversId = this.registerResolvers(didDocResolver, secretsResolver)
     try {
       return await action(resolversId)
-    }
-    finally {
+    } finally {
       this.unregisterResolvers(resolversId)
     }
   }
 
-  private static registerResolvers(
-    didDocResolver: DIDResolver | null,
-    secretsResolver: SecretsResolver | null,
-  ) {
+  private static registerResolvers(didDocResolver: DIDResolver | null, secretsResolver: SecretsResolver | null) {
     const key = getRandomShortString()
     this.resolvers.set(key, { didDocResolver, secretsResolver })
     return key

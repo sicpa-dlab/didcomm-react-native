@@ -39,7 +39,7 @@ export class Message implements DIDCommMessage {
           from,
           sign_by,
           options?.protect_sender ?? true,
-            resolversId,
+          resolversId,
         ),
       did_resolver,
       secrets_resolver,
@@ -91,7 +91,8 @@ export class Message implements DIDCommMessage {
     did_resolver: DIDResolver,
   ): Promise<string> {
     return await DIDCommResolversProxy.withResolvers(
-      (resolversId) => DIDCommMessageHelpersModule.wrapInForward(msg, headers, to, routing_keys, enc_alg_anon, resolversId),
+      (resolversId) =>
+        DIDCommMessageHelpersModule.wrapInForward(msg, headers, to, routing_keys, enc_alg_anon, resolversId),
       did_resolver,
       null,
     )
