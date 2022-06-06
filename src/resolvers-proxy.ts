@@ -55,13 +55,17 @@ export class DIDCommResolversProxy {
   }
 
   private static registerResolvers(didDocResolver: DIDResolver | null, secretsResolver: SecretsResolver | null) {
-    const key = getRandomShortString()
-    this.resolvers.set(key, { didDocResolver, secretsResolver })
-    return key
+    const resolversId = getRandomShortString()
+    this.resolvers.set(resolversId, { didDocResolver, secretsResolver })
+    return resolversId
   }
 
-  private static unregisterResolvers(key: string) {
-    this.resolvers.delete(key)
+  private static unregisterResolvers(resolversId: string) {
+    this.resolvers.delete(resolversId)
+  }
+
+  private static getResolvers(resolversId: string): DIDCommResolvers | undefined {
+    return this.resolvers.get(resolversId)
   }
 
   private static async findKeys(kids: string[], resolversId: string) {
@@ -95,9 +99,5 @@ export class DIDCommResolversProxy {
 
     const resolvedDid = await didDocResolver.resolve(did)
     DIDCommResolversProxyModule.setResolvedDid(JSON.stringify(resolvedDid))
-  }
-
-  private static getResolvers(resolversId: string): DIDCommResolvers | undefined {
-    return this.resolvers.get(resolversId)
   }
 }
