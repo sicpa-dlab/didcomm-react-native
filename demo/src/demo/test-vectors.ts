@@ -1,7 +1,9 @@
 //Source https://github.com/sicpa-dlab/didcomm-rust/blob/main/wasm/demo/src/test-vectors.ts
+import { DIDDoc, Secret, FromPrior, IFromPrior } from "@sicpa-dlab/didcomm-react-native"
+
 export const ALICE_DID = "did:example:alice"
 
-export const ALICE_DID_DOC = {
+export const ALICE_DID_DOC: DIDDoc = {
   did: "did:example:alice",
   key_agreements: [
     "did:example:alice#key-x25519-not-in-secrets-1",
@@ -110,7 +112,7 @@ export const ALICE_DID_DOC = {
   services: [],
 }
 
-export const ALICE_SECRETS = [
+export const ALICE_SECRETS: Secret[] = [
   {
     id: "did:example:alice#key-1",
     type: "JsonWebKey2020",
@@ -197,7 +199,7 @@ export const ALICE_SECRETS = [
 
 export const BOB_DID = "did:example:bob"
 
-export const BOB_DID_DOC = {
+export const BOB_DID_DOC: DIDDoc = {
   did: "did:example:bob",
   key_agreements: [
     "did:example:bob#key-x25519-1",
@@ -339,7 +341,7 @@ export const BOB_DID_DOC = {
   services: [],
 }
 
-export const BOB_SECRETS = [
+export const BOB_SECRETS: Secret[] = [
   {
     id: "did:example:bob#key-x25519-1",
     type: "JsonWebKey2020",
@@ -464,3 +466,85 @@ export const BOB_SECRETS = [
     },
   },
 ]
+
+export const CHARLIE_DID = "did:example:charlie"
+
+export const CHARLIE_DID_DOC: DIDDoc = {
+  did: "did:example:charlie",
+  key_agreements: ["did:example:charlie#key-x25519-1"],
+  authentications: ["did:example:charlie#key-1"],
+  verification_methods: [
+    {
+      id: "did:example:charlie#key-x25519-1",
+      type: "JsonWebKey2020",
+      controller: "did:example:charlie#key-x25519-1",
+      verification_material: {
+        format: "JWK",
+        value: {
+          crv: "X25519",
+          kty: "OKP",
+          x: "nTiVFj7DChMsETDdxd5dIzLAJbSQ4j4UG6ZU1ogLNlw",
+        },
+      },
+    },
+    {
+      id: "did:example:charlie#key-1",
+      type: "JsonWebKey2020",
+      controller: "did:example:charlie#key-1",
+      verification_material: {
+        format: "JWK",
+        value: {
+          crv: "Ed25519",
+          kty: "OKP",
+          x: "VDXDwuGKVq91zxU6q7__jLDUq8_C5cuxECgd-1feFTE",
+        },
+      },
+    },
+  ],
+  services: [],
+}
+
+export const CHARLIE_SECRET_KEY_AGREEMENT_KEY_X25519: Secret = {
+  id: "did:example:charlie#key-x25519-1",
+  type: "JsonWebKey2020",
+  secret_material: {
+    format: "JWK",
+    value: {
+      crv: "X25519",
+      d: "Z-BsgFe-eCvhuZlCBX5BV2XiDE2M92gkaORCe68YdZI",
+      kty: "OKP",
+      x: "nTiVFj7DChMsETDdxd5dIzLAJbSQ4j4UG6ZU1ogLNlw",
+    },
+  },
+}
+
+export const CHARLIE_SECRET_AUTH_KEY_ED25519: Secret = {
+  id: "did:example:charlie#key-1",
+  type: "JsonWebKey2020",
+  secret_material: {
+    format: "JWK",
+    value: {
+      crv: "Ed25519",
+      d: "T2azVap7CYD_kB8ilbnFYqwwYb5N-GcD6yjGEvquZXg",
+      kty: "OKP",
+      x: "VDXDwuGKVq91zxU6q7__jLDUq8_C5cuxECgd-1feFTE",
+    },
+  },
+}
+
+export const CHARLIE_SECRETS: Secret[] = [CHARLIE_SECRET_KEY_AGREEMENT_KEY_X25519, CHARLIE_SECRET_AUTH_KEY_ED25519]
+
+export const IFROM_PRIOR_MINIMAL: IFromPrior = {
+  iss: CHARLIE_DID,
+  sub: ALICE_DID,
+}
+
+export const FROM_PRIOR_MINIMAL = new FromPrior(IFROM_PRIOR_MINIMAL)
+
+export const IFROM_PRIOR_FULL = {
+  iss: CHARLIE_DID,
+  sub: ALICE_DID,
+  iat: 123456,
+}
+
+export const FROM_PRIOR_FULL = new FromPrior(IFROM_PRIOR_FULL)

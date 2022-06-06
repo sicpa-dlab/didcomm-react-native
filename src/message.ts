@@ -41,16 +41,18 @@ export class Message implements DIDCommMessage {
     )
   }
 
-  public pack_plaintext(did_resolver: DIDResolver): Promise<string> {
-    throw new Error("'Message.pack_plaintext' is not implemented yet")
+  public async pack_plaintext(did_resolver: DIDResolver): Promise<string> {
+    DIDCommResolversProxy.setResolvers(did_resolver, null)
+    return await DIDCommMessageHelpersModule.packPlaintext(this.payload)
   }
 
-  public pack_signed(
+  public async pack_signed(
     sign_by: string,
     did_resolver: DIDResolver,
     secrets_resolver: SecretsResolver,
   ): Promise<[string, PackSignedMetadata]> {
-    throw new Error("'Message.pack_signed' is not implemented yet")
+    DIDCommResolversProxy.setResolvers(did_resolver, secrets_resolver)
+    return await DIDCommMessageHelpersModule.packSigned(this.payload, sign_by)
   }
 
   public static async unpack(
@@ -64,7 +66,7 @@ export class Message implements DIDCommMessage {
     return [new Message(unpackedMsgData), unpackMetadata]
   }
 
-  public static wrap_in_forward(
+  public static async wrap_in_forward(
     msg: string,
     headers: Record<string, string>,
     to: string,
@@ -72,13 +74,13 @@ export class Message implements DIDCommMessage {
     enc_alg_anon: string,
     did_resolver: DIDResolver,
   ): Promise<string> {
-    throw new Error("'Message.wrap_in_forward' is not implemented yet")
+    DIDCommResolversProxy.setResolvers(did_resolver, null)
+    return await DIDCommMessageHelpersModule.wrapInForward(msg, headers, to, routing_keys, enc_alg_anon)
   }
 
   public try_parse_forward(): ParsedForward {
     throw new Error("'Message.try_parse_forward' is not implemented yet")
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   public free(): void {}
 }
