@@ -1,7 +1,6 @@
 import { DIDResolver, SecretsResolver } from "didcomm"
 import { NativeEventEmitter, NativeModules } from "react-native"
-
-import { getRandomShortString } from "./utils"
+import uuid from "react-native-uuid"
 
 const { DIDCommResolversProxyModule } = NativeModules
 const { DID_STRING_KEY, KID_STRING_KEY, KIDS_STRING_KEY, RESOLVERS_ID_STRING_KEY } =
@@ -55,7 +54,7 @@ export class DIDCommResolversProxy {
   }
 
   private static registerResolvers(didDocResolver: DIDResolver | null, secretsResolver: SecretsResolver | null) {
-    const resolversId = getRandomShortString()
+    const resolversId = uuid.v4() as string
     this.resolvers.set(resolversId, { didDocResolver, secretsResolver })
     return resolversId
   }

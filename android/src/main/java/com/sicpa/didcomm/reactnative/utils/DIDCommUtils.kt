@@ -1,6 +1,5 @@
 package com.sicpa.didcomm.reactnative.utils
 
-import com.google.gson.Gson
 import org.didcommx.didcomm.message.MessageBuilder
 
 object DIDCommUtils {
