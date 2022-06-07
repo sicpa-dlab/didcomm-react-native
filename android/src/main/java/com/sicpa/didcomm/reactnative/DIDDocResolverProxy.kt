@@ -2,6 +2,8 @@ package com.sicpa.didcomm.reactnative
 
 import com.sicpa.didcomm.reactnative.utils.runBlockingWithTimeout
 import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.didcommx.didcomm.diddoc.DIDDoc
 import org.didcommx.didcomm.diddoc.DIDDocResolver
 import java.util.*
@@ -10,6 +12,7 @@ class DIDDocResolverProxy(private val resolversProxyModule: ResolversProxyModule
 
     companion object {
         private const val TAG = "DIDDocResolverProxy"
+        private val resolveMutex = Mutex()
     }
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -19,8 +22,10 @@ class DIDDocResolverProxy(private val resolversProxyModule: ResolversProxyModule
         var resolvedDid: DIDDoc? = null
 
         val resolveDidJob = scope.launch {
-            resolversProxyModule.sendEvent(ResolveDid(did), resolversId)
-            resolvedDid = resolvedDidChannel.receive()
+            resolveMutex.withLock {
+                resolversProxyModule.sendEvent(ResolveDid(did), resolversId)
+                resolvedDid = resolvedDidChannel.receive()
+            }
         }
 
         runBlockingWithTimeout(resolveDidJob, "${TAG}.resolve")
