@@ -60,8 +60,8 @@ A general usage of the API is the following:
   - Build a `Message` (plaintext, payload).
   - Convert a message to a DIDComm Message for further transporting by calling one of the following:
     - `Message.pack_encrypted` to build an Encrypted DIDComm message
-    - **[To be implemented]** `Message.pack_signed` to build a Signed DIDComm message
-    - **[To be implemented]** `Message.pack_plaintext` to build a Plaintext DIDComm message
+    - `Message.pack_signed` to build a Signed DIDComm message
+    - `Message.pack_plaintext` to build a Plaintext DIDComm message
 - Receiver side:
   - Call `Message.unpack` on receiver side that will decrypt the message, verify signature if needed
     and return a `Message` for further processing on the application level.
