@@ -1,6 +1,6 @@
 {
   "name": "@sicpa-dlab/didcomm-react-native",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "React Native wrapper for DIDComm v2",
   "main": "lib/module/index.js",
   "module": "lib/module/index.js",
