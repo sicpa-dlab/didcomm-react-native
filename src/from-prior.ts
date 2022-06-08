@@ -17,14 +17,22 @@ export class FromPrior implements DIDCommFromPrior {
     did_resolver: DIDResolver,
     secrets_resolver: SecretsResolver,
   ): Promise<[string, string]> {
-    DIDCommResolversProxy.setResolvers(did_resolver, secrets_resolver)
-    return await DIDCommFromPriorHelpersModule.pack(this.value, issuer_kid)
+    return await DIDCommResolversProxy.withResolvers(
+      (resolversId) => DIDCommFromPriorHelpersModule.pack(this.value, issuer_kid, resolversId),
+      did_resolver,
+      secrets_resolver,
+    )
   }
 
   public static async unpack(from_prior: string, did_resolver: DIDResolver): Promise<[FromPrior, string]> {
-    DIDCommResolversProxy.setResolvers(did_resolver, null)
-    const [unpackedFromPriorData, issuerKid] = await DIDCommFromPriorHelpersModule.unpack(from_prior)
-    return [new FromPrior(unpackedFromPriorData), issuerKid]
+    return await DIDCommResolversProxy.withResolvers(
+      async (resolversId) => {
+        const [unpackedFromPriorData, issuerKid] = await DIDCommFromPriorHelpersModule.unpack(from_prior, resolversId)
+        return [new FromPrior(unpackedFromPriorData), issuerKid]
+      },
+      did_resolver,
+      null,
+    )
   }
 
   public free(): void {}

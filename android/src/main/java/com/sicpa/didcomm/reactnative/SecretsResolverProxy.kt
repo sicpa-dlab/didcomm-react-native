@@ -2,14 +2,18 @@ package com.sicpa.didcomm.reactnative
 
 import com.sicpa.didcomm.reactnative.utils.runBlockingWithTimeout
 import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.didcommx.didcomm.secret.Secret
 import org.didcommx.didcomm.secret.SecretResolver
 import java.util.*
 
-class SecretsResolverProxy(private val resolversProxyModule: ResolversProxyModule) : SecretResolver {
+class SecretsResolverProxy(private val resolversProxyModule: ResolversProxyModule, private val resolversId: String) : SecretResolver {
 
     companion object {
         private const val TAG = "SecretsResolverProxy"
+        private val findKeyMutex = Mutex()
+        private val findKeysMutex = Mutex()
     }
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -20,8 +24,10 @@ class SecretsResolverProxy(private val resolversProxyModule: ResolversProxyModul
         var foundSecret: Secret? = null
 
         val findKeyJob = scope.launch {
-            resolversProxyModule.sendEvent(FindKey(kid))
-            foundSecret = foundSecretChannel.receive()
+            findKeyMutex.withLock {
+                resolversProxyModule.sendEvent(FindKey(kid), resolversId)
+                foundSecret = foundSecretChannel.receive()
+            }
         }
 
         runBlockingWithTimeout(findKeyJob, "${TAG}.findKey")
@@ -33,8 +39,10 @@ class SecretsResolverProxy(private val resolversProxyModule: ResolversProxyModul
         var foundSecrets: Set<String> = emptySet()
 
         val findKeysJob = scope.launch {
-            resolversProxyModule.sendEvent(FindKeys(kids))
-            foundSecrets = foundSecretIdsChannel.receive()
+            findKeysMutex.withLock {
+                resolversProxyModule.sendEvent(FindKeys(kids), resolversId)
+                foundSecrets = foundSecretIdsChannel.receive()
+            }
         }
 
         runBlockingWithTimeout(findKeysJob, "${TAG}.findKeys")
