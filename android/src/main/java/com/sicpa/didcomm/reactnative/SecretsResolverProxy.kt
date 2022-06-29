@@ -32,12 +32,12 @@ class SecretsResolverProxy(private val resolversProxyModule: ResolversProxyModul
                 if (foundSecret?.kid != kid) {
                     Log.e(
                         TAG,
-                        "Got invalid key from proxy. Requested KID: ${kid}, Result KID: ${foundSecret?.kid}. Retrying..."
+                        "Got invalid result from proxy. Requested KID: ${kid}, Result KID: ${foundSecret?.kid}. Retrying..."
                     )
                     foundSecret = resolveKeyFromProxy(kid)
                     if (foundSecret?.kid != kid) Log.e(
                         TAG,
-                        "Got invalid key on retry. Requested KID: ${kid}, Result KID: ${foundSecret?.kid}"
+                        "Got invalid result on retry. Requested KID: ${kid}, Result KID: ${foundSecret?.kid}"
                     )
                 }
             }
@@ -59,12 +59,12 @@ class SecretsResolverProxy(private val resolversProxyModule: ResolversProxyModul
                 if (foundSecrets.any { !kids.contains(it) }) {
                     Log.e(
                         TAG,
-                        "Got invalid DIDDoc from proxy. Requested KIDs: ${kids.joinToString()}, Result DID: ${foundSecrets.joinToString()}. Retrying..."
+                        "Got invalid result from proxy. Requested KIDs: ${kids.joinToString()}, Result DID: ${foundSecrets.joinToString()}. Retrying..."
                     )
                     foundSecrets = resolveKeysFromProxy(kids)
                     if (foundSecrets.any { !kids.contains(it) }) Log.e(
                         TAG,
-                        "Got invalid keys on retry. Requested KID: ${kids.joinToString()}, Result KID: ${foundSecrets.joinToString()}"
+                        "Got invalid result on retry. Requested KID: ${kids.joinToString()}, Result KID: ${foundSecrets.joinToString()}"
                     )
                 }
             }

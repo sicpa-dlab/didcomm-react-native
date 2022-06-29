@@ -30,12 +30,12 @@ class DIDDocResolverProxy(private val resolversProxyModule: ResolversProxyModule
                 if (resolvedDid?.did != did) {
                     Log.e(
                         TAG,
-                        "Got invalid DIDDoc from proxy. Requested DID: ${did}, Result DID: ${resolvedDid?.did}. Retrying..."
+                        "Got invalid result from proxy. Requested DID: ${did}, Result DID: ${resolvedDid?.did}. Retrying..."
                     )
                     resolvedDid = resolveDidFromProxy(did)
                     if (resolvedDid?.did != did) Log.e(
                         TAG,
-                        "Got invalid DIDDoc on retry. Requested DID: ${did}, Result DID: ${resolvedDid?.did}"
+                        "Got invalid result on retry. Requested DID: ${did}, Result DID: ${resolvedDid?.did}"
                     )
                 }
             }
