@@ -396,19 +396,34 @@ export async function parallelEncryption() {
 
   await Promise.all([
     encryptMessage(bobMsg, BOB_DID_DOC, ALICE_DID_DOC, BOB_SECRETS, ALICE_SECRETS, didResolver),
-    encryptMessage(charlieMsg, CHARLIE_DID_DOC, ALICE_DID_DOC, CHARLIE_SECRETS, ALICE_SECRETS, didResolver)
+    encryptMessage(charlieMsg, CHARLIE_DID_DOC, ALICE_DID_DOC, CHARLIE_SECRETS, ALICE_SECRETS, didResolver),
   ])
 }
 
-async function encryptMessage(message: Message, toDIDDoc: DIDDoc, fromDIDDoc: DIDDoc, recipientKeys: Secret[], senderKeys: Secret[], didResolver: ExampleDIDResolver) {
+async function encryptMessage(
+  message: Message,
+  toDIDDoc: DIDDoc,
+  fromDIDDoc: DIDDoc,
+  recipientKeys: Secret[],
+  senderKeys: Secret[],
+  didResolver: ExampleDIDResolver,
+) {
   const secretsResolver = new ExampleSecretsResolver(senderKeys)
 
-  const [encryptedMsg, metadata] = await message.pack_encrypted(toDIDDoc.did, fromDIDDoc.did, null, didResolver, secretsResolver, {})
-  if(recipientKeys.every(it => !(metadata as any).toKids.includes(it.id))) throw new Error(`Message was encrypted with wrong KIDs`)
+  const [encryptedMsg, metadata] = await message.pack_encrypted(
+    toDIDDoc.did,
+    fromDIDDoc.did,
+    null,
+    didResolver,
+    secretsResolver,
+    {},
+  )
+  if (recipientKeys.every((it) => !(metadata as any).toKids.includes(it.id)))
+    throw new Error(`Message was encrypted with wrong KIDs`)
 
   console.log("Pack encrypted metadata:")
   console.log(metadata)
 
-  console.log('Encrypted message:')
+  console.log("Encrypted message:")
   console.log(JSON.stringify(encryptedMsg))
 }
