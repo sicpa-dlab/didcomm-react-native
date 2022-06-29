@@ -1,5 +1,6 @@
 package com.sicpa.didcomm.reactnative
 
+import android.util.Log
 import com.sicpa.didcomm.reactnative.utils.runBlockingWithTimeout
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
@@ -25,8 +26,20 @@ class SecretsResolverProxy(private val resolversProxyModule: ResolversProxyModul
 
         val findKeyJob = scope.launch {
             findKeyMutex.withLock {
-                resolversProxyModule.sendEvent(FindKey(kid), resolversId)
-                foundSecret = foundSecretChannel.receive()
+                foundSecret = resolveKeyFromProxy(kid)
+
+                // Additional logs and retry logic for debugging. Related to #937
+                if (foundSecret?.kid != kid) {
+                    Log.e(
+                        TAG,
+                        "Got invalid result from proxy. Requested KID: ${kid}, Result KID: ${foundSecret?.kid}. Retrying..."
+                    )
+                    foundSecret = resolveKeyFromProxy(kid)
+                    if (foundSecret?.kid != kid) Log.e(
+                        TAG,
+                        "Got invalid result on retry. Requested KID: ${kid}, Result KID: ${foundSecret?.kid}"
+                    )
+                }
             }
         }
 
@@ -40,13 +53,35 @@ class SecretsResolverProxy(private val resolversProxyModule: ResolversProxyModul
 
         val findKeysJob = scope.launch {
             findKeysMutex.withLock {
-                resolversProxyModule.sendEvent(FindKeys(kids), resolversId)
-                foundSecrets = foundSecretIdsChannel.receive()
+                foundSecrets = resolveKeysFromProxy(kids)
+
+                // Additional logs and retry logic for debugging. Related to #937
+                if (foundSecrets.any { !kids.contains(it) }) {
+                    Log.e(
+                        TAG,
+                        "Got invalid result from proxy. Requested KIDs: ${kids.joinToString()}, Result DID: ${foundSecrets.joinToString()}. Retrying..."
+                    )
+                    foundSecrets = resolveKeysFromProxy(kids)
+                    if (foundSecrets.any { !kids.contains(it) }) Log.e(
+                        TAG,
+                        "Got invalid result on retry. Requested KID: ${kids.joinToString()}, Result KID: ${foundSecrets.joinToString()}"
+                    )
+                }
             }
         }
 
         runBlockingWithTimeout(findKeysJob, "${TAG}.findKeys")
 
         return foundSecrets
+    }
+
+    private suspend fun resolveKeyFromProxy(kid: String): Secret? {
+        resolversProxyModule.sendEvent(FindKey(kid), resolversId)
+        return foundSecretChannel.receive()
+    }
+
+    private suspend fun resolveKeysFromProxy(kids: List<String>): Set<String> {
+        resolversProxyModule.sendEvent(FindKeys(kids), resolversId)
+        return foundSecretIdsChannel.receive()
     }
 }

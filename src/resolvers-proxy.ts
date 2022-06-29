@@ -46,21 +46,19 @@ export class DIDCommResolversProxy {
     secretsResolver: SecretsResolver | null,
   ): Promise<any> {
     const resolversId = this.registerResolvers(didDocResolver, secretsResolver)
-    try {
-      return await action(resolversId)
-    } finally {
-      this.unregisterResolvers(resolversId)
-    }
+    return await action(resolversId).finally(() => this.unregisterResolvers(resolversId))
   }
 
   private static registerResolvers(didDocResolver: DIDResolver | null, secretsResolver: SecretsResolver | null) {
     const resolversId = uuid.v4() as string
     this.resolvers.set(resolversId, { didDocResolver, secretsResolver })
+    console.log(`Resolvers registered: ${resolversId}`)
     return resolversId
   }
 
   private static unregisterResolvers(resolversId: string) {
     this.resolvers.delete(resolversId)
+    console.log(`Resolvers unregistered: ${resolversId}`)
   }
 
   private static getResolvers(resolversId: string): DIDCommResolvers | undefined {
@@ -70,7 +68,9 @@ export class DIDCommResolversProxy {
   private static async findKeys(kids: string[], resolversId: string) {
     const secretsResolver = this.getResolvers(resolversId)?.secretsResolver
     if (!secretsResolver) {
-      console.log("Attempted to proxy 'findKeys' call, but secret resolver is not defined. Skipping...")
+      console.log("Attempted to proxy 'findKeys' call, but secret resolver is not found. Sending empty result...")
+      console.log(`Not found resolvers id: ${resolversId}`)
+      DIDCommResolversProxyModule.setFoundSecretIds(null)
       return
     }
 
@@ -81,7 +81,9 @@ export class DIDCommResolversProxy {
   private static async findKey(kid: string, resolversId: string) {
     const secretsResolver = this.getResolvers(resolversId)?.secretsResolver
     if (!secretsResolver) {
-      console.log("Attempted to proxy 'findKey' call, but secret resolver is not defined. Skipping...")
+      console.log("Attempted to proxy 'findKey' call, but secret resolver is not found. Sending empty result...")
+      console.log(`Not found resolvers id: ${resolversId}`)
+      DIDCommResolversProxyModule.setFoundSecret(null)
       return
     }
 
@@ -92,7 +94,9 @@ export class DIDCommResolversProxy {
   private static async resolveDid(did: string, resolversId: string) {
     const didDocResolver = this.getResolvers(resolversId)?.didDocResolver
     if (!didDocResolver) {
-      console.log("Attempted to proxy 'resolveDid' call, but DID doc resolver is not defined. Skipping...")
+      console.log("Attempted to proxy 'resolveDid' call, but DID doc resolver is not found. Sending empty result...")
+      console.log(`Not found resolvers id: ${resolversId}`)
+      DIDCommResolversProxyModule.setResolvedDid(null)
       return
     }
 
