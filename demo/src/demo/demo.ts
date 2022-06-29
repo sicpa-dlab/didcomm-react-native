@@ -60,6 +60,8 @@ export async function runDemo() {
   await wrapInForward()
   console.log("\n=================== FROM PRIOR PACK/UNPACK ===================")
   await fromPrior()
+  console.log("\n=================== PARALLEL ENCRYPTION ===================")
+  await parallelEncryption()
 }
 
 async function nonRepudiableEncryption() {
@@ -365,4 +367,48 @@ async function fromPrior() {
   const [unpacked, _] = await FromPrior.unpack(packed, didResolver)
 
   console.log("Unpacked FromPrior content\n", unpacked)
+}
+
+export async function parallelEncryption() {
+  const bobMsg = new Message({
+    id: "1234567890",
+    typ: "application/didcomm-plain+json",
+    type: "http://example.com/protocols/lets_do_lunch/1.0/proposal",
+    from: ALICE_DID,
+    to: [BOB_DID],
+    created_time: 1516269022,
+    expires_time: 1516385931,
+    body: { messagespecificattribute: "and its value" },
+  })
+
+  const charlieMsg = new Message({
+    id: "1234567890",
+    typ: "application/didcomm-plain+json",
+    type: "http://example.com/protocols/lets_do_lunch/1.0/proposal",
+    from: ALICE_DID,
+    to: [CHARLIE_DID],
+    created_time: 1516269022,
+    expires_time: 1516385931,
+    body: { messagespecificattribute: "and its value" },
+  })
+
+  const didResolver = new ExampleDIDResolver([ALICE_DID_DOC, BOB_DID_DOC, CHARLIE_DID_DOC])
+
+  await Promise.all([
+    encryptMessage(bobMsg, BOB_DID_DOC, ALICE_DID_DOC, BOB_SECRETS, ALICE_SECRETS, didResolver),
+    encryptMessage(charlieMsg, CHARLIE_DID_DOC, ALICE_DID_DOC, CHARLIE_SECRETS, ALICE_SECRETS, didResolver)
+  ])
+}
+
+async function encryptMessage(message: Message, toDIDDoc: DIDDoc, fromDIDDoc: DIDDoc, recipientKeys: Secret[], senderKeys: Secret[], didResolver: ExampleDIDResolver) {
+  const secretsResolver = new ExampleSecretsResolver(senderKeys)
+
+  const [encryptedMsg, metadata] = await message.pack_encrypted(toDIDDoc.did, fromDIDDoc.did, null, didResolver, secretsResolver, {})
+  if(recipientKeys.every(it => !(metadata as any).toKids.includes(it.id))) throw new Error(`Message was encrypted with wrong KIDs`)
+
+  console.log("Pack encrypted metadata:")
+  console.log(metadata)
+
+  console.log('Encrypted message:')
+  console.log(JSON.stringify(encryptedMsg))
 }

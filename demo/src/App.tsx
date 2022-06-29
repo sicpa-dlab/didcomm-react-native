@@ -37,9 +37,14 @@ export default function App() {
       .finally(() => setIsDemoRunning(false))
   }
 
+  const handleRunMultiple = () => {
+    Promise.all(new Array(10).fill(runDemo().catch((e) => console.log(e))))
+  }
+
   return (
     <View style={styles.container}>
       <Button title={"Run DIDComm demo"} onPress={handleRun} disabled={isDemoRunning}></Button>
+      <Button title={"Run multiple DIDComm demos"} onPress={handleRunMultiple}></Button>
       <Text>Please see logs for demo run results.</Text>
     </View>
   )
