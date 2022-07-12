@@ -35,7 +35,7 @@ data class JSDIDDoc(
 
         val services = services.map {
             val service = it.kind.DIDCommMessaging
-            DIDCommService(it.id, service.service_endpoint, service.route_keys, service.accept)
+            DIDCommService(it.id, service.service_endpoint, service.routing_keys, service.accept)
         }
 
         return DIDDoc(
