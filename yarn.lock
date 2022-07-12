@@ -2824,10 +2824,10 @@ destroy@1.2.0:
   resolved "https://registry.npmjs.org/destroy/-/destroy-1.2.0.tgz"
   integrity sha512-2sJGJTaXIIaR1w4iJSNoN0hnMY7Gpc/n8D4qSCJw8QqFWXf7cuAgnEHxBpweaVcPevC2l3KpjYCx3NypQQgaJg==
 
-didcomm@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.npmjs.org/didcomm/-/didcomm-0.3.1.tgz"
-  integrity sha512-6Yi3jzdSU8pb9+MnqUG4j99j0XkPf1ITK1fkIp2Ir2ZLibk0lDhCmn/xtDRVlgs7Y1o/AbqWXZEAfJdr1hVF0g==
+didcomm@0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/didcomm/-/didcomm-0.3.2.tgz#b6a1d8e444a5651dbe613a6528f7285ff668876d"
+  integrity sha512-5iWTZoQjAK+XqkTEg9bV/aSZL1GTny9ih6m5AigrfagIh8zQcvUhPAtbtC5BvmZfip6LFYulfdWWvJRTKHlwhA==
 
 diff@^4.0.1:
   version "4.0.2"
