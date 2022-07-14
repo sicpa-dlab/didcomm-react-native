@@ -9,6 +9,8 @@ Basic [DIDComm v2](https://identity.foundation/didcomm-messaging/spec) support f
 This package is React Native wrapper for [DIDComm JVM](https://github.com/sicpa-dlab/didcomm-jvm) library.
 It contains native modules that are using [DIDComm JVM](https://github.com/sicpa-dlab/didcomm-jvm) API and exposes Javascript/Typescript API using React Native bridge.
 
+Design documentation for complex parts of implementation can be found in [docs folder](./docs).
+
 ## Usage
 
 In your project root, create `.npmrc` file with following content to be able to install package from GitHub registry:
