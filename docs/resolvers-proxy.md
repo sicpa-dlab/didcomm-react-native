@@ -4,7 +4,14 @@ This document covers most complex part of `didcomm-react-native` package design 
 
 ## Reason
 
-This whole monster solution is required to simply connect DidComm resolvers on JS side (`DidDocResolver` and `SecretResolver`) and corresponding proxies on native side (`DidDocResolverProxy` and `SecretResolverProxy`).
+In DidComm API we need to have `DidDocResolver` and `SecretResolver` instances to get DID documents and keys for parties during DidComm messages processing.
+However, resolvers implementation is out of scope of DidComm libraries, so `DidDocResolver` and `SecretResolver` both should be implemented on client side and passed to library API.
+
+As in this project we're wrapping native DidComm libraries to use them in React Native, we have JS client side. This means that we need to call `DidDocResolver` and `SecretResolver` JS side instances and get results in native code using proxy instances (`DidDocResolverProxy` and `SecretResolverProxy`).
+
+Unfortunately, React Native Bridge (that used for `JS <-> Native Modules` communication) does not provide us with out-of-box way to call JS method and get result on native side. This was a serious problem in context of above-mentioned DidComm resolvers concept, so we decided to implement solution described in this document.
+
+In fact, this whole monster solution is required to simply connect DidComm resolvers on JS side (`DidDocResolver` and `SecretResolver`) and corresponding proxies on native side (`DidDocResolverProxy` and `SecretResolverProxy`).
 
 ## Solution
 
@@ -23,7 +30,7 @@ This is done by using `resolvers-proxy` TS module that generates unique `resolve
 
 ### Step 3
 
-Wrapper TS API calls native module method passing `resolversId` amount others DidComm API args.
+Wrapper TS API calls native module method passing `resolversId` among others DidComm API args.
 
 ### Step 4
 
