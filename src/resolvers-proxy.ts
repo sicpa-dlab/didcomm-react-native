@@ -23,8 +23,10 @@ export class DIDCommResolversProxy {
 
   public static start(nativeEventEmitter: NativeEventEmitter) {
     this.nativeEventEmitter = nativeEventEmitter
-    this.nativeEventEmitter.addListener(ResolverProxyEvent.ResolveDid, (event) =>
-      this.resolveDid(event[DID_STRING_KEY], event[RESOLVERS_ID_STRING_KEY]),
+    this.nativeEventEmitter.addListener(ResolverProxyEvent.ResolveDid, (event) => {
+      console.log("Start", event, DID_STRING_KEY, RESOLVERS_ID_STRING_KEY, DIDCommResolversProxyModule.getConstants())
+      this.resolveDid(event[DID_STRING_KEY], event[RESOLVERS_ID_STRING_KEY])
+    },
     )
     this.nativeEventEmitter.addListener(ResolverProxyEvent.FindKey, (event) =>
       this.findKey(event[KID_STRING_KEY], event[RESOLVERS_ID_STRING_KEY]),
@@ -92,6 +94,7 @@ export class DIDCommResolversProxy {
   }
 
   private static async resolveDid(did: string, resolversId: string) {
+    console.log("Start", did, resolversId)
     const didDocResolver = this.getResolvers(resolversId)?.didDocResolver
     if (!didDocResolver) {
       console.log("Attempted to proxy 'resolveDid' call, but DID doc resolver is not found. Sending empty result...")
