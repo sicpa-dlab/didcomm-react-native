@@ -15,8 +15,6 @@ RCT_EXTERN_METHOD(unpack:(NSString *)fromPriorJwt
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(unpack:)
-
 + (BOOL)requiresMainQueueSetup
 {
   return NO;

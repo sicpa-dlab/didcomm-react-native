@@ -7,28 +7,28 @@ class DIDCommResolversProxyModule: NSObject {
     private let KID_STRING_KEY = "kid"
     private let KIDS_STRING_KEY = "kids"
     private let RESOLVERS_ID_STRING_KEY = "resolversId"
-
-    @objc(setResolvedDid:)
-    func setResolvedDid(_ jsonValue: NSString?) {
-        print("[setResolvedDid]:", jsonValue)
-//        print(jsonValue, convertToDictionary(text: jsonValue! as String))
-        //Needs to parse!!!!
+    
+    @objc(setResolvedDid:resolversId:)
+    func setResolvedDid(_ jsonValue: NSString?, resolversId: String) {
         //use did of user as key
-        
-        NotificationCenter.default.post(name: NSNotification.Name("did"), object: jsonValue)
+        print("[setResolvedDid]:", jsonValue ?? "No value", resolversId)
+        NotificationCenter.default.post(name: NSNotification.Name(resolversId+"did"), object: jsonValue)
     }
-    @objc(setFoundSecret:)
-    func setFoundSecret(_ jsonValue: NSString?) {
-        print("[setFoundSecret]:", jsonValue ?? "No value")
+    @objc(setFoundSecret:resolversId:)
+    func setFoundSecret(_ jsonValue: NSString?, resolversId: String) {
+        print("[setFoundSecret]:", jsonValue ?? "No value",resolversId)
+        NotificationCenter.default.post(name: NSNotification.Name(resolversId+"kid"), object: jsonValue)
     }
 
-    @objc(setFoundSecretIds:)
-    func setFoundSecretIds(_ jsonValue: NSString?) {
-        print("[setFoundSecretIds]:", jsonValue ?? "No value")
+    @objc(setFoundSecretIds:resolversId:)
+    func setFoundSecretIds(_ jsonValue: NSString?, resolversId: String) {
+        print("[setFoundSecretIds]:", jsonValue ?? "No value", resolversId)
+        NotificationCenter.default.post(name: NSNotification.Name(resolversId+"kids"), object: jsonValue)
     }
     
     public func sendEvent(event: ResolverProxyEvent, resolversId: String) {
-        print("[sendEvent]: sendEvent")
+        print("[sendEvent]: sendEvent", resolversId)
+        
         var params: [String:Any?] = [RESOLVERS_ID_STRING_KEY:resolversId]
 
         switch event {

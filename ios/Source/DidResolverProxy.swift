@@ -9,11 +9,12 @@ public class DidResolverProxy: DidResolver {
         self.resolversId = resolversId
     }
     
+    //pay attention here
     public func resolve(did: String, cb: OnDidResolverResult) -> ErrorCode {
         print("[DidResolverProxy] resolve", did)
         resolveDidFromProxy(did: did) { didDoc in
             // is it really necessary?
-            print("[DidResolverProxy] completion resolveDidFromProxy", didDoc?.did)
+            print("[DidResolverProxy] completion resolveDidFromProxy")
 //            if (didDoc?.did != did) {
 //                //how to get an error?
 //                try? cb.error(err: .DidNotResolved(message: ""), msg: "msg")
@@ -26,13 +27,15 @@ public class DidResolverProxy: DidResolver {
     
     private func resolveDidFromProxy(did: String,  completion: @escaping (_ didDoc: DidDoc?) -> ()) {
         print("[DidResolverProxy] resolveDidFromProxy")
-        resolversProxyModule.sendEvent(event: .ResolveDid(did: did), resolversId: resolversId)
+        print("--------resp", self.resolversId)
+
+        resolversProxyModule.sendEvent(event: .ResolveDid(did: did), resolversId: self.resolversId)
         //use did of user as key
         //add resolvers id
         NotificationCenter
             .default
             .addObserver(
-                forName: NSNotification.Name("did"),
+                forName: NSNotification.Name(self.resolversId+"did"),
                 object: nil,
                 queue: nil) { notification in
                     print("[DidResolverProxy] completion")
@@ -46,3 +49,6 @@ public class DidResolverProxy: DidResolver {
     }
 }
 
+extension FromPrior {
+    
+}

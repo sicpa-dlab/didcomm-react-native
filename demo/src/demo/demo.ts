@@ -341,7 +341,7 @@ async function wrapInForward() {
 
   const wrapResult = await Message.wrap_in_forward(
     JSON.stringify(msg),
-    { header1: "aaa", header2: "bbb" },
+    { header1: "{\"messagespecificattribute\": \"and its value\"}", header2: "{\"messagespecificattribute\": \"and its value\"}" },
     ALICE_DID,
     ["did:example:bob#key-x25519-1"],
     "A256cbcHs512EcdhEsA256kw",

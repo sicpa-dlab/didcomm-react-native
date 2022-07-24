@@ -18,15 +18,29 @@ RCT_EXTERN_METHOD(packSigned:(NSDictionary *)messageData
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(packPlainText:(NSDictionary *)messageData
-                  signBy:(NSString *)signBy
+RCT_EXTERN_METHOD(packPlaintext:(NSDictionary *)messageData
+                  resolversId:(NSString *)resolversId
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject)
+
+    
+RCT_EXTERN_METHOD(unpack:(NSString *)packedMsg
+              resolversId:(NSString *)resolversId
+              withResolver:(RCTPromiseResolveBlock)resolve
+              withRejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(wrapInForward:(NSString *)message
+                  headers:(NSDictionary *)headers
+                  to:(NSString *)to
+                  routingKeys:(NSArray *)routingKeys
+                  jsAnonCryptAlg:(NSString *)jsAnonCryptAlg
                   resolversId:(NSString *)resolversId
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject)
 
 + (BOOL)requiresMainQueueSetup
 {
-  return NO;
+  return YES;
 }
 
 
