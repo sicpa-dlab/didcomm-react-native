@@ -1,5 +1,3 @@
-/* RNEventEmitter.swift*/
-
 @objc(RNEventEmitter)
 open class RNEventEmitter: RCTEventEmitter {
     public static var emitter: RCTEventEmitter!

@@ -43,7 +43,7 @@ class ResolversProxyModule(private val reactContext: ReactApplicationContext) :
         get() = _foundSecretIdsChannel as ReceiveChannel<Set<String>>
 
     @ReactMethod
-    fun setResolvedDid(jsonValue: String?) {
+    fun setResolvedDid(jsonValue: String?, setResolvedDid: String) {
         scope.launch {
             val jsDidDoc = jsonValue?.let { JsonUtils.parseJson(jsonValue, JSDIDDoc::class.java) }
             _resolvedDidChannel.send(jsDidDoc?.toDIDDoc())
@@ -51,7 +51,7 @@ class ResolversProxyModule(private val reactContext: ReactApplicationContext) :
     }
 
     @ReactMethod
-    fun setFoundSecret(jsonValue: String?) {
+    fun setFoundSecret(jsonValue: String?, setResolvedDid: String) {
         scope.launch {
             val jsSecret = jsonValue?.let { JsonUtils.parseJson(jsonValue, JSSecret::class.java) }
             _foundSecretChannel.send(jsSecret?.toSecret())
@@ -59,7 +59,7 @@ class ResolversProxyModule(private val reactContext: ReactApplicationContext) :
     }
 
     @ReactMethod
-    fun setFoundSecretIds(jsonValue: String?) {
+    fun setFoundSecretIds(jsonValue: String?, setResolvedDid: String) {
         scope.launch {
             val secretIds = jsonValue?.let { JsonUtils.parseJson(jsonValue, Set::class.java) }
             _foundSecretIdsChannel.send(secretIds as? Set<String> ?: emptySet())

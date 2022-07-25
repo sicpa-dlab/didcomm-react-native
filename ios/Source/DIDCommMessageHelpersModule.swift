@@ -12,27 +12,24 @@ class DIDCommMessageHelpersModule: NSObject {
                         resolversId: NSString,
                         resolve: @escaping RCTPromiseResolveBlock,
                         reject: @escaping RCTPromiseRejectBlock) {
-        print("[MessageHelpersModule] packEncrypted")
-        let msg = parseMessage(msg: messageData)
         
-        let didResolver = DidResolverProxy(resolversProxyModule: DIDCommResolversProxyModule(), resolversId: resolversId as String)
-        let secretsResolver = SecretsResolverProxy(resolversProxyModule: DIDCommResolversProxyModule(), resolversId:  resolversId as String)
+        print("[MessageHelpersModule] - Called packEncrypted")
 
-        /**
-         This is the standard options for Encrypting.
-         */
+        // This is the standard options for Encrypting.
         let options = PackEncryptedOptions(protectSender: false,
                                            forward: false,
                                            forwardHeaders: [:],
                                            messagingService: nil,
                                            encAlgAuth: .a256cbcHs512Ecdh1puA256kw,
                                            encAlgAnon: .xc20pEcdhEsA256kw)
+        
+        let (didResolver, secretsResolver) = createResolvers(with: resolversId)
         let delegate = DidPromise(resolve, reject)
         let _ = DidComm(didResolver: didResolver, secretResolver: secretsResolver)
-            .packEncrypted(msg: msg,
-                           to: to as String,
-                           from: from as? String,
-                           signBy: signFrom as? String,
+            .packEncrypted(msg: .init(fromJson: messageData),
+                           to: to.asString,
+                           from: from?.asString,
+                           signBy: signFrom?.asString,
                            options: options,
                            cb: delegate)
     }
@@ -44,15 +41,13 @@ class DIDCommMessageHelpersModule: NSObject {
                       resolve: @escaping RCTPromiseResolveBlock,
                       reject: @escaping RCTPromiseRejectBlock) {
         
-        let msg = parseMessage(msg: messageData)
+        print("[MessageHelpersModule] - Called packSigned")
         
-        let didResolver = DidResolverProxy(resolversProxyModule: DIDCommResolversProxyModule(), resolversId: resolversId as String)
-        let secretsResolver = SecretsResolverProxy(resolversProxyModule: DIDCommResolversProxyModule(), resolversId:  resolversId as String)
-
+        let (didResolver, secretsResolver) = createResolvers(with: resolversId)
         let delegate = DidPromise(resolve, reject)
         let _ = DidComm(didResolver: didResolver, secretResolver: secretsResolver)
-            .packSigned(msg: msg,
-                        signBy: signBy as String,
+            .packSigned(msg: .init(fromJson: messageData),
+                        signBy: signBy.asString,
                         cb: delegate)
     }
     
@@ -62,16 +57,14 @@ class DIDCommMessageHelpersModule: NSObject {
                          resolve: @escaping RCTPromiseResolveBlock,
                          reject: @escaping RCTPromiseRejectBlock) {
         
-        print("[MessageHelpersModule] - packPlainText")
+        print("[MessageHelpersModule] - Called packPlaintext")
 
-        let msg = parseMessage(msg: messageData)
-        let didResolver = DidResolverProxy(resolversProxyModule: DIDCommResolversProxyModule(), resolversId: resolversId as String)
-        let secretsResolver = SecretsResolverProxy(resolversProxyModule: DIDCommResolversProxyModule(), resolversId:  resolversId as String)
-        
+        let (didResolver, secretsResolver) = createResolvers(with: resolversId)
         let delegate = DidPromise(resolve, reject)
         let _ = DidComm(didResolver: didResolver,
                         secretResolver: secretsResolver)
-            .packPlaintext(msg: msg, cb: delegate)
+            .packPlaintext(msg: .init(fromJson: messageData),
+                           cb: delegate)
     }
     
     @objc(unpack:resolversId:withResolver:withRejecter:)
@@ -80,17 +73,16 @@ class DIDCommMessageHelpersModule: NSObject {
                   resolve: @escaping RCTPromiseResolveBlock,
                   reject: @escaping RCTPromiseRejectBlock) {
         
-        print("[MessageHelpersModule] - unpack")
+        print("[MessageHelpersModule] - Called unpack")
 
         let options = UnpackOptions(expectDecryptByAllKeys: false,
                                    unwrapReWrappingForward: false)
 
-        let didResolver = DidResolverProxy(resolversProxyModule: DIDCommResolversProxyModule(), resolversId: resolversId as String)
-        let secretsResolver = SecretsResolverProxy(resolversProxyModule: DIDCommResolversProxyModule(), resolversId:  resolversId as String)
-
+        let (didResolver, secretsResolver) = createResolvers(with: resolversId)
+        
         let delegate = DidPromise(resolve, reject)
         let _ = DidComm(didResolver: didResolver, secretResolver: secretsResolver)
-            .unpack(msg: packedMsg as String,
+            .unpack(msg: packedMsg.asString,
                     options: options,
                     cb: delegate)
     }
@@ -105,20 +97,17 @@ class DIDCommMessageHelpersModule: NSObject {
                        resolve: @escaping RCTPromiseResolveBlock,
                        reject: @escaping RCTPromiseRejectBlock) {
         
-        print("[MessageHelpersModule] - wrapInForward")
+        print("[MessageHelpersModule] - Called wrapInForward")
 
-        let didResolver = DidResolverProxy(resolversProxyModule: DIDCommResolversProxyModule(), resolversId: resolversId as String)
-        let secretsResolver = SecretsResolverProxy(resolversProxyModule: DIDCommResolversProxyModule(), resolversId:  resolversId as String)
-
-        let encAlgAnon = parseAnonCryptAlg(type: jsAnonCryptAlg)
+        let (didResolver, secretsResolver) = createResolvers(with: resolversId)
         
         let delegate = DidWrapPromise(resolve, reject)
         let _ = DidComm(didResolver: didResolver, secretResolver: secretsResolver)
-            .wrapInForward(msg: message as String,
-                           headers: headers as! [String: String],//[ "oi": "{\"messagespecificattribute\": \"and its value\"}" ],
-                           to: to as String,
-                           routingKeys: routingKeys as! [String],
-                           encAlgAnon: encAlgAnon,
+            .wrapInForward(msg: message.asString,
+                           headers: headers as? [String: String] ?? [:],
+                           to: to.asString,
+                           routingKeys: routingKeys as? [String] ?? [],
+                           encAlgAnon: .fromString(jsAnonCryptAlg.asString),
                            cb: delegate)
     }
 }
@@ -133,13 +122,13 @@ fileprivate class DidWrapPromise: OnWrapInForwardResult {
     }
     
     func success(result: String) {
-        print("[MessageHelpersModule] - DidWrapPromise", result)
+        print("[MessageHelpersModule] - Success OnWrapInForwardResult")
         resolve(result)
     }
     
     func error(err: ErrorKind, msg: String) {
-        print("[MessageHelpersModule] - Error wrap", msg, err)
-        reject(msg, msg, nil)
+        print("[MessageHelpersModule] - Error OnWrapInForwardResult")
+        reject(msg, err.localizedDescription, nil)
     }
     
 }
@@ -154,76 +143,28 @@ fileprivate class DidPromise: OnPackEncryptedResult, OnPackPlaintextResult, OnPa
     }
     
     func success(result: String, metadata: PackEncryptedMetadata) {
-        print("[MessageHelpersModule] - success PackEncryptedMetadata", result, metadata.dataDictionary())
-        //TODO: STRINGFY METADATA
+        print("[MessageHelpersModule] - Success OnPackEncryptedResult")
         resolve([result, metadata.dataDictionary()])
     }
     
     func success(result: String) {
-        print("[MessageHelpersModule] - success plain", result)
+        print("[MessageHelpersModule] - Success OnPackPlaintextResult")
         resolve(result)
     }
     
     func success(result: String, metadata: PackSignedMetadata) {
-        print("[MessageHelpersModule] - success PackSignedMetadata")
-        resolve([result, metadata])
+        print("[MessageHelpersModule] - Success OnPackSignedResult")
+        resolve([result, metadata.dataDictionary()])
     }
     
     func success(result: Message, metadata: UnpackMetadata) {
-        print("[MessageHelpersModule] - success UnpackMetadata")
-        resolve([result.dataDictionary(), metadata])
+        print("[MessageHelpersModule] - Success OnUnpackResult")
+        resolve([result.dataDictionary(), metadata.dataDictionary()])
     }
     
     func error(err: ErrorKind, msg: String) {
-        print("[MessageHelpersModule] - Error")
-        reject(msg, msg, nil)
+        print("[MessageHelpersModule] - Genric Error")
+        reject(msg, err.localizedDescription, nil)
     }
 }
 
-extension Message {
-    func dataDictionary() -> [String: Any?] {
-        return [ "id": self.id,
-                 "typ": self.typ,
-                 "type": self.type,
-                 "body": self.body,
-                 "from": self.from,
-                 "to": self.to,
-                 "thid": self.thid,
-                 "pthid": self.pthid,
-                 "extraHeaders": self.extraHeaders,
-                 "createdTime": self.createdTime,
-                 "expiresTime": self.expiresTime,
-                 "fromPrior": self.fromPrior,
-                 "attachments": nil ]
-    }
-}
-
-extension Attachment {
-    func dataDictionary() -> [String: Any?] {
-        return [ "data": self.data,
-                 "id": self.id,
-                 "description": self.description,
-                 "filename": self.filename,
-                 "mediaType": self.mediaType,
-                 "format": self.format,
-                 "lastmodTime": self.lastmodTime,
-                 "byteCount": self.byteCount ]
-
-    }
-}
-
-extension PackEncryptedMetadata {
-    func dataDictionary() -> [String: Any?] {
-        return [ "messagingService": self.messagingService?.dataDictionary(),
-                 "fromKid": self.fromKid,
-                 "signByKid": self.signByKid,
-                 "toKids": self.toKids ]
-    }
-}
-
-extension MessagingServiceMetadata {
-    func dataDictionary() -> [String: Any?] {
-        return [ "id": self.id,
-                 "serviceEndpoint": self.serviceEndpoint ]
-    }
-}

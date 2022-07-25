@@ -10,26 +10,20 @@ class DIDCommResolversProxyModule: NSObject {
     
     @objc(setResolvedDid:resolversId:)
     func setResolvedDid(_ jsonValue: NSString?, resolversId: String) {
-        //use did of user as key
-        print("[setResolvedDid]:", jsonValue ?? "No value", resolversId)
         NotificationCenter.default.post(name: NSNotification.Name(resolversId+"did"), object: jsonValue)
     }
     @objc(setFoundSecret:resolversId:)
     func setFoundSecret(_ jsonValue: NSString?, resolversId: String) {
-        print("[setFoundSecret]:", jsonValue ?? "No value",resolversId)
         NotificationCenter.default.post(name: NSNotification.Name(resolversId+"kid"), object: jsonValue)
     }
 
     @objc(setFoundSecretIds:resolversId:)
     func setFoundSecretIds(_ jsonValue: NSString?, resolversId: String) {
-        print("[setFoundSecretIds]:", jsonValue ?? "No value", resolversId)
         NotificationCenter.default.post(name: NSNotification.Name(resolversId+"kids"), object: jsonValue)
     }
     
     public func sendEvent(event: ResolverProxyEvent, resolversId: String) {
-        print("[sendEvent]: sendEvent", resolversId)
-        
-        var params: [String:Any?] = [RESOLVERS_ID_STRING_KEY:resolversId]
+        var params: JSONDictionary = [RESOLVERS_ID_STRING_KEY: resolversId]
 
         switch event {
         case .ResolveDid(let did):

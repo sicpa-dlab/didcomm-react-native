@@ -9,17 +9,16 @@ class DIDCommFromPriorHelpersModule : NSObject {
               resolversId: NSString,
               resolve: @escaping RCTPromiseResolveBlock,
               reject: @escaping RCTPromiseRejectBlock) {
+
+        print("[DIDCommFromPriorHelpersModule] - Called pack")
         
-        let fromPrior = unpackFromPrior(fromPriorData)
-
-        let didResolver = DidResolverProxy(resolversProxyModule: DIDCommResolversProxyModule(),
-                                           resolversId: resolversId as String)
-        let secretsResolver = SecretsResolverProxy(resolversProxyModule: DIDCommResolversProxyModule(),
-                                                   resolversId:  resolversId as String)
-
+        let (didResolver, secretsResolver) = createResolvers(with: resolversId)
         let delegate = DidPriorPromise(resolve, reject)
+        
         let _ = DidComm(didResolver: didResolver, secretResolver: secretsResolver)
-            .packFromPrior(msg: fromPrior, issuerKid: issuerKid as String, cb: delegate)
+            .packFromPrior(msg: .init(fromJson: fromPriorData),
+                           issuerKid: issuerKid as String,
+                           cb: delegate)
     }
     
     @objc(unpack:resolversId:withResolver:withRejecter:)
@@ -28,14 +27,13 @@ class DIDCommFromPriorHelpersModule : NSObject {
                 resolve: @escaping RCTPromiseResolveBlock,
                 reject: @escaping RCTPromiseRejectBlock) {
         
-
-        let didResolver = DidResolverProxy(resolversProxyModule: DIDCommResolversProxyModule(), resolversId: resolversId as String)
-        let secretsResolver = SecretsResolverProxy(resolversProxyModule: DIDCommResolversProxyModule(), resolversId:  resolversId as String)
+        print("[DIDCommFromPriorHelpersModule] - Called unpack")
         
+        let (didResolver, secretsResolver) = createResolvers(with: resolversId)
         let delegate = DidPriorPromise(resolve, reject)
         let _ = DidComm(didResolver: didResolver,
                         secretResolver: secretsResolver)
-            .unpackFromPrior(fromPriorJwt: fromPriorJwt as String,
+            .unpackFromPrior(fromPriorJwt: fromPriorJwt.asString,
                              cb: delegate)
     }
 }
@@ -64,14 +62,3 @@ fileprivate class DidPriorPromise: OnFromPriorPackResult, OnFromPriorUnpackResul
     }
 }
 
-extension FromPrior {
-    func dataDictionary() -> [String: Any?] {
-        return [ "iss": iss,
-                 "sub": sub,
-                 "aud": aud,
-                 "exp": exp,
-                 "nbf": nbf,
-                 "iat": iat,
-                 "jti": jti ]
-    }
-}
