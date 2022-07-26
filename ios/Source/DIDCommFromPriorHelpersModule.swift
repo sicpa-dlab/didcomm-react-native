@@ -59,6 +59,7 @@ fileprivate class DidPriorPromise: OnFromPriorPackResult, OnFromPriorUnpackResul
     
     func error(err: ErrorKind, msg: String) {
         print("[OnFromPriorPackResult, OnFromPriorUnpackResult] - Error")
+        reject(msg, err.localizedDescription, err)
     }
 }
 

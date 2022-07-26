@@ -23,19 +23,19 @@ extension Message {
     init(fromJson json: NSDictionary) {
     
         guard let id = json["id"] as? String else {
-            fatalError("Cant resolve id from Message")
+            fatalError("Can't resolve 'id' from Message.")
         }
         
         guard let typ = json["typ"] as? String else {
-            fatalError("Cant resolve typ from Message")
+            fatalError("Can't resolve 'typ' from Message.")
         }
         
         guard let type = json["type"] as? String else {
-            fatalError("Cant resolve type from Message")
+            fatalError("Can't resolve 'type' from Message.")
         }
         
         guard let body = json["body"] as? JSONDictionary else {
-            fatalError("Cant resolve body from Message")
+            fatalError("Can't resolve 'body' from Message.")
         }
        
         self.id = id

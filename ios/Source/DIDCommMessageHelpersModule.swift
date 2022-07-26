@@ -128,7 +128,7 @@ fileprivate class DidWrapPromise: OnWrapInForwardResult {
     
     func error(err: ErrorKind, msg: String) {
         print("[MessageHelpersModule] - Error OnWrapInForwardResult")
-        reject(msg, err.localizedDescription, nil)
+        reject(msg, err.localizedDescription, err)
     }
     
 }
@@ -163,8 +163,8 @@ fileprivate class DidPromise: OnPackEncryptedResult, OnPackPlaintextResult, OnPa
     }
     
     func error(err: ErrorKind, msg: String) {
-        print("[MessageHelpersModule] - Genric Error")
-        reject(msg, err.localizedDescription, nil)
+        print("[MessageHelpersModule] - Error: ", msg)
+        reject(msg, err.localizedDescription, err)
     }
 }
 

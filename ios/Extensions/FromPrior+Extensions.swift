@@ -12,11 +12,11 @@ extension FromPrior {
     init(fromJson fromPrior: NSDictionary) {
         
         guard let iss = fromPrior.value(forKey: "iss") as? String  else {
-            fatalError("Could not resolve iss from FromPrior")
+            fatalError("Can't resolve 'iss' from FromPrior.")
         }
         
         guard let sub = fromPrior.value(forKey: "sub") as? String else {
-            fatalError("Could not resolve sub from FromPrior")
+            fatalError("Can't resolve 'sub' from FromPrior.")
         }
         
         self.iss = iss

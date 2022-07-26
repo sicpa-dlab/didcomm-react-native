@@ -1,14 +1,12 @@
 extension Service {
     init(fromJson json: JSONDictionary) {
-        
-        print(json)
-        
+
         guard let id = json["id"] as? String else {
-            fatalError("Cant resolve verification method: id")
+            fatalError("Can't resolve 'id' from Service.")
         }
 
         guard let serviceEndpoint = json["serviceEndpoint"] as? JSONDictionary else {
-            fatalError("Cant resolve verification method: kind")
+            fatalError("Can't resolve 'serviceEndpoint' from Service.")
         }
         
         self.id = id

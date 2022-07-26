@@ -1,10 +1,8 @@
 public class SecretsResolverProxy: SecretsResolver {
     
-    let resolversProxyModule: DIDCommResolversProxyModule
     let resolversId: String
     
-    init(resolversProxyModule: DIDCommResolversProxyModule, resolversId: String) {
-        self.resolversProxyModule = resolversProxyModule
+    init(resolversId: String) {
         self.resolversId = resolversId
     }
     
@@ -25,7 +23,7 @@ public class SecretsResolverProxy: SecretsResolver {
     }
     
     private func resolveKidFromProxy(kid: String,  completion: @escaping (_ secret: Secret?) -> ()) {
-        resolversProxyModule.sendEvent(event: .FindKey(kid: kid), resolversId: self.resolversId)
+        RNEventEmitter.sendEvent(event: .FindKey(kid: kid), resolversId: self.resolversId)
         NotificationCenter
             .default
             .addObserver(
@@ -42,7 +40,7 @@ public class SecretsResolverProxy: SecretsResolver {
     }
     
     private func resolveKidsFromProxy(kids: [String],  completion: @escaping (_ secrets: [String]) -> ()) {
-        resolversProxyModule.sendEvent(event: .FindKeys(kids: kids), resolversId: resolversId)
+        RNEventEmitter.sendEvent(event: .FindKeys(kids: kids), resolversId: resolversId)
         NotificationCenter
             .default
             .addObserver(
