@@ -25,7 +25,10 @@ export default function App() {
 
   useEffect(() => {
     //Workaround for issue with non-working NativeEventEmitter if created from library code
-    const emitter = Platform.OS === 'ios' ? new NativeEventEmitter(RNEventEmitter) : new  NativeEventEmitter(DIDCommResolversProxyModule)
+    const emitter =
+      Platform.OS === "ios"
+        ? new NativeEventEmitter(RNEventEmitter)
+        : new NativeEventEmitter(DIDCommResolversProxyModule)
     DIDCommResolversProxy.start(emitter)
     return () => DIDCommResolversProxy.stop()
   }, [])

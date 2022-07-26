@@ -23,7 +23,7 @@ export class DIDCommResolversProxy {
 
   public static start(nativeEventEmitter: NativeEventEmitter) {
     this.nativeEventEmitter = nativeEventEmitter
-    this.nativeEventEmitter.addListener(ResolverProxyEvent.ResolveDid, (event) => 
+    this.nativeEventEmitter.addListener(ResolverProxyEvent.ResolveDid, (event) =>
       this.resolveDid(event[DID_STRING_KEY], event[RESOLVERS_ID_STRING_KEY]),
     )
     this.nativeEventEmitter.addListener(ResolverProxyEvent.FindKey, (event) =>

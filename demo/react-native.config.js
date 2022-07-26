@@ -1,9 +1,9 @@
-const path = require('path');
+const path = require("path")
 
 module.exports = {
   dependencies: {
-    'didcomm-react-native': {
-      root: path.join(__dirname, '..'),
+    "didcomm-react-native": {
+      root: path.join(__dirname, ".."),
     },
   },
-};
+}
