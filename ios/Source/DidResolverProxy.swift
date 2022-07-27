@@ -15,7 +15,7 @@ public class DidResolverProxy: DidResolver {
     }
     
     private func resolveDidFromProxy(did: String,  completion: @escaping (_ didDoc: DidDoc?) -> ()) {
-        RNEventEmitter.sendEvent(event: .ResolveDid(did: did), resolversId: self.resolversId)
+        DIDCommResolversProxyModule.sendEvent(event: .ResolveDid(did: did), resolversId: self.resolversId)
         NotificationCenter
             .default
             .addObserver(

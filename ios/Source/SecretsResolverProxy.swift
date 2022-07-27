@@ -23,7 +23,7 @@ public class SecretsResolverProxy: SecretsResolver {
     }
     
     private func resolveKidFromProxy(kid: String,  completion: @escaping (_ secret: Secret?) -> ()) {
-        RNEventEmitter.sendEvent(event: .FindKey(kid: kid), resolversId: self.resolversId)
+        DIDCommResolversProxyModule.sendEvent(event: .FindKey(kid: kid), resolversId: self.resolversId)
         NotificationCenter
             .default
             .addObserver(
@@ -40,7 +40,7 @@ public class SecretsResolverProxy: SecretsResolver {
     }
     
     private func resolveKidsFromProxy(kids: [String],  completion: @escaping (_ secrets: [String]) -> ()) {
-        RNEventEmitter.sendEvent(event: .FindKeys(kids: kids), resolversId: resolversId)
+        DIDCommResolversProxyModule.sendEvent(event: .FindKeys(kids: kids), resolversId: resolversId)
         NotificationCenter
             .default
             .addObserver(

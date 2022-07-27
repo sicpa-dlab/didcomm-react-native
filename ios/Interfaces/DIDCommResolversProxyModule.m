@@ -2,7 +2,7 @@
 #import <Foundation/Foundation.h>
 #import <React/RCTEventEmitter.h>
 
-@interface RCT_EXTERN_MODULE(DIDCommResolversProxyModule, NSObject)
+@interface RCT_EXTERN_MODULE(DIDCommResolversProxyModule, RCTEventEmitter)
 
     RCT_EXTERN_METHOD(setResolvedDid:(NSString *)jsonValue
                       resolversId:(NSString *)resolversId)
@@ -14,8 +14,6 @@
                       resolversId:(NSString *)resolversId)
 
     RCT_EXTERN_METHOD(supportedEvents)
-    RCT_EXTERN_METHOD(startObserving)
-    RCT_EXTERN_METHOD(stopObserving)
 
     RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(getName)
     {

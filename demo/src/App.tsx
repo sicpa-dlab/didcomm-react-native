@@ -1,11 +1,11 @@
 import { DIDCommResolversProxy } from "@sicpa-dlab/didcomm-react-native"
 import * as React from "react"
 import { useEffect } from "react"
-import { StyleSheet, View, Text, Button, NativeEventEmitter, NativeModules, Platform } from "react-native"
+import { StyleSheet, View, Text, Button, NativeEventEmitter, NativeModules } from "react-native"
 
 import { runDemo } from "./demo"
 
-const { DIDCommResolversProxyModule, RNEventEmitter } = NativeModules
+const { DIDCommResolversProxyModule } = NativeModules
 
 const styles = StyleSheet.create({
   container: {
@@ -25,10 +25,7 @@ export default function App() {
 
   useEffect(() => {
     //Workaround for issue with non-working NativeEventEmitter if created from library code
-    const emitter =
-      Platform.OS === "ios"
-        ? new NativeEventEmitter(RNEventEmitter)
-        : new NativeEventEmitter(DIDCommResolversProxyModule)
+    const emitter = new NativeEventEmitter(DIDCommResolversProxyModule)
     DIDCommResolversProxy.start(emitter)
     return () => DIDCommResolversProxy.stop()
   }, [])
