@@ -38,7 +38,7 @@ export class Message implements DIDCommMessage {
           to,
           from,
           sign_by,
-          options?.protect_sender ?? true,
+          options?.protect_sender ?? false,
           resolversId,
         ),
       did_resolver,
