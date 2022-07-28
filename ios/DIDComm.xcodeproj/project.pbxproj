@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		9E185D932886E98600381E4C /* ResolverProxyEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E185D922886E98600381E4C /* ResolverProxyEvent.swift */; };
-		9E185D972886F44800381E4C /* RNEventEmitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E185D962886F44800381E4C /* RNEventEmitter.m */; };
-		9E185D9F2887044900381E4C /* RNEventEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E185D9E2887044900381E4C /* RNEventEmitter.swift */; };
 		9E185DA2288E989900381E4C /* FromPrior+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E185DA1288E989900381E4C /* FromPrior+Extensions.swift */; };
 		9E185DA8288EA02200381E4C /* DIDCommMessageHelpersModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E185DA7288EA02200381E4C /* DIDCommMessageHelpersModule.swift */; };
 		9E185DAA288EA02F00381E4C /* Message+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E185DA9288EA02F00381E4C /* Message+Extensions.swift */; };
@@ -24,8 +22,8 @@
 		9E185DC0288EC41A00381E4C /* JSONDictionary+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E185DBF288EC41A00381E4C /* JSONDictionary+Extensions.swift */; };
 		9E185DC2288EDED000381E4C /* DidDoc+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E185DC1288EDED000381E4C /* DidDoc+Extensions.swift */; };
 		9E185DC4288EDEDE00381E4C /* Secrets+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E185DC3288EDEDE00381E4C /* Secrets+Extensions.swift */; };
-		9E185DC6288EDEFC00381E4C /* Attachment+Estension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E185DC5288EDEFC00381E4C /* Attachment+Estension.swift */; };
 		9E185DC8288EEE1000381E4C /* Service+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E185DC7288EEE1000381E4C /* Service+Extensions.swift */; };
+		9E9915972892DA9A00081B21 /* Attachment+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E9915962892DA9A00081B21 /* Attachment+Extensions.swift */; };
 		9EC14DFA28856BF200C97663 /* DIDCommResolversProxyModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EC14DF828856BF200C97663 /* DIDCommResolversProxyModule.m */; };
 		9EC14E0128856C1F00C97663 /* SecretsResolverProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EC14DFC28856C1F00C97663 /* SecretsResolverProxy.swift */; };
 		9EC14E0228856C1F00C97663 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EC14DFD28856C1F00C97663 /* Utils.swift */; };
@@ -53,8 +51,6 @@
 		251AC10DE83302FB127702A6 /* Pods-Didcomm.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Didcomm.release.xcconfig"; path = "Target Support Files/Pods-Didcomm/Pods-Didcomm.release.xcconfig"; sourceTree = "<group>"; };
 		87E6BCE151A8F7774213EE87 /* Pods-Didcomm.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Didcomm.debug.xcconfig"; path = "Target Support Files/Pods-Didcomm/Pods-Didcomm.debug.xcconfig"; sourceTree = "<group>"; };
 		9E185D922886E98600381E4C /* ResolverProxyEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResolverProxyEvent.swift; sourceTree = "<group>"; };
-		9E185D962886F44800381E4C /* RNEventEmitter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNEventEmitter.m; sourceTree = "<group>"; };
-		9E185D9E2887044900381E4C /* RNEventEmitter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RNEventEmitter.swift; sourceTree = "<group>"; };
 		9E185DA1288E989900381E4C /* FromPrior+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FromPrior+Extensions.swift"; sourceTree = "<group>"; };
 		9E185DA7288EA02200381E4C /* DIDCommMessageHelpersModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DIDCommMessageHelpersModule.swift; sourceTree = "<group>"; };
 		9E185DA9288EA02F00381E4C /* Message+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Message+Extensions.swift"; sourceTree = "<group>"; };
@@ -69,8 +65,8 @@
 		9E185DBF288EC41A00381E4C /* JSONDictionary+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSONDictionary+Extensions.swift"; sourceTree = "<group>"; };
 		9E185DC1288EDED000381E4C /* DidDoc+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DidDoc+Extensions.swift"; sourceTree = "<group>"; };
 		9E185DC3288EDEDE00381E4C /* Secrets+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Secrets+Extensions.swift"; sourceTree = "<group>"; };
-		9E185DC5288EDEFC00381E4C /* Attachment+Estension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Attachment+Estension.swift"; sourceTree = "<group>"; };
 		9E185DC7288EEE1000381E4C /* Service+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Service+Extensions.swift"; sourceTree = "<group>"; };
+		9E9915962892DA9A00081B21 /* Attachment+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Attachment+Extensions.swift"; sourceTree = "<group>"; };
 		9EC14DF828856BF200C97663 /* DIDCommResolversProxyModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIDCommResolversProxyModule.m; sourceTree = "<group>"; };
 		9EC14DFC28856C1F00C97663 /* SecretsResolverProxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecretsResolverProxy.swift; sourceTree = "<group>"; };
 		9EC14DFD28856C1F00C97663 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
@@ -107,7 +103,6 @@
 			children = (
 				9E185DA0288E986A00381E4C /* Extensions */,
 				F4FF95D5245B92E700C19C63 /* Didcomm-Bridging-Header.h */,
-				9E185D9B288703C400381E4C /* Utils */,
 				9EC14DFB28856BFE00C97663 /* Source */,
 				9EC14DF628856B6100C97663 /* Interfaces */,
 				134814211AA4EA7D00B7C361 /* Products */,
@@ -125,17 +120,10 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		9E185D9B288703C400381E4C /* Utils */ = {
-			isa = PBXGroup;
-			children = (
-				9E185D9E2887044900381E4C /* RNEventEmitter.swift */,
-			);
-			path = Utils;
-			sourceTree = "<group>";
-		};
 		9E185DA0288E986A00381E4C /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				9E9915962892DA9A00081B21 /* Attachment+Extensions.swift */,
 				9E185DAB288EA03400381E4C /* Metadata+Extensions.swift */,
 				9E185DA9288EA02F00381E4C /* Message+Extensions.swift */,
 				9E185DA1288E989900381E4C /* FromPrior+Extensions.swift */,
@@ -148,7 +136,6 @@
 				9E185DBF288EC41A00381E4C /* JSONDictionary+Extensions.swift */,
 				9E185DC1288EDED000381E4C /* DidDoc+Extensions.swift */,
 				9E185DC3288EDEDE00381E4C /* Secrets+Extensions.swift */,
-				9E185DC5288EDEFC00381E4C /* Attachment+Estension.swift */,
 				9E185DC7288EEE1000381E4C /* Service+Extensions.swift */,
 			);
 			path = Extensions;
@@ -160,7 +147,6 @@
 				9E185DAD288EA04200381E4C /* DIDCommMessageHelpersModule.m */,
 				9EC14DF828856BF200C97663 /* DIDCommResolversProxyModule.m */,
 				9EC14E092886AE6600C97663 /* DIDCommFromPriorHelpersModule.m */,
-				9E185D962886F44800381E4C /* RNEventEmitter.m */,
 			);
 			path = Interfaces;
 			sourceTree = "<group>";
@@ -273,8 +259,6 @@
 				9EC14E0328856C1F00C97663 /* DidResolverProxy.swift in Sources */,
 				9EC14E0528856C1F00C97663 /* DIDCommResolversProxyModule.swift in Sources */,
 				9EC14E0228856C1F00C97663 /* Utils.swift in Sources */,
-				9E185DC6288EDEFC00381E4C /* Attachment+Estension.swift in Sources */,
-				9E185D9F2887044900381E4C /* RNEventEmitter.swift in Sources */,
 				9E185DC2288EDED000381E4C /* DidDoc+Extensions.swift in Sources */,
 				9E185DAC288EA03400381E4C /* Metadata+Extensions.swift in Sources */,
 				9E185DBC288EAEDB00381E4C /* AnonCryptAlg+Extensions.swift in Sources */,
@@ -282,7 +266,6 @@
 				9E185DB0288EA14A00381E4C /* SecretType+Extensions.swift in Sources */,
 				9EC14E072886AE3500C97663 /* DIDCommFromPriorHelpersModule.swift in Sources */,
 				9E185DBA288EA83C00381E4C /* VerificationMaterial+Extensions.swift in Sources */,
-				9E185D972886F44800381E4C /* RNEventEmitter.m in Sources */,
 				9E185DBE288EB58500381E4C /* String+Extensions.swift in Sources */,
 				9E185DC0288EC41A00381E4C /* JSONDictionary+Extensions.swift in Sources */,
 				9E185D932886E98600381E4C /* ResolverProxyEvent.swift in Sources */,
@@ -291,6 +274,7 @@
 				9EC14E0128856C1F00C97663 /* SecretsResolverProxy.swift in Sources */,
 				9E185DC8288EEE1000381E4C /* Service+Extensions.swift in Sources */,
 				9E185DAA288EA02F00381E4C /* Message+Extensions.swift in Sources */,
+				9E9915972892DA9A00081B21 /* Attachment+Extensions.swift in Sources */,
 				9E185DAE288EA04200381E4C /* DIDCommMessageHelpersModule.m in Sources */,
 				9E185DA8288EA02200381E4C /* DIDCommMessageHelpersModule.swift in Sources */,
 				9E185DA2288E989900381E4C /* FromPrior+Extensions.swift in Sources */,
