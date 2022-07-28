@@ -70,12 +70,12 @@ export class DIDCommResolversProxy {
     if (!secretsResolver) {
       console.log("Attempted to proxy 'findKeys' call, but secret resolver is not found. Sending empty result...")
       console.log(`Not found resolvers id: ${resolversId}`)
-      DIDCommResolversProxyModule.setFoundSecretIds(null)
+      DIDCommResolversProxyModule.setFoundSecretIds(null, resolversId)
       return
     }
 
     const secretIds = await secretsResolver.find_secrets(kids)
-    DIDCommResolversProxyModule.setFoundSecretIds(JSON.stringify(secretIds))
+    DIDCommResolversProxyModule.setFoundSecretIds(JSON.stringify(secretIds), resolversId)
   }
 
   private static async findKey(kid: string, resolversId: string) {
@@ -83,12 +83,12 @@ export class DIDCommResolversProxy {
     if (!secretsResolver) {
       console.log("Attempted to proxy 'findKey' call, but secret resolver is not found. Sending empty result...")
       console.log(`Not found resolvers id: ${resolversId}`)
-      DIDCommResolversProxyModule.setFoundSecret(null)
+      DIDCommResolversProxyModule.setFoundSecret(null, resolversId)
       return
     }
 
     const secret = await secretsResolver.get_secret(kid)
-    DIDCommResolversProxyModule.setFoundSecret(JSON.stringify(secret))
+    DIDCommResolversProxyModule.setFoundSecret(JSON.stringify(secret), resolversId)
   }
 
   private static async resolveDid(did: string, resolversId: string) {
@@ -96,11 +96,11 @@ export class DIDCommResolversProxy {
     if (!didDocResolver) {
       console.log("Attempted to proxy 'resolveDid' call, but DID doc resolver is not found. Sending empty result...")
       console.log(`Not found resolvers id: ${resolversId}`)
-      DIDCommResolversProxyModule.setResolvedDid(null)
+      DIDCommResolversProxyModule.setResolvedDid(null, resolversId)
       return
     }
 
     const resolvedDid = await didDocResolver.resolve(did)
-    DIDCommResolversProxyModule.setResolvedDid(JSON.stringify(resolvedDid))
+    DIDCommResolversProxyModule.setResolvedDid(JSON.stringify(resolvedDid), resolversId)
   }
 }
