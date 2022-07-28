@@ -16,7 +16,7 @@ class DIDCommMessageHelpersModule: NSObject {
         print("[MessageHelpersModule] - Called packEncrypted")
 
         // This is the standard options for Encrypting.
-        let options = PackEncryptedOptions(protectSender: false,
+        let options = PackEncryptedOptions(protectSender: protectSender,
                                            forward: false,
                                            forwardHeaders: [:],
                                            messagingService: nil,
