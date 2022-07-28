@@ -31,7 +31,7 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
         to: String,
         from: String? = null,
         signFrom: String? = null,
-        protectSender: Boolean = true,
+        protectSender: Boolean = false,
         resolversId: String,
         promise: Promise
     ) {
