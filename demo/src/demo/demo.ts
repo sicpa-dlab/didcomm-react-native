@@ -428,5 +428,5 @@ async function encryptMessage(
   console.log(metadata)
 
   console.log("Encrypted message:")
-  console.log(JSON.stringify(encryptedMsg))
+  console.log(encryptedMsg)
 }
