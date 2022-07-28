@@ -1,3 +1,5 @@
+import DidcommSDK
+
 import UIKit
 extension Secret {
     init(fromJson json: JSONDictionary) {
@@ -22,10 +24,9 @@ extension Secret {
             fatalError("Can't resolve 'value' from Secret.")
         }
         
-        self.id = id
-        self.type = .fromString(type)
-        self.secretMaterial = .fromString(format,
-                                          jsonString: value.asString ?? "{}")
+        self.init(id: id, type: .fromString(type),
+                  secretMaterial: .fromString(format,
+                                              jsonString: value.asString ?? "{}"))
     }
 }
 

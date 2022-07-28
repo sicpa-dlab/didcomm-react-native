@@ -1,3 +1,5 @@
+import DidcommSDK
+
 extension SecretType {
     static func fromString(_ type: String) -> SecretType{
         switch type {

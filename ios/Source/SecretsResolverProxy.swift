@@ -1,3 +1,5 @@
+import DidcommSDK
+
 public class SecretsResolverProxy: SecretsResolver {
     
     let resolversId: String

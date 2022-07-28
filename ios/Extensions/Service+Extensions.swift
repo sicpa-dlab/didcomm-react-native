@@ -1,3 +1,5 @@
+import DidcommSDK
+
 extension Service {
     init(fromJson json: JSONDictionary) {
 
@@ -9,10 +11,10 @@ extension Service {
             fatalError("Can't resolve 'serviceEndpoint' from Service.")
         }
         
-        self.id = id
-        self.kind = .fromString(serviceEndpoint)
+        self.init(id: id,
+                  kind: .fromString(serviceEndpoint))
+        
     }
-    
 }
 
 extension ServiceKind {

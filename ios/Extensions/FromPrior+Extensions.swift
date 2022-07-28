@@ -1,3 +1,5 @@
+import DidcommSDK
+
 extension FromPrior {
     func dataDictionary() -> [String: Any?] {
         return [ "iss": iss,
@@ -19,12 +21,12 @@ extension FromPrior {
             fatalError("Can't resolve 'sub' from FromPrior.")
         }
         
-        self.iss = iss
-        self.sub = sub
-        self.aud = fromPrior.value(forKey: "aud") as? String
-        self.exp = fromPrior.value(forKey: "exp") as? UInt64
-        self.nbf = fromPrior.value(forKey: "nbf") as? UInt64
-        self.iat = fromPrior.value(forKey: "iat") as? UInt64
-        self.jti = fromPrior.value(forKey: "jti") as? String
+        self.init(iss: iss,
+                  sub: sub,
+                  aud: fromPrior.value(forKey: "aud") as? String,
+                  exp: fromPrior.value(forKey: "exp") as? UInt64,
+                  nbf: fromPrior.value(forKey: "nbf") as? UInt64,
+                  iat: fromPrior.value(forKey: "iat") as? UInt64,
+                  jti: fromPrior.value(forKey: "jti") as? String)
     }
 }

@@ -1,3 +1,5 @@
+import DidcommSDK
+
 extension PackEncryptedMetadata {
     func dataDictionary() -> [String: Any?] {
         return [ "messagingService": self.messagingService?.dataDictionary(),

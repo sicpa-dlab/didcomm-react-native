@@ -1,3 +1,5 @@
+import DidcommSDK
+
 extension SecretMaterial {
     static func fromString(_ format: String, jsonString: String) -> SecretMaterial{
         switch format.lowercased() {

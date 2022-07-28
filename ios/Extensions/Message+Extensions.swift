@@ -1,3 +1,5 @@
+import DidcommSDK
+
 extension Message {
     func dataDictionary() -> JSONDictionary {
         
@@ -38,25 +40,26 @@ extension Message {
             fatalError("Can't resolve 'body' from Message.")
         }
        
-        self.id = id
-        self.typ = typ
-        self.type = type
-        self.body = body.asString ?? "{}"
-        self.from = json["from"] as? String
-        self.to = json["to"] as? [String]
-        self.thid = json["thid"] as? String
-        self.pthid = json["pthid"] as? String
-        self.extraHeaders = json["extraHeaders"]  as? [String: String] ?? [:]
-        self.createdTime = json["createdTime"] as? UInt64
-        self.expiresTime = json["expiresTime"] as? UInt64
-        self.fromPrior = json["fromPrior"] as? String
-
+        var attachments: [Attachment]?
+        
         if let attachmentsJson = json["attachments"] as? [JSONDictionary] {
-            self.attachments = attachmentsJson.map { attachmentJson in
+            attachments = attachmentsJson.map { attachmentJson in
                 return .init(fromJson: attachmentJson)
             }
-        } else {
-            self.attachments = nil
         }
+        
+        self.init(id: id,
+                  typ: typ,
+                  type: type,
+                  body: body.asString ?? "{}",
+                  from: json["from"] as? String,
+                  to: json["to"] as? [String],
+                  thid: json["thid"] as? String,
+                  pthid: json["pthid"] as? String,
+                  extraHeaders: json["extraHeaders"]  as? [String: String] ?? [:],
+                  createdTime: json["createdTime"] as? UInt64,
+                  expiresTime: json["expiresTime"] as? UInt64,
+                  fromPrior: json["fromPrior"] as? String,
+                  attachments: attachments)
     }
 }

@@ -1,3 +1,5 @@
+import DidcommSDK
+
 extension VerificationMaterial {
     static func fromString(_ format: String, jsonString: String) -> VerificationMaterial{
         switch format.lowercased() {

@@ -1,3 +1,5 @@
+import DidcommSDK
+
 extension Attachment {
     init(fromJson json: JSONDictionary) {
         
@@ -5,14 +7,14 @@ extension Attachment {
             fatalError("Can't resolve 'data' from Attachment.")
         }
         
-        self.data = .fromJson(dataJson)
-        self.id = json["id"] as? String
-        self.description = json["description"] as? String
-        self.filename = json["filename"] as? String
-        self.mediaType = json["media_type"] as? String
-        self.format = json["format"] as? String
-        self.lastmodTime = json["lastmod_time"] as? UInt64
-        self.byteCount = json["byte_count"] as? UInt64
+        self.init(data: .fromJson(dataJson),
+                    id: json["id"] as? String,
+                    description: json["description"] as? String,
+                    filename: json["filename"] as? String,
+                    mediaType: json["media_type"] as? String,
+                    format: json["format"] as? String,
+                    lastmodTime: json["lastmod_time"] as? UInt64,
+                    byteCount: json["byte_count"] as? UInt64)
     }
     
     func dataDictionary() -> JSONDictionary {
