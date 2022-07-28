@@ -15,13 +15,13 @@ Pod::Spec.new do |s|
   s.platforms    = { :ios => "10.0" }
   s.source       = { :git => "https://github.com/sicpa-dlab/didcomm-react-native.git", :tag => "#{s.version}" }
 
-  s.source_files = "ios/**/*.{h,m,mm,swift}"
-  s.ios.vendored_library = 'ios/**/*.a'
+  s.source_files = ["ios/**/*.{h,swift}", "ios/Interfaces/*.m"]
 
   s.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64 i386' }
   s.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64 i386' }
 
   s.dependency "React-Core"
+  s.dependency "DidcommSDK"
 
   # Don't install the dependencies when we run `pod install` in the old architecture.
   if ENV['RCT_NEW_ARCH_ENABLED'] == '1' then
@@ -31,7 +31,6 @@ Pod::Spec.new do |s|
         "CLANG_CXX_LANGUAGE_STANDARD" => "c++17"
     }
 
-    s.dependency "DidcommSDK"
     s.dependency "React-Codegen"
     s.dependency "RCT-Folly", folly_version
     s.dependency "RCTRequired"
