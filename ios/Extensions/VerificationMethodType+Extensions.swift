@@ -1,3 +1,5 @@
+import DidcommSDK
+
 extension VerificationMethodType {
     static func fromString(_ type: String) -> VerificationMethodType{
         switch type {

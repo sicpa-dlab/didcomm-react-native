@@ -1,3 +1,4 @@
+import DidcommSDK
 import Foundation
 
 @objc(DIDCommMessageHelpersModule)

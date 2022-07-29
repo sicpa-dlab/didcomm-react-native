@@ -1,3 +1,5 @@
+import DidcommSDK
+
 extension DidDoc {
     
     init(fromJson json: JSONDictionary) {
@@ -22,17 +24,19 @@ extension DidDoc {
             fatalError("Can't resolve 'services' from DidDoc.")
         }
         
-        self.did = did
-        self.keyAgreements = keyAgreements
-        self.authentications = authentications
-        self.verificationMethods = verificationMethodsJson.map { verificationMethodJson in
+        let vMethods: [VerificationMethod] = verificationMethodsJson.map { verificationMethodJson in
             return .init(fromJson: verificationMethodJson)
         }
         
-        self.services = servicesJson.map { serviceJson in
+        let services: [Service] = servicesJson.map { serviceJson in
             return .init(fromJson: serviceJson)
         }
-
+        
+        self.init(did: did,
+                  keyAgreements: keyAgreements,
+                  authentications: authentications,
+                  verificationMethods: vMethods,
+                  services: services)
     }
 }
 
@@ -63,10 +67,9 @@ extension VerificationMethod {
             fatalError("Can't resolve 'value' from Verification Material.")
         }
         
-        self.id = id
-        self.type = .fromString(type)
-        self.controller = controller
-        self.verificationMaterial = .fromString(format, jsonString: value.asString ?? "{}")
-
+        self.init(id: id,
+                  type: .fromString(type),
+                  controller: controller,
+                  verificationMaterial: .fromString(format, jsonString: value.asString ?? "{}"))
     }
 }

@@ -1,4 +1,6 @@
-extension AnonCryptAlg {    
+import DidcommSDK
+
+extension AnonCryptAlg {
     static func fromString(_ type: String) -> AnonCryptAlg{
         switch type {
         case "A256cbcHs512EcdhEsA256kw":
