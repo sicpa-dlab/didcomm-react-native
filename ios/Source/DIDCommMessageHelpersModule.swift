@@ -18,7 +18,7 @@ class DIDCommMessageHelpersModule: NSObject {
 
         // This is the standard options for Encrypting.
         let options = PackEncryptedOptions(protectSender: protectSender,
-                                           forward: false,
+                                           forward: true,
                                            forwardHeaders: [:],
                                            messagingService: nil,
                                            encAlgAuth: .a256cbcHs512Ecdh1puA256kw,

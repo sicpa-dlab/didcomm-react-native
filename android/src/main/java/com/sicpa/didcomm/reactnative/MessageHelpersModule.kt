@@ -41,7 +41,6 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
 
                 var builder = PackEncryptedParams
                     .builder(message, to)
-                    .forward(false)
                     .protectSenderId(protectSender)
                 builder = from?.let { builder.from(it) } ?: builder
                 builder = signFrom?.let { builder.signFrom(it) } ?: builder
