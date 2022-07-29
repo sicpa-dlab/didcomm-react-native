@@ -71,6 +71,7 @@ A general usage of the API is the following:
 ## Run demo
 
 ### Android
+
 ```sh
 yarn bootstrap
 yarn demo android
@@ -79,6 +80,7 @@ yarn demo android
 ### iOS
 
 On Intel Mac:
+
 ```sh
 yarn bootstrap
 cd ./demo/ios && pod install && cd ./../..
@@ -86,6 +88,7 @@ yarn demo ios
 ```
 
 On M1 Mac:
+
 ```sh
 yarn bootstrap
 cd ./demo/ios && arch -x86_64 pod install && cd ./../..
