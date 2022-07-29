@@ -37,7 +37,7 @@
     "test": "echo 'No tests yet'",
     "prepare": "bob build",
     "demo": "yarn --cwd demo",
-    "bootstrap": "yarn demo && yarn && yarn demo pods"
+    "bootstrap": "yarn demo && yarn"
   },
   "keywords": [
     "react-native",

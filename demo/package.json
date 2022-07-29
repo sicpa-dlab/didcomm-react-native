@@ -7,7 +7,6 @@
     "android": "react-native run-android",
     "start": "react-native start",
     "ios": "react-native run-ios",
-    "pods": "pod-install --quiet",
     "postinstall": "patch-package"
   },
   "dependencies": {
