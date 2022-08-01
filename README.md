@@ -70,10 +70,29 @@ A general usage of the API is the following:
 
 ## Run demo
 
+### Android
+
 ```sh
-cd ./demo
-yarn install
-yarn android
+yarn bootstrap
+yarn demo android
+```
+
+### iOS
+
+On Intel Mac:
+
+```sh
+yarn bootstrap
+cd ./demo/ios && pod install && cd ./../..
+yarn demo ios
+```
+
+On M1 Mac:
+
+```sh
+yarn bootstrap
+cd ./demo/ios && arch -x86_64 pod install && cd ./../..
+arch -x86_64 yarn demo ios
 ```
 
 ## Publishing new version
