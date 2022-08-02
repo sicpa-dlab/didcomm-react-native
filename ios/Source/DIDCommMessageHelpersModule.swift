@@ -16,31 +16,30 @@ class DIDCommMessageHelpersModule: NSObject {
         
         print("[MessageHelpersModule] - Called packEncrypted")
         
-        var message: Message!
         do {
-            message = try Message(fromJson: messageData)
+            let message = try Message(fromJson: messageData)
+            // This is the standard options for Encrypting.
+            let options = PackEncryptedOptions(protectSender: protectSender,
+                                               forward: true,
+                                               forwardHeaders: [:],
+                                               messagingService: nil,
+                                               encAlgAuth: .a256cbcHs512Ecdh1puA256kw,
+                                               encAlgAnon: .xc20pEcdhEsA256kw)
+            
+            let (didResolver, secretsResolver) = createResolvers(with: resolversId)
+            let delegate = DidPromise(resolve, reject)
+            
+            let _ = DidComm(didResolver: didResolver, secretResolver: secretsResolver)
+                .packEncrypted(msg: message,
+                               to: to.asString,
+                               from: from?.asString,
+                               signBy: signFrom?.asString,
+                               options: options,
+                               cb: delegate)
         } catch {
             reject("Decode derror:", error.localizedDescription, error)
             return
         }
-
-        // This is the standard options for Encrypting.
-        let options = PackEncryptedOptions(protectSender: protectSender,
-                                           forward: true,
-                                           forwardHeaders: [:],
-                                           messagingService: nil,
-                                           encAlgAuth: .a256cbcHs512Ecdh1puA256kw,
-                                           encAlgAnon: .xc20pEcdhEsA256kw)
-        
-        let (didResolver, secretsResolver) = createResolvers(with: resolversId)
-        let delegate = DidPromise(resolve, reject)
-        let _ = DidComm(didResolver: didResolver, secretResolver: secretsResolver)
-            .packEncrypted(msg: message,
-                           to: to.asString,
-                           from: from?.asString,
-                           signBy: signFrom?.asString,
-                           options: options,
-                           cb: delegate)
     }
     
     @objc(packSigned: signBy: resolversId:withResolver:withRejecter:)
@@ -51,21 +50,20 @@ class DIDCommMessageHelpersModule: NSObject {
                       reject: @escaping RCTPromiseRejectBlock) {
         
         print("[MessageHelpersModule] - Called packSigned")
-        
-        var message: Message!
+
         do {
-            message = try Message(fromJson: messageData)
+            let message = try Message(fromJson: messageData)
+            let (didResolver, secretsResolver) = createResolvers(with: resolversId)
+            let delegate = DidPromise(resolve, reject)
+            
+            let _ = DidComm(didResolver: didResolver, secretResolver: secretsResolver)
+                .packSigned(msg: message,
+                            signBy: signBy.asString,
+                            cb: delegate)
         } catch {
             reject("Decode derror:", error.localizedDescription, error)
             return
         }
-        
-        let (didResolver, secretsResolver) = createResolvers(with: resolversId)
-        let delegate = DidPromise(resolve, reject)
-        let _ = DidComm(didResolver: didResolver, secretResolver: secretsResolver)
-            .packSigned(msg: message,
-                        signBy: signBy.asString,
-                        cb: delegate)
     }
     
     @objc(packPlaintext: resolversId:withResolver:withRejecter:)
@@ -75,21 +73,22 @@ class DIDCommMessageHelpersModule: NSObject {
                          reject: @escaping RCTPromiseRejectBlock) {
         
         print("[MessageHelpersModule] - Called packPlaintext")
-        
-        var message: Message!
+           
         do {
-            message = try Message(fromJson: messageData)
+            let message = try Message(fromJson: messageData)
+            let (didResolver, secretsResolver) = createResolvers(with: resolversId)
+            let delegate = DidPromise(resolve, reject)
+            
+            let _ = DidComm(didResolver: didResolver,
+                            secretResolver: secretsResolver)
+                .packPlaintext(msg: message,
+                               cb: delegate)
         } catch {
             reject("Decode derror:", error.localizedDescription, error)
             return
         }
 
-        let (didResolver, secretsResolver) = createResolvers(with: resolversId)
-        let delegate = DidPromise(resolve, reject)
-        let _ = DidComm(didResolver: didResolver,
-                        secretResolver: secretsResolver)
-            .packPlaintext(msg: message,
-                           cb: delegate)
+
     }
     
     @objc(unpack:resolversId:withResolver:withRejecter:)
@@ -123,17 +122,23 @@ class DIDCommMessageHelpersModule: NSObject {
                        reject: @escaping RCTPromiseRejectBlock) {
         
         print("[MessageHelpersModule] - Called wrapInForward")
-
-        let (didResolver, secretsResolver) = createResolvers(with: resolversId)
         
-        let delegate = DidWrapPromise(resolve, reject)
-        let _ = DidComm(didResolver: didResolver, secretResolver: secretsResolver)
-            .wrapInForward(msg: message.asString,
-                           headers: headers as? [String: String] ?? [:],
-                           to: to.asString,
-                           routingKeys: routingKeys as? [String] ?? [],
-                           encAlgAnon: .fromString(jsAnonCryptAlg.asString),
-                           cb: delegate)
+        do {
+            let encAlgAnon = try AnonCryptAlg.fromString(jsAnonCryptAlg.asString)
+            let (didResolver, secretsResolver) = createResolvers(with: resolversId)
+            let delegate = DidWrapPromise(resolve, reject)
+            
+            let _ = DidComm(didResolver: didResolver, secretResolver: secretsResolver)
+                .wrapInForward(msg: message.asString,
+                               headers: headers as? [String: String] ?? [:],
+                               to: to.asString,
+                               routingKeys: routingKeys as? [String] ?? [],
+                               encAlgAnon: encAlgAnon,
+                               cb: delegate)
+        } catch {
+            reject("Decode derror:", error.localizedDescription, error)
+            return
+        }
     }
 }
 

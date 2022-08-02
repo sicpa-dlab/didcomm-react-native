@@ -16,18 +16,17 @@ class DIDCommFromPriorHelpersModule : NSObject {
         let (didResolver, secretsResolver) = createResolvers(with: resolversId)
         let delegate = DidPriorPromise(resolve, reject)
         
-        var message: FromPrior!
         do {
-            message = try FromPrior(fromJson: fromPriorData)
+            let message = try FromPrior(fromJson: fromPriorData)
+            let _ = DidComm(didResolver: didResolver, secretResolver: secretsResolver)
+                .packFromPrior(msg: message,
+                               issuerKid: issuerKid as String,
+                               cb: delegate)
         } catch {
             reject("Decode derror:", error.localizedDescription, error)
             return
         }
         
-        let _ = DidComm(didResolver: didResolver, secretResolver: secretsResolver)
-            .packFromPrior(msg: message,
-                           issuerKid: issuerKid as String,
-                           cb: delegate)
     }
     
     @objc(unpack:resolversId:withResolver:withRejecter:)
@@ -40,6 +39,7 @@ class DIDCommFromPriorHelpersModule : NSObject {
         
         let (didResolver, secretsResolver) = createResolvers(with: resolversId)
         let delegate = DidPriorPromise(resolve, reject)
+        
         let _ = DidComm(didResolver: didResolver,
                         secretResolver: secretsResolver)
             .unpackFromPrior(fromPriorJwt: fromPriorJwt.asString,
