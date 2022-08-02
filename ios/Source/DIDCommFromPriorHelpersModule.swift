@@ -22,8 +22,11 @@ class DIDCommFromPriorHelpersModule : NSObject {
                 .packFromPrior(msg: message,
                                issuerKid: issuerKid as String,
                                cb: delegate)
+        } catch DecodeError.error(let msg) {
+            reject("Decode derror:", msg, DecodeError.error(msg))
+            return
         } catch {
-            reject("Decode derror:", error.localizedDescription, error)
+            reject("Unknown error.", error.localizedDescription, error)
             return
         }
         

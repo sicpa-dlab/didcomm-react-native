@@ -36,8 +36,11 @@ class DIDCommMessageHelpersModule: NSObject {
                                signBy: signFrom?.asString,
                                options: options,
                                cb: delegate)
+        } catch DecodeError.error(let msg) {
+            reject("Decode derror:", msg, DecodeError.error(msg))
+            return
         } catch {
-            reject("Decode derror:", error.localizedDescription, error)
+            reject("Unknown error.", error.localizedDescription, error)
             return
         }
     }
@@ -60,8 +63,11 @@ class DIDCommMessageHelpersModule: NSObject {
                 .packSigned(msg: message,
                             signBy: signBy.asString,
                             cb: delegate)
+        } catch DecodeError.error(let msg) {
+            reject("Decode derror:", msg, DecodeError.error(msg))
+            return
         } catch {
-            reject("Decode derror:", error.localizedDescription, error)
+            reject("Unknown error.", error.localizedDescription, error)
             return
         }
     }
@@ -83,8 +89,11 @@ class DIDCommMessageHelpersModule: NSObject {
                             secretResolver: secretsResolver)
                 .packPlaintext(msg: message,
                                cb: delegate)
+        } catch DecodeError.error(let msg) {
+            reject("Decode derror:", msg, DecodeError.error(msg))
+            return
         } catch {
-            reject("Decode derror:", error.localizedDescription, error)
+            reject("Unknown error.", error.localizedDescription, error)
             return
         }
 
@@ -135,8 +144,11 @@ class DIDCommMessageHelpersModule: NSObject {
                                routingKeys: routingKeys as? [String] ?? [],
                                encAlgAnon: encAlgAnon,
                                cb: delegate)
+        } catch DecodeError.error(let msg) {
+            reject("Decode derror:", msg, DecodeError.error(msg))
+            return
         } catch {
-            reject("Decode derror:", error.localizedDescription, error)
+            reject("Unknown error.", error.localizedDescription, error)
             return
         }
     }
