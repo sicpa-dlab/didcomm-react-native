@@ -16,8 +16,16 @@ class DIDCommFromPriorHelpersModule : NSObject {
         let (didResolver, secretsResolver) = createResolvers(with: resolversId)
         let delegate = DidPriorPromise(resolve, reject)
         
+        var message: FromPrior!
+        do {
+            message = try FromPrior(fromJson: fromPriorData)
+        } catch {
+            reject("Decode derror:", error.localizedDescription, error)
+            return
+        }
+        
         let _ = DidComm(didResolver: didResolver, secretResolver: secretsResolver)
-            .packFromPrior(msg: .init(fromJson: fromPriorData),
+            .packFromPrior(msg: message,
                            issuerKid: issuerKid as String,
                            cb: delegate)
     }

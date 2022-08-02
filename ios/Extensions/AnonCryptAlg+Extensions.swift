@@ -1,7 +1,7 @@
 import DidcommSDK
 
 extension AnonCryptAlg {
-    static func fromString(_ type: String) -> AnonCryptAlg{
+    static func fromString(_ type: String) -> AnonCryptAlg {
         switch type {
         case "A256cbcHs512EcdhEsA256kw":
             return .a256cbcHs512EcdhEsA256kw

@@ -15,6 +15,14 @@ class DIDCommMessageHelpersModule: NSObject {
                         reject: @escaping RCTPromiseRejectBlock) {
         
         print("[MessageHelpersModule] - Called packEncrypted")
+        
+        var message: Message!
+        do {
+            message = try Message(fromJson: messageData)
+        } catch {
+            reject("Decode derror:", error.localizedDescription, error)
+            return
+        }
 
         // This is the standard options for Encrypting.
         let options = PackEncryptedOptions(protectSender: protectSender,
@@ -27,7 +35,7 @@ class DIDCommMessageHelpersModule: NSObject {
         let (didResolver, secretsResolver) = createResolvers(with: resolversId)
         let delegate = DidPromise(resolve, reject)
         let _ = DidComm(didResolver: didResolver, secretResolver: secretsResolver)
-            .packEncrypted(msg: .init(fromJson: messageData),
+            .packEncrypted(msg: message,
                            to: to.asString,
                            from: from?.asString,
                            signBy: signFrom?.asString,
@@ -44,10 +52,18 @@ class DIDCommMessageHelpersModule: NSObject {
         
         print("[MessageHelpersModule] - Called packSigned")
         
+        var message: Message!
+        do {
+            message = try Message(fromJson: messageData)
+        } catch {
+            reject("Decode derror:", error.localizedDescription, error)
+            return
+        }
+        
         let (didResolver, secretsResolver) = createResolvers(with: resolversId)
         let delegate = DidPromise(resolve, reject)
         let _ = DidComm(didResolver: didResolver, secretResolver: secretsResolver)
-            .packSigned(msg: .init(fromJson: messageData),
+            .packSigned(msg: message,
                         signBy: signBy.asString,
                         cb: delegate)
     }
@@ -59,12 +75,20 @@ class DIDCommMessageHelpersModule: NSObject {
                          reject: @escaping RCTPromiseRejectBlock) {
         
         print("[MessageHelpersModule] - Called packPlaintext")
+        
+        var message: Message!
+        do {
+            message = try Message(fromJson: messageData)
+        } catch {
+            reject("Decode derror:", error.localizedDescription, error)
+            return
+        }
 
         let (didResolver, secretsResolver) = createResolvers(with: resolversId)
         let delegate = DidPromise(resolve, reject)
         let _ = DidComm(didResolver: didResolver,
                         secretResolver: secretsResolver)
-            .packPlaintext(msg: .init(fromJson: messageData),
+            .packPlaintext(msg: message,
                            cb: delegate)
     }
     

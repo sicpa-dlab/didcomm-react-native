@@ -1,14 +1,14 @@
 import DidcommSDK
 
 extension Service {
-    init(fromJson json: JSONDictionary) {
+    init(fromJson json: JSONDictionary) throws{
 
         guard let id = json["id"] as? String else {
-            fatalError("Can't resolve 'id' from Service.")
+            throw DecodeError.error("Can't resolve 'id' from Service.")
         }
 
         guard let serviceEndpoint = json["serviceEndpoint"] as? JSONDictionary else {
-            fatalError("Can't resolve 'serviceEndpoint' from Service.")
+            throw DecodeError.error("Can't resolve 'serviceEndpoint' from Service.")
         }
         
         self.init(id: id,

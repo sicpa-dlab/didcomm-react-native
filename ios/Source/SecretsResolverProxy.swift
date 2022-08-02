@@ -34,7 +34,8 @@ public class SecretsResolverProxy: SecretsResolver {
                 queue: nil) { notification in
                     if let str = notification.object as? String,
                        let dic = str.asDictionary {
-                        completion(Secret.init(fromJson: dic))
+                        let secret = try? Secret(fromJson: dic)
+                        completion(secret)
                     } else {
                         completion(nil)
                     }
