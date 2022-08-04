@@ -34,8 +34,8 @@ extension AttachmentData {
         let jws = data["jws"] as? String
         if let base64 = data["base64"] as? String {
             return .base64(value: .init(base64: base64, jws: jws))
-        } else if let json = data["json"] as? String {
-            return .json(value: .init(json: json, jws: jws))
+        } else if let json = data["json"] as? JSONDictionary {
+            return .json(value: .init(json: json.asString ?? "{}" , jws: jws))
         } else if let links = data["links"] as? [String] {
             let hash = data["hash"] as? String ?? ""
             return .links(value: .init(links: links, hash: hash, jws: jws))
