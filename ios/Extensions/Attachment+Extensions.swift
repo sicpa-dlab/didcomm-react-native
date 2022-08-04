@@ -1,13 +1,14 @@
 import DidcommSDK
 
 extension Attachment {
-    init(fromJson json: JSONDictionary) {
+    init(fromJson json: JSONDictionary) throws {
         
         guard let dataJson = json["data"] as? JSONDictionary else {
-            fatalError("Can't resolve 'data' from Attachment.")
+            throw DecodeError.error("Can't resolve 'data' from Attachment.")
         }
         
-        self.init(data: .fromJson(dataJson),
+        let attachmentData = try AttachmentData.fromJson(dataJson)
+        self.init(data: attachmentData,
                     id: json["id"] as? String,
                     description: json["description"] as? String,
                     filename: json["filename"] as? String,
@@ -30,7 +31,7 @@ extension Attachment {
 }
 
 extension AttachmentData {
-    static func fromJson(_ data: JSONDictionary) -> AttachmentData{
+    static func fromJson(_ data: JSONDictionary) throws -> AttachmentData {
         let jws = data["jws"] as? String
         if let base64 = data["base64"] as? String {
             return .base64(value: .init(base64: base64, jws: jws))
@@ -40,7 +41,7 @@ extension AttachmentData {
             let hash = data["hash"] as? String ?? ""
             return .links(value: .init(links: links, hash: hash, jws: jws))
         } else {
-            fatalError("AttachmentData not supported! Supported types: 'base64', 'json' and 'links'.")
+            throw DecodeError.error("AttachmentData not supported! Supported types: 'base64', 'json' and 'links'.")
         }
     }
     

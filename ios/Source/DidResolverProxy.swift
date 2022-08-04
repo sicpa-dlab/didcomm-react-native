@@ -26,7 +26,8 @@ public class DidResolverProxy: DidResolver {
                 queue: nil) { notification in
                     if let str = notification.object as? String,
                        let dic = str.asDictionary {
-                        completion(.init(fromJson: dic))
+                        let did = try? DidDoc(fromJson: dic)
+                        completion(did)
                     } else {
                         completion(nil)
                     }

@@ -22,37 +22,37 @@ extension Message {
                  "attachments": attachmentsJson ]
     }
     
-    init(fromJson json: NSDictionary) {
+    init(fromJson json: NSDictionary) throws {
     
         guard let id = json["id"] as? String else {
-            fatalError("Can't resolve 'id' from Message.")
+            throw DecodeError.error("Can't resolve 'id' from Message.")
         }
         
         guard let typ = json["typ"] as? String else {
-            fatalError("Can't resolve 'typ' from Message.")
+            throw DecodeError.error("Can't resolve 'typ' from Message.")
         }
         
         guard let type = json["type"] as? String else {
-            fatalError("Can't resolve 'type' from Message.")
+            throw DecodeError.error("Can't resolve 'type' from Message.")
         }
         
         guard let bodyJson = json["body"] as? JSONDictionary,
               let body = bodyJson.asString else {
-            fatalError("Can't resolve 'body' from Message.")
+            throw DecodeError.error("Can't resolve 'body' from Message.")
         }
        
         var attachments: [Attachment]?
         
         if let attachmentsJson = json["attachments"] as? [JSONDictionary] {
-            attachments = attachmentsJson.map { attachmentJson in
-                return .init(fromJson: attachmentJson)
+            attachments = try attachmentsJson.map { attachmentJson in
+                return try .init(fromJson: attachmentJson)
             }
         }
         
         self.init(id: id,
                   typ: typ,
                   type: type,
-                  body: body.asString,
+                  body: body,
                   from: json["from"] as? String,
                   to: json["to"] as? [String],
                   thid: json["thid"] as? String,

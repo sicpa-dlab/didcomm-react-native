@@ -11,14 +11,14 @@ extension FromPrior {
                  "jti": jti ]
     }
     
-    init(fromJson fromPrior: NSDictionary) {
+    init(fromJson fromPrior: NSDictionary) throws {
         
         guard let iss = fromPrior.value(forKey: "iss") as? String  else {
-            fatalError("Can't resolve 'iss' from FromPrior.")
+            throw DecodeError.error("Can't resolve 'iss' from FromPrior.")
         }
         
         guard let sub = fromPrior.value(forKey: "sub") as? String else {
-            fatalError("Can't resolve 'sub' from FromPrior.")
+            throw DecodeError.error("Can't resolve 'sub' from FromPrior.")
         }
         
         self.init(iss: iss,
