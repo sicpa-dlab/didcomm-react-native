@@ -63,13 +63,13 @@ extension VerificationMethod {
             throw DecodeError.error("Can't resolve 'format' from Verification Material.")
         }
         
-        guard let value =  verificationMaterialJson["value"] as? JSONDictionary else {
+        guard let value =  verificationMaterialJson["value"] as? String else {
             throw DecodeError.error("Can't resolve 'value' from Verification Material.")
         }
         
         self.init(id: id,
                   type: .fromString(type),
                   controller: controller,
-                  verificationMaterial: .fromString(format, jsonString: value.asString ?? "{}"))
+                  verificationMaterial: .fromString(format, jsonString: value))
     }
 }
