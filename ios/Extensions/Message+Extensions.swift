@@ -10,7 +10,7 @@ extension Message {
         return [ "id": self.id,
                  "typ": self.typ,
                  "type": self.type,
-                 "body": self.body,
+                 "body": self.body.asDictionary,
                  "from": self.from,
                  "to": self.to,
                  "thid": self.thid,
@@ -36,7 +36,8 @@ extension Message {
             fatalError("Can't resolve 'type' from Message.")
         }
         
-        guard let body = json["body"] as? JSONDictionary else {
+        guard let bodyJson = json["body"] as? JSONDictionary,
+              let body = bodyJson.asString else {
             fatalError("Can't resolve 'body' from Message.")
         }
        
@@ -51,7 +52,7 @@ extension Message {
         self.init(id: id,
                   typ: typ,
                   type: type,
-                  body: body.asString ?? "{}",
+                  body: body.asString,
                   from: json["from"] as? String,
                   to: json["to"] as? [String],
                   thid: json["thid"] as? String,
