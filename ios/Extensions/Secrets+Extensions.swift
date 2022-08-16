@@ -20,13 +20,13 @@ extension Secret {
             throw DecodeError.error("Can't resolve 'format' from Secret.")
         }
         
-        guard let value = secretMaterialJson.value(forKey: "value") as? String else {
+        guard let value = secretMaterialJson.value(forKey: "value") as? JSONDictionary else {
             throw DecodeError.error("Can't resolve 'value' from Secret.")
         }
         
         self.init(id: id, type: .fromString(type),
                   secretMaterial: .fromString(format,
-                                              jsonString: value))
+                                              jsonString: value.asString ?? "{}"))
     }
 }
 
