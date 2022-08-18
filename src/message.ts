@@ -31,6 +31,10 @@ export class Message implements DIDCommMessage {
     secrets_resolver: SecretsResolver,
     options: PackEncryptedOptions,
   ): Promise<[string, PackEncryptedMetadata]> {
+    // Workaround for array typing of forward_headers (Array<[string, string]>)
+    const patchedForwardHeaders = options.forward_headers ? new Map<string, string>(options.forward_headers) : undefined
+    const patchedOptions = { ...options, forward_headers: patchedForwardHeaders }
+
     return await DIDCommResolversProxy.withResolvers(
       (resolversId) =>
         DIDCommMessageHelpersModule.packEncrypted(
@@ -38,7 +42,7 @@ export class Message implements DIDCommMessage {
           to,
           from,
           sign_by,
-          options?.protect_sender ?? false,
+          JSON.stringify(patchedOptions),
           resolversId,
         ),
       did_resolver,
@@ -70,11 +74,15 @@ export class Message implements DIDCommMessage {
     msg: string,
     did_resolver: DIDResolver,
     secrets_resolver: SecretsResolver,
-    _options: UnpackOptions,
+    options: UnpackOptions,
   ): Promise<[Message, UnpackMetadata]> {
     return await DIDCommResolversProxy.withResolvers(
       async (resolversId) => {
-        const [unpackedMsgData, unpackMetadata] = await DIDCommMessageHelpersModule.unpack(msg, resolversId)
+        const [unpackedMsgData, unpackMetadata] = await DIDCommMessageHelpersModule.unpack(
+          msg,
+          JSON.stringify(options),
+          resolversId,
+        )
         return [new Message(unpackedMsgData), unpackMetadata]
       },
       did_resolver,

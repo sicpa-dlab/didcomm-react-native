@@ -9,7 +9,7 @@ class DIDCommMessageHelpersModule: NSObject {
                         to: NSString,
                         from: NSString? = nil,
                         signFrom: NSString? = nil,
-                        protectSender: Bool = true,
+                        optionsJson: NSString? = nil,
                         resolversId: NSString,
                         resolve: @escaping RCTPromiseResolveBlock,
                         reject: @escaping RCTPromiseRejectBlock) {
@@ -19,7 +19,7 @@ class DIDCommMessageHelpersModule: NSObject {
         do {
             let message = try Message(fromJson: messageData)
             // This is the standard options for Encrypting.
-            let options = PackEncryptedOptions(protectSender: protectSender,
+            let options = PackEncryptedOptions(protectSender: false,
                                                forward: true,
                                                forwardHeaders: [:],
                                                messagingService: nil,
@@ -102,6 +102,7 @@ class DIDCommMessageHelpersModule: NSObject {
     
     @objc(unpack:resolversId:withResolver:withRejecter:)
     func unpack(_ packedMsg: NSString,
+                  optionsJson: NSString? = nil,
                   resolversId: NSString,
                   resolve: @escaping RCTPromiseResolveBlock,
                   reject: @escaping RCTPromiseRejectBlock) {
