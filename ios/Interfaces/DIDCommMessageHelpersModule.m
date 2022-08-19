@@ -7,7 +7,7 @@ RCT_EXTERN_METHOD(packEncrypted:(NSDictionary *)messageData
                   to:(NSString *)to
                   from:(NSString *)from
                   signFrom:(NSString *)signFrom
-                  protectSender:(BOOL)protectSender
+                  optionsJson:(NSString *)optionsJson
                   resolversId:(NSString *)resolversId
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject)
@@ -25,9 +25,10 @@ RCT_EXTERN_METHOD(packPlaintext:(NSDictionary *)messageData
 
     
 RCT_EXTERN_METHOD(unpack:(NSString *)packedMsg
-              resolversId:(NSString *)resolversId
-              withResolver:(RCTPromiseResolveBlock)resolve
-              withRejecter:(RCTPromiseRejectBlock)reject)
+                  optionsJson:(NSString *)optionsJson
+                  resolversId:(NSString *)resolversId
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(wrapInForward:(NSString *)message
                   headers:(NSDictionary *)headers
