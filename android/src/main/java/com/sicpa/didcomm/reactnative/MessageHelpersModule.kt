@@ -2,8 +2,11 @@ package com.sicpa.didcomm.reactnative
 
 import com.facebook.react.bridge.*
 import com.facebook.react.module.annotations.ReactModule
+import com.sicpa.didcomm.reactnative.model.JSPackEncryptedOptions
+import com.sicpa.didcomm.reactnative.model.JSUnpackOptions
 import com.sicpa.didcomm.reactnative.utils.JsonUtils
 import com.sicpa.didcomm.reactnative.utils.parseAnonCryptAlg
+import com.sicpa.didcomm.reactnative.utils.parseAuthCryptAlg
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,22 +34,36 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
         to: String,
         from: String? = null,
         signFrom: String? = null,
-        protectSender: Boolean = false,
+        optionsJson: String? = null,
         resolversId: String,
         promise: Promise
     ) {
         scope.launch {
             try {
                 val message = parseMessage(messageData)
+                val options =
+                    optionsJson?.let { JsonUtils.parseJson(it, JSPackEncryptedOptions::class.java) }
 
-                var builder = PackEncryptedParams
+                val paramsBuilder = PackEncryptedParams
                     .builder(message, to)
-                    .protectSenderId(protectSender)
-                builder = from?.let { builder.from(it) } ?: builder
-                builder = signFrom?.let { builder.signFrom(it) } ?: builder
+                    .apply {
+                        from?.let { from(it) }
+                        signFrom?.let { signFrom(it) }
+                    }
+
+                if (options != null) {
+                    paramsBuilder.apply {
+                        options.protect_sender?.let { protectSenderId(it) }
+                        options.forward?.let { forward(it) }
+                        options.forward_headers?.let { forwardHeaders(it) }
+                        options.messaging_service?.let { forwardServiceId(it) }
+                        options.enc_alg_auth?.let { encAlgAuth(parseAuthCryptAlg(it)) }
+                        options.enc_alg_anon?.let { encAlgAnon(parseAnonCryptAlg(it)) }
+                    }
+                }
 
                 val didComm = createDidCommInstance(resolversId)
-                val packResult = didComm.packEncrypted(builder.build())
+                val packResult = didComm.packEncrypted(paramsBuilder.build())
 
                 val resultArray = Arguments.createArray().apply {
                     pushString(packResult.packedMessage)
@@ -65,7 +82,12 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
     }
 
     @ReactMethod
-    fun packSigned(messageData: ReadableMap, signBy: String, resolversId: String, promise: Promise) {
+    fun packSigned(
+        messageData: ReadableMap,
+        signBy: String,
+        resolversId: String,
+        promise: Promise
+    ) {
         scope.launch {
             try {
                 val message = parseMessage(messageData)
@@ -114,13 +136,26 @@ class MessageHelpersModule(private val reactContext: ReactApplicationContext) :
     @ReactMethod
     fun unpack(
         packedMessage: String,
+        optionsJson: String?,
         resolversId: String,
         promise: Promise
     ) {
         scope.launch {
             try {
+                val options =
+                    optionsJson?.let { JsonUtils.parseJson(it, JSUnpackOptions::class.java) }
+
+                val paramsBuilder = UnpackParams.Builder(packedMessage)
+
+                if (options != null) {
+                    paramsBuilder.apply {
+                        options.expect_decrypt_by_all_keys?.let { expectDecryptByAllKeys(it) }
+                        options.unwrap_re_wrapping_forward?.let { unwrapReWrappingForward(it) }
+                    }
+                }
+
                 val didComm = createDidCommInstance(resolversId)
-                val unpackResult = didComm.unpack(UnpackParams.Builder(packedMessage).build())
+                val unpackResult = didComm.unpack(paramsBuilder.build())
 
                 val resultArray = Arguments.createArray().apply {
                     pushMap(JsonUtils.convertObjectToMap(unpackResult.message))

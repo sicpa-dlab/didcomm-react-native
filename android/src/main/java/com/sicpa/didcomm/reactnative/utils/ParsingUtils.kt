@@ -1,6 +1,7 @@
 package com.sicpa.didcomm.reactnative.utils
 
 import org.didcommx.didcomm.common.AnonCryptAlg
+import org.didcommx.didcomm.common.AuthCryptAlg
 import org.didcommx.didcomm.common.VerificationMaterialFormat
 import org.didcommx.didcomm.common.VerificationMethodType
 
@@ -20,6 +21,13 @@ fun parseVerificationMaterialFormat(format: String): VerificationMaterialFormat 
         "Multibase" -> VerificationMaterialFormat.MULTIBASE
         "Base58" -> VerificationMaterialFormat.BASE58
         else -> VerificationMaterialFormat.OTHER
+    }
+}
+
+fun parseAuthCryptAlg(alg: String): AuthCryptAlg {
+    return when(alg) {
+        "A256cbcHs512Ecdh1puA256kw" -> AuthCryptAlg.A256CBC_HS512_ECDH_1PU_A256KW
+        else -> AuthCryptAlg.A256CBC_HS512_ECDH_1PU_A256KW
     }
 }
 

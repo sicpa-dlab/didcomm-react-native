@@ -4,12 +4,12 @@ import Foundation
 @objc(DIDCommMessageHelpersModule)
 class DIDCommMessageHelpersModule: NSObject {
     
-    @objc(packEncrypted:to:from:signFrom:protectSender:resolversId:withResolver:withRejecter:)
+    @objc(packEncrypted:to:from:signFrom:optionsJson:resolversId:withResolver:withRejecter:)
     func packEncrypted(_ messageData: NSDictionary,
                         to: NSString,
                         from: NSString? = nil,
                         signFrom: NSString? = nil,
-                        protectSender: Bool = true,
+                        optionsJson: NSString? = nil,
                         resolversId: NSString,
                         resolve: @escaping RCTPromiseResolveBlock,
                         reject: @escaping RCTPromiseRejectBlock) {
@@ -18,13 +18,6 @@ class DIDCommMessageHelpersModule: NSObject {
         
         do {
             let message = try Message(fromJson: messageData)
-            // This is the standard options for Encrypting.
-            let options = PackEncryptedOptions(protectSender: protectSender,
-                                               forward: true,
-                                               forwardHeaders: [:],
-                                               messagingService: nil,
-                                               encAlgAuth: .a256cbcHs512Ecdh1puA256kw,
-                                               encAlgAnon: .xc20pEcdhEsA256kw)
             
             let (didResolver, secretsResolver) = createResolvers(with: resolversId)
             let delegate = DidPromise(resolve, reject)
@@ -34,7 +27,7 @@ class DIDCommMessageHelpersModule: NSObject {
                                to: to.asString,
                                from: from?.asString,
                                signBy: signFrom?.asString,
-                               options: options,
+                               options: .init(fromJson: optionsJson),
                                cb: delegate)
         } catch DecodeError.error(let msg) {
             reject("Decode derror:", msg, DecodeError.error(msg))
@@ -96,27 +89,22 @@ class DIDCommMessageHelpersModule: NSObject {
             reject("Unknown error.", error.localizedDescription, error)
             return
         }
-
-
     }
     
-    @objc(unpack:resolversId:withResolver:withRejecter:)
+    @objc(unpack:optionsJson:resolversId:withResolver:withRejecter:)
     func unpack(_ packedMsg: NSString,
+                  optionsJson: NSString? = nil,
                   resolversId: NSString,
                   resolve: @escaping RCTPromiseResolveBlock,
                   reject: @escaping RCTPromiseRejectBlock) {
         
         print("[MessageHelpersModule] - Called unpack")
 
-        let options = UnpackOptions(expectDecryptByAllKeys: false,
-                                   unwrapReWrappingForward: false)
-
         let (didResolver, secretsResolver) = createResolvers(with: resolversId)
-        
         let delegate = DidPromise(resolve, reject)
         let _ = DidComm(didResolver: didResolver, secretResolver: secretsResolver)
             .unpack(msg: packedMsg.asString,
-                    options: options,
+                    options: .init(fromJson: optionsJson),
                     cb: delegate)
     }
     

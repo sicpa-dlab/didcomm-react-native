@@ -23,6 +23,8 @@
 		9E185DC2288EDED000381E4C /* DidDoc+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E185DC1288EDED000381E4C /* DidDoc+Extensions.swift */; };
 		9E185DC4288EDEDE00381E4C /* Secrets+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E185DC3288EDEDE00381E4C /* Secrets+Extensions.swift */; };
 		9E185DC8288EEE1000381E4C /* Service+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E185DC7288EEE1000381E4C /* Service+Extensions.swift */; };
+		9E1DC80728AF91BC0099068A /* PackEncryptedOptions+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1DC80628AF91BC0099068A /* PackEncryptedOptions+Extensions.swift */; };
+		9E1DC80928AF93E50099068A /* UnpackOptions+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E1DC80828AF93E50099068A /* UnpackOptions+Extensions.swift */; };
 		9E9915972892DA9A00081B21 /* Attachment+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E9915962892DA9A00081B21 /* Attachment+Extensions.swift */; };
 		9EC14DFA28856BF200C97663 /* DIDCommResolversProxyModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EC14DF828856BF200C97663 /* DIDCommResolversProxyModule.m */; };
 		9EC14E0128856C1F00C97663 /* SecretsResolverProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EC14DFC28856C1F00C97663 /* SecretsResolverProxy.swift */; };
@@ -66,6 +68,8 @@
 		9E185DC1288EDED000381E4C /* DidDoc+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DidDoc+Extensions.swift"; sourceTree = "<group>"; };
 		9E185DC3288EDEDE00381E4C /* Secrets+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Secrets+Extensions.swift"; sourceTree = "<group>"; };
 		9E185DC7288EEE1000381E4C /* Service+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Service+Extensions.swift"; sourceTree = "<group>"; };
+		9E1DC80628AF91BC0099068A /* PackEncryptedOptions+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PackEncryptedOptions+Extensions.swift"; sourceTree = "<group>"; };
+		9E1DC80828AF93E50099068A /* UnpackOptions+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UnpackOptions+Extensions.swift"; sourceTree = "<group>"; };
 		9E9915962892DA9A00081B21 /* Attachment+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Attachment+Extensions.swift"; sourceTree = "<group>"; };
 		9EC14DF828856BF200C97663 /* DIDCommResolversProxyModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DIDCommResolversProxyModule.m; sourceTree = "<group>"; };
 		9EC14DFC28856C1F00C97663 /* SecretsResolverProxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecretsResolverProxy.swift; sourceTree = "<group>"; };
@@ -137,6 +141,8 @@
 				9E185DC1288EDED000381E4C /* DidDoc+Extensions.swift */,
 				9E185DC3288EDEDE00381E4C /* Secrets+Extensions.swift */,
 				9E185DC7288EEE1000381E4C /* Service+Extensions.swift */,
+				9E1DC80628AF91BC0099068A /* PackEncryptedOptions+Extensions.swift */,
+				9E1DC80828AF93E50099068A /* UnpackOptions+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -264,11 +270,13 @@
 				9E185DBC288EAEDB00381E4C /* AnonCryptAlg+Extensions.swift in Sources */,
 				9E185DB8288EA6E900381E4C /* VerificationMethodType+Extensions.swift in Sources */,
 				9E185DB0288EA14A00381E4C /* SecretType+Extensions.swift in Sources */,
+				9E1DC80728AF91BC0099068A /* PackEncryptedOptions+Extensions.swift in Sources */,
 				9EC14E072886AE3500C97663 /* DIDCommFromPriorHelpersModule.swift in Sources */,
 				9E185DBA288EA83C00381E4C /* VerificationMaterial+Extensions.swift in Sources */,
 				9E185DBE288EB58500381E4C /* String+Extensions.swift in Sources */,
 				9E185DC0288EC41A00381E4C /* JSONDictionary+Extensions.swift in Sources */,
 				9E185D932886E98600381E4C /* ResolverProxyEvent.swift in Sources */,
+				9E1DC80928AF93E50099068A /* UnpackOptions+Extensions.swift in Sources */,
 				9E185DC4288EDEDE00381E4C /* Secrets+Extensions.swift in Sources */,
 				9EC14DFA28856BF200C97663 /* DIDCommResolversProxyModule.m in Sources */,
 				9EC14E0128856C1F00C97663 /* SecretsResolverProxy.swift in Sources */,
