@@ -2,12 +2,12 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-Basic [DIDComm v2](https://identity.foundation/didcomm-messaging/spec) support for React Native framework (Android only).
+Basic [DIDComm v2](https://identity.foundation/didcomm-messaging/spec) support for React Native framework (Android and iOS).
 
 ## Under the hood
 
-This package is React Native wrapper for [DIDComm JVM](https://github.com/sicpa-dlab/didcomm-jvm) library.
-It contains native modules that are using [DIDComm JVM](https://github.com/sicpa-dlab/didcomm-jvm) API and exposes Javascript/Typescript API using React Native bridge.
+This package is React Native wrapper using [DIDComm JVM](https://github.com/sicpa-dlab/didcomm-jvm) library for Android and [DIDComm Swift](https://github.com/sicpa-dlab/didcomm-rust/tree/main/wrappers/swift) for iOS.
+It contains native modules that are using native libraries API and exposes Javascript/Typescript API using React Native bridge.
 
 Design documentation for complex parts of implementation can be found in [docs folder](./docs).
 
