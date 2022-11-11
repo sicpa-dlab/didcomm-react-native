@@ -1,5 +1,5 @@
 {
-  "name": "@sicpa-dlab/didcomm-react-native",
+  "name": "@sicpa_open_source/didcomm-react-native",
   "version": "0.0.19",
   "description": "React Native wrapper for DIDComm v2",
   "main": "lib/module/index.js",
@@ -10,9 +10,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/sicpa-dlab/didcomm-react-native"
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
   },
   "files": [
     "src",

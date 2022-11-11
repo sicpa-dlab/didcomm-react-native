@@ -49,6 +49,6 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - run: yarn build
-
-      - run: npm config set //npm.pkg.github.com/:_authToken ${{ secrets.TOKEN }}
       - run: npm publish --access private
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
