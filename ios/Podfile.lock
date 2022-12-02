@@ -1,0 +1,16 @@
+PODS:
+  - DidcommSDK (0.3.4)
+
+DEPENDENCIES:
+  - DidcommSDK (= 0.3.4)
+
+SPEC REPOS:
+  https://github.com/sicpa-dlab/didcomm-rust.git:
+    - DidcommSDK
+
+SPEC CHECKSUMS:
+  DidcommSDK: f471c9e6378f212c4dbf8a7edf3f5722a96b8a24
+
+PODFILE CHECKSUM: a20b6eac7c743cfd7de10048eb60d06c061ba54d
+
+COCOAPODS: 1.11.3

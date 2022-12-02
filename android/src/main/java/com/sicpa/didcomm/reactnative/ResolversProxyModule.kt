@@ -26,6 +26,7 @@ class ResolversProxyModule(private val reactContext: ReactApplicationContext) :
         private const val DID_STRING_KEY = "did"
         private const val KID_STRING_KEY = "kid"
         private const val KIDS_STRING_KEY = "kids"
+        private const val RESOLVERS_ID_STRING_KEY = "resolversId"
     }
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -42,7 +43,7 @@ class ResolversProxyModule(private val reactContext: ReactApplicationContext) :
         get() = _foundSecretIdsChannel as ReceiveChannel<Set<String>>
 
     @ReactMethod
-    fun setResolvedDid(jsonValue: String?) {
+    fun setResolvedDid(jsonValue: String?, resolversId: String) {
         scope.launch {
             val jsDidDoc = jsonValue?.let { JsonUtils.parseJson(jsonValue, JSDIDDoc::class.java) }
             _resolvedDidChannel.send(jsDidDoc?.toDIDDoc())
@@ -50,7 +51,7 @@ class ResolversProxyModule(private val reactContext: ReactApplicationContext) :
     }
 
     @ReactMethod
-    fun setFoundSecret(jsonValue: String?) {
+    fun setFoundSecret(jsonValue: String?, resolversId: String) {
         scope.launch {
             val jsSecret = jsonValue?.let { JsonUtils.parseJson(jsonValue, JSSecret::class.java) }
             _foundSecretChannel.send(jsSecret?.toSecret())
@@ -58,7 +59,7 @@ class ResolversProxyModule(private val reactContext: ReactApplicationContext) :
     }
 
     @ReactMethod
-    fun setFoundSecretIds(jsonValue: String?) {
+    fun setFoundSecretIds(jsonValue: String?, resolversId: String) {
         scope.launch {
             val secretIds = jsonValue?.let { JsonUtils.parseJson(jsonValue, Set::class.java) }
             _foundSecretIdsChannel.send(secretIds as? Set<String> ?: emptySet())
@@ -75,13 +76,14 @@ class ResolversProxyModule(private val reactContext: ReactApplicationContext) :
         // Remove upstream listeners, stop unnecessary background tasks
     }
 
-    fun sendEvent(event: ResolverProxyEvent) {
+    fun sendEvent(event: ResolverProxyEvent, resolversId: String) {
         val params = Arguments.createMap().apply {
             when (event) {
                 is ResolveDid -> putString(DID_STRING_KEY, event.did)
                 is FindKey -> putString(KID_STRING_KEY, event.kid)
                 is FindKeys -> putArray(KIDS_STRING_KEY, Arguments.fromList(event.kids))
             }
+            putString(RESOLVERS_ID_STRING_KEY, resolversId)
         }
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(
             event.type, params
@@ -93,7 +95,8 @@ class ResolversProxyModule(private val reactContext: ReactApplicationContext) :
         return mutableMapOf(
             "DID_STRING_KEY" to DID_STRING_KEY,
             "KID_STRING_KEY" to KID_STRING_KEY,
-            "KIDS_STRING_KEY" to KIDS_STRING_KEY
+            "KIDS_STRING_KEY" to KIDS_STRING_KEY,
+            "RESOLVERS_ID_STRING_KEY" to RESOLVERS_ID_STRING_KEY
         )
     }
 

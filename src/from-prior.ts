@@ -1,4 +1,9 @@
+import { NativeModules } from "react-native"
+
+import { DIDCommResolversProxy } from "./resolvers-proxy"
 import { DIDResolver, SecretsResolver, IFromPrior, DIDCommFromPrior } from "./types"
+
+const { DIDCommFromPriorHelpersModule } = NativeModules
 
 export class FromPrior implements DIDCommFromPrior {
   public constructor(private value: IFromPrior) {}
@@ -7,18 +12,28 @@ export class FromPrior implements DIDCommFromPrior {
     return this.value
   }
 
-  public pack(
+  public async pack(
     issuer_kid: string | null,
     did_resolver: DIDResolver,
     secrets_resolver: SecretsResolver,
   ): Promise<[string, string]> {
-    throw new Error("'FromPrior.pack' is not implemented yet")
+    return await DIDCommResolversProxy.withResolvers(
+      (resolversId) => DIDCommFromPriorHelpersModule.pack(this.value, issuer_kid, resolversId),
+      did_resolver,
+      secrets_resolver,
+    )
   }
 
-  public static unpack(from_prior: string, did_resolver: DIDResolver): Promise<[FromPrior, string]> {
-    throw new Error("'FromPrior.unpack' is not implemented yet")
+  public static async unpack(from_prior: string, did_resolver: DIDResolver): Promise<[FromPrior, string]> {
+    return await DIDCommResolversProxy.withResolvers(
+      async (resolversId) => {
+        const [unpackedFromPriorData, issuerKid] = await DIDCommFromPriorHelpersModule.unpack(from_prior, resolversId)
+        return [new FromPrior(unpackedFromPriorData), issuerKid]
+      },
+      did_resolver,
+      null,
+    )
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   public free(): void {}
 }

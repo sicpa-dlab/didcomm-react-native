@@ -31,40 +31,66 @@ export class Message implements DIDCommMessage {
     secrets_resolver: SecretsResolver,
     options: PackEncryptedOptions,
   ): Promise<[string, PackEncryptedMetadata]> {
-    DIDCommResolversProxy.setResolvers(did_resolver, secrets_resolver)
-    return await DIDCommMessageHelpersModule.packEncrypted(
-      this.payload,
-      to,
-      from,
-      sign_by,
-      options?.protect_sender ?? true,
+    // Workaround for array typing of forward_headers (Array<[string, string]>)
+    const patchedForwardHeaders = options.forward_headers ? new Map<string, string>(options.forward_headers) : undefined
+    const patchedOptions = { ...options, forward_headers: patchedForwardHeaders }
+
+    return await DIDCommResolversProxy.withResolvers(
+      (resolversId) =>
+        DIDCommMessageHelpersModule.packEncrypted(
+          this.payload,
+          to,
+          from,
+          sign_by,
+          JSON.stringify(patchedOptions),
+          resolversId,
+        ),
+      did_resolver,
+      secrets_resolver,
     )
   }
 
-  public pack_plaintext(did_resolver: DIDResolver): Promise<string> {
-    throw new Error("'Message.pack_plaintext' is not implemented yet")
+  public async pack_plaintext(did_resolver: DIDResolver): Promise<string> {
+    return await DIDCommResolversProxy.withResolvers(
+      (resolversId) => DIDCommMessageHelpersModule.packPlaintext(this.payload, resolversId),
+      did_resolver,
+      null,
+    )
   }
 
-  public pack_signed(
+  public async pack_signed(
     sign_by: string,
     did_resolver: DIDResolver,
     secrets_resolver: SecretsResolver,
   ): Promise<[string, PackSignedMetadata]> {
-    throw new Error("'Message.pack_signed' is not implemented yet")
+    return await DIDCommResolversProxy.withResolvers(
+      (resolversId) => DIDCommMessageHelpersModule.packSigned(this.payload, sign_by, resolversId),
+      did_resolver,
+      secrets_resolver,
+    )
   }
 
   public static async unpack(
     msg: string,
     did_resolver: DIDResolver,
     secrets_resolver: SecretsResolver,
-    _options: UnpackOptions,
+    options: UnpackOptions,
   ): Promise<[Message, UnpackMetadata]> {
-    DIDCommResolversProxy.setResolvers(did_resolver, secrets_resolver)
-    const [unpackedMsgData, unpackMetadata] = await DIDCommMessageHelpersModule.unpack(msg)
-    return [new Message(unpackedMsgData), unpackMetadata]
+    return await DIDCommResolversProxy.withResolvers(
+      async (resolversId) => {
+        const [unpackedMsgData, unpackMetadata] = await DIDCommMessageHelpersModule.unpack(
+          msg,
+          JSON.stringify(options),
+          resolversId,
+        )
+        return [new Message(unpackedMsgData), unpackMetadata]
+      },
+      did_resolver,
+      secrets_resolver,
+    )
   }
 
-  public static wrap_in_forward(
+  public static async wrap_in_forward(
     msg: string,
     headers: Record<string, string>,
     to: string,
@@ -72,13 +98,17 @@ export class Message implements DIDCommMessage {
     enc_alg_anon: string,
     did_resolver: DIDResolver,
   ): Promise<string> {
-    throw new Error("'Message.wrap_in_forward' is not implemented yet")
+    return await DIDCommResolversProxy.withResolvers(
+      (resolversId) =>
+        DIDCommMessageHelpersModule.wrapInForward(msg, headers, to, routing_keys, enc_alg_anon, resolversId),
+      did_resolver,
+      null,
+    )
   }
 
   public try_parse_forward(): ParsedForward {
     throw new Error("'Message.try_parse_forward' is not implemented yet")
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   public free(): void {}
 }

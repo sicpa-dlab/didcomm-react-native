@@ -1,28 +1,30 @@
 {
-  "name": "@sicpa-dlab/didcomm-react-native",
-  "version": "0.0.3",
+  "name": "@sicpa_open_source/didcomm-react-native",
+  "version": "0.0.20",
+  "license": "Apache-2.0",
   "description": "React Native wrapper for DIDComm v2",
   "main": "lib/module/index.js",
   "module": "lib/module/index.js",
-  "react-native": "src/index.ts",
   "types": "lib/typescript/src/index.d.ts",
+  "react-native": "src/index.ts",
+  "source": "src/index",
   "repository": {
     "type": "git",
     "url": "https://github.com/sicpa-dlab/didcomm-react-native"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
   "files": [
+    "src",
     "lib",
     "android",
     "ios",
-    "src",
+    "cpp",
+    "didcomm-react-native.podspec",
     "!lib/typescript/demo",
     "!android/build",
     "!ios/build",
     "package.json",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "style:check": "npm run prettier -- --check .",
@@ -31,31 +33,42 @@
     "lint:fix": "eslint --fix . --ignore-path ./.eslintignore --ext ts --ext tsx --ext js --ext jsx",
     "build": "bob build",
     "prettier": "prettier . --ignore-path ./.gitignore",
-    "test": "echo 'No tests yet'"
+    "test": "echo 'No tests yet'",
+    "prepare": "bob build",
+    "demo": "yarn --cwd demo",
+    "bootstrap": "yarn demo && yarn"
   },
+  "keywords": [
+    "react-native",
+    "ios",
+    "android"
+  ],
   "devDependencies": {
     "@types/react-native": "^0.64.5",
     "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^4.20.0",
     "@typescript-eslint/parser": "^4.33.0",
-    "didcomm": "^0.3.1",
+    "didcomm": "0.3.4",
     "eslint": "^7.14.0",
-    "eslint-import-resolver-typescript": "^2.5.0",
+    "eslint-import-resolver-typescript": "^3.5.2",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-simple-import-sort": "^5.0.3",
+    "patch-package": "^6.4.7",
+    "postinstall-postinstall": "^2.1.0",
+    "pod-install": "^0.1.0",
     "prettier": "^2.2.1",
     "react": "17.0.2",
     "react-native": "^0.68.2",
-    "react-native-builder-bob": "^0.17.1",
+    "react-native-builder-bob": "^0.20.1",
+    "react-native-uuid": "^2.0.1",
     "ts-node": "^9.1.1",
-    "typescript": "^4.7.2"
+    "typescript": "^4.5.2"
   },
   "react-native-builder-bob": {
     "source": "src",
     "output": "lib",
     "targets": [
-      "commonjs",
       "module",
       [
         "typescript",
