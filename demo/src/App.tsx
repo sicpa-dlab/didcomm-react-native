@@ -1,4 +1,4 @@
-import { DIDCommResolversProxy } from "@sicpa-dlab/didcomm-react-native"
+import { DIDCommResolversProxy } from "@sicpa_open_source/didcomm-react-native"
 import * as React from "react"
 import { useEffect } from "react"
 import { StyleSheet, View, Text, Button, NativeEventEmitter, NativeModules } from "react-native"
