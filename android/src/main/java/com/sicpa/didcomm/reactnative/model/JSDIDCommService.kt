@@ -6,5 +6,5 @@ data class JSDIDCommServiceKind(val DIDCommMessaging: JSDIDCommMessagingService)
 data class JSDIDCommMessagingService(
     val service_endpoint: String,
     val accept: List<String>,
-    val route_keys: List<String>
+    val routing_keys: List<String>
 )
