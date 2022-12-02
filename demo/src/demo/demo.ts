@@ -1,5 +1,12 @@
 //Source https://github.com/sicpa-dlab/didcomm-rust/blob/main/wasm/demo/src/main.ts
-import { Message, DIDDoc, DIDResolver, Secret, SecretsResolver, FromPrior } from "@sicpa-dlab/didcomm-react-native"
+import {
+  Message,
+  DIDDoc,
+  DIDResolver,
+  Secret,
+  SecretsResolver,
+  FromPrior,
+} from "@sicpa_open_source/didcomm-react-native"
 
 import {
   ALICE_DID,

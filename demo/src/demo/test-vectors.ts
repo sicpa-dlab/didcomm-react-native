@@ -1,5 +1,5 @@
 //Source https://github.com/sicpa-dlab/didcomm-rust/blob/main/wasm/demo/src/test-vectors.ts
-import { DIDDoc, Secret, FromPrior, IFromPrior } from "@sicpa-dlab/didcomm-react-native"
+import { DIDDoc, Secret, FromPrior, IFromPrior } from "@sicpa_open_source/didcomm-react-native"
 
 export const ALICE_DID = "did:example:alice"
 
