@@ -13,21 +13,11 @@ Design documentation for complex parts of implementation can be found in [docs f
 
 ## Usage
 
-In your project root, create `.npmrc` file with following content to be able to install package from GitHub registry:
+Install from npm:
 
+```bash
+npm install @sicpa_open_source/didcomm-react-native
 ```
-@sicpa-dlab:registry=https://npm.pkg.github.com
-```
-
-Login into GitHub packages registry:
-
-1. Create GitHub Personal Access Token with `read:packages` scope if you don't have one
-2. Run following command and login using your Personal Access Token instead of password:
-   ```sh
-   npm login --registry=https://npm.pkg.github.com
-   ```
-
-For detailed GitHub packages installation guide please see: https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry#installing-a-package
 
 If you need to use this package in another RN library:
 
@@ -39,7 +29,7 @@ Add following DIDComm resolvers initialization code to your App (it's a workarou
 ```typescript
 import { NativeModules, NativeEventEmitter } from 'react-native'
 import { useEffect } from 'react'
-import { DIDCommResolversProxy } from "@sicpa-dlab/didcomm-react-native"
+import { DIDCommResolversProxy } from "@sicpa_open_source/didcomm-react-native"
 
 const { DIDCommResolversProxyModule } = NativeModules
 
@@ -97,11 +87,8 @@ arch -x86_64 yarn demo ios
 
 ## Publishing new version
 
-If you have write access to the repo, you can publish new version using following steps:
-
-- Create GitHub Personal access token with full `repo` and `write:packages` scopes if you don't have one
-- Run `npm login --registry=https://npm.pkg.github.com` command and log-in using your access token as a password
-- Run `npm publish` command from the repo root
+Manually bump package version in `package.json` file.
+The package will be published automatically from `main` branch by GitHub Actions.
 
 ## Common issues
 
