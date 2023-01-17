@@ -53,7 +53,7 @@
     "eslint-import-resolver-typescript": "^3.5.2",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "eslint-plugin-simple-import-sort": "^9.0.0",
     "patch-package": "^6.4.7",
     "pod-install": "^0.1.0",
     "postinstall-postinstall": "^2.1.0",
