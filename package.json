@@ -81,7 +81,7 @@
   "dependencies": {
     "@babel/core": "*",
     "@babel/preset-env": "^7.1.6",
-    "decode-uri-component": "^0.2.2",
+    "decode-uri-component": "^0.4.1",
     "shell-quote": "^1.7.4"
   }
 }
