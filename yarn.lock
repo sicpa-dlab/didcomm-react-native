@@ -2488,10 +2488,10 @@ destroy@1.2.0:
   resolved "https://registry.yarnpkg.com/destroy/-/destroy-1.2.0.tgz#4803735509ad8be552934c67df614f94e66fa015"
   integrity sha512-2sJGJTaXIIaR1w4iJSNoN0hnMY7Gpc/n8D4qSCJw8QqFWXf7cuAgnEHxBpweaVcPevC2l3KpjYCx3NypQQgaJg==
 
-didcomm@0.3.4:
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/didcomm/-/didcomm-0.3.4.tgz#8c81ac39966cafd0483743db59affc95b2b20c00"
-  integrity sha512-jGZduR98a5tR5Mh5xuwHG8ZT1w9xHpBUzCOl2Beqylk46aJ6fBD385NbcMNcPxqgVEXZ5fuOC3TQFXvp385PzA==
+didcomm@0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/didcomm/-/didcomm-0.4.1.tgz#f94923f6d7f00dbf27818a5965d9a432874cdf96"
+  integrity sha512-fcGSfLL5ri18vbbjRexHWVk2RAxZ/eBlyKeLCzS/3k5RdogqJbnUEcNsq64at1nA1u16ENa1bsZodGeRoq84ZA==
 
 diff@^4.0.1:
   version "4.0.2"
